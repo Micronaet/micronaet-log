@@ -80,7 +80,7 @@ class LogEvent(orm.Model):
             'Warning range', digits=(16, 3), 
             help='-/+ perc. time for raise warning'),
         'duration_error_range': fields.float(
-            'Warning error', digits=(16, 3), 
+            'Error range', digits=(16, 3), 
             help='-/+ perc. time for raise error'),
         'auto_duration': fields.boolean(
             'Autoduration', 
@@ -141,8 +141,8 @@ class LogActivityEvent(orm.Model):
         }
     
     _defaults = {
-        'datetime': lambda *a: datetime.now(
-            DEFAULT_SERVER_DATETIME_FORMAT).strftime(),
+        'datetime': lambda *a: datetime.now().strftime(
+            DEFAULT_SERVER_DATETIME_FORMAT),
         'state': lambda *x: 'correct',
         }
 

@@ -40,7 +40,7 @@
             <field name="domain">[]</field>
         </record>
 
-        <!--log.activity.event-->
+        <!--log.activity-->
         <record model="ir.ui.view" id="view_log_activity_tree">
             <field name="name">log.activity.tree</field>
             <field name="model">log.activity</field>
@@ -94,6 +94,7 @@
                                 <page string="Notification">
                                     <group col="4" colspan="4">
                                         <field name="email_alert" />
+                                        <newline/>
                                         <field name="email_error" attrs="{'invisible': [('email_alert','=',False)]}"/>
                                         <field name="email_warning" attrs="{'invisible': [('email_alert','=',False)]}" />
                                     </group>                    
@@ -171,7 +172,7 @@
             </field>
         </record>        
         <record model="ir.ui.view" id="view_log_activity_event_tree">
-            <field name="name">log.activity.event.form</field>
+            <field name="name">log.activity.event.tree</field>
             <field name="model">log.activity.event</field>
             <field name="arch" type="xml">
                 <tree string="Event" version="7.0" colors="grey:active==False">
