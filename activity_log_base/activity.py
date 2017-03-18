@@ -88,6 +88,9 @@ class LogEvent(orm.Model):
         'email_alert': fields.boolean('Email alert'),
         'email_error': fields.char('Email error', size=180),
         'email_warning': fields.char('Email warning', size=180),
+        'script': fields.text('Script'),
+        'origin': fields.text(
+            'Origin', help='Info of origin server for the activity'),
         
         'note': fields.text('Note'),
         'state': fields.selection([
