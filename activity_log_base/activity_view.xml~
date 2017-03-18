@@ -41,13 +41,101 @@
         </record>
 
         <!--log.activity.event-->
+        <record model="ir.ui.view" id="view_log_activity_tree">
+            <field name="name">log.activity.tree</field>
+            <field name="model">log.activity</field>
+            <field name="arch" type="xml">
+                <tree string="Activity" version="7.0">  
+                    <field name="active" />      
+                    <field name="monitor" />
+                    <field name="email_alert" />
+                    <field name="code" />
+                    <field name="name" />
+                    <field name="partner_id" />
+                    <field name="category_id" />
+                    <field name="from_date" />
+                    <field name="to_date" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>        
+        <record model="ir.ui.view" id="view_log_activity_form">
+            <field name="name">log.activity.form</field>
+            <field name="model">log.activity</field>
+            <field name="arch" type="xml">
+                <form string="Activity" version="7.0">        
+                    <header>
+                        <field name="active" /><!--button-->
+                        <field name="monitor" /><!--button-->
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <group col="4" colspan="4">
+                            <field name="code" />
+                            <field name="name" />
+                            <field name="category_id" />
+                            <field name="partner_id" domain="[('is_company', '=', True)]"/>
+                            <notebook colspan="4">
+                                <page string="Period">
+                                    <group col="4" colspan="4">
+                                        <field name="from_date" />
+                                        <field name="to_date" />
+
+                                        <field name="duration" />
+                                        <field name="auto_duration" />
+
+                                        <field name="check_duration" />
+                                        <newline/>
+
+                                        <field name="duration_warning_range" />
+                                        <field name="duration_error_range" />
+                                    </group>                    
+                                </page>
+                                <page string="Notification">
+                                    <group col="4" colspan="4">
+                                        <field name="email_alert" />
+                                        <field name="email_error" attrs="{'invisible': [('email_alert','=',False)]}"/>
+                                        <field name="email_warning" attrs="{'invisible': [('email_alert','=',False)]}" />
+                                    </group>                    
+                                </page>
+                                <page string="Detail">
+                                    <group col="4" colspan="4">
+                                        <separator string="Script" colspan="4"/>
+                                        <field name="script" nolabel="1" colspan="4"/>
+                                        <separator string="Origin" colspan="4"/>
+                                        <field name="origin" nolabel="1" colspan="4" />
+                                    </group>                    
+                                </page>
+                                <page string="Note">
+                                    <group col="4" colspan="4">
+                                        <separator string="Note" colspan="4"/>
+                                        <field name="note" nolabel="1" colspan="4" />
+                                    </group>                    
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>        
+                </form>
+            </field>
+        </record>        
+        <record model="ir.actions.act_window" id="action_log_activity">
+            <field name="name">Activity</field>
+            <field name="res_model">log.activity</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_log_activity_tree"/>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+        </record>
+        
+        <!--log.activity.event-->
         <record model="ir.ui.view" id="view_log_activity_event_form">
             <field name="name">log.activity.event.form</field>
             <field name="model">log.activity.event</field>
             <field name="arch" type="xml">
                 <form string="Event" version="7.0">        
                     <header>
-                        <field name="state" widget="status_bar" />
+                        <field name="state" widget="statusbar" />
                     </header>
                     <sheet>
                         <group col="4" colspan="4">
@@ -117,14 +205,20 @@
                 id="menu_log_activity" 
                 sequence="10" 
                 name="Logs"
-                />
+                />                
                 <menuitem 
-                    parent="menu_log_root" 
-                    id="menu_action_event_log" 
-                    action="action_log_activity_event"
+                    parent="menu_log_activity" 
+                    id="menu_activity_log" 
+                    action="action_log_activity"
+                    sequence="10"
                     />
-                
-        
+                <menuitem 
+                    parent="menu_log_activity" 
+                    id="menu_activity_event_log" 
+                    action="action_log_activity_event"
+                    sequence="20"
+                    />
+                        
             <menuitem 
                 parent="menu_log_root" 
                 id="menu_log_configuration_root"  
