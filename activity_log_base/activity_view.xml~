@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
+        <!--log.category-->
         <record model="ir.ui.view" id="view_log_category_form">
             <field name="name">log.category.form</field>
             <field name="model">log.category</field>
@@ -22,15 +23,11 @@
             <field name="name">log.category.tree</field>
             <field name="model">log.category</field>
             <field name="arch" type="xml">
-                <form string="Category" version="7.0">        
-                    <sheet>
-                        <group col="4" colspan="4">
-                            <field name="active" />
-                            <field name="code" />
-                            <field name="name" />
-                        </group>
-                    </sheet>        
-                </form>
+                <tree string="Category" version="7.0" colors="grey:active==False">        
+                    <field name="active" />
+                    <field name="code" />
+                    <field name="name" />
+                </tree>
             </field>
         </record>
         <record model="ir.actions.act_window" id="action_log_category">
@@ -38,21 +35,107 @@
             <field name="res_model">log.category</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="view_log_category_form"/>
+            <field name="view_id" ref="view_log_category_tree"/>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+        </record>
+
+        <!--log.activity.event-->
+        <record model="ir.ui.view" id="view_log_activity_event_form">
+            <field name="name">log.activity.event.form</field>
+            <field name="model">log.activity.event</field>
+            <field name="arch" type="xml">
+                <form string="Event" version="7.0">        
+                    <header>
+                        <field name="state" widget="status_bar" />
+                    </header>
+                    <sheet>
+                        <group col="4" colspan="4">
+                            <field name="datetime" />
+                            <field name="activity_id" />
+                            <field name="start" />
+                            <field name="end" />
+                            <field name="duration" />
+                            <field name="mark_ok" />
+                            
+                            <notebook colspan="4">
+                                <page string="Log">
+                                    <group col="6" colspan="4">
+                                        <separator string="Log" colspan="2"/>
+                                        <separator string="Log warning" colspan="2"/>
+                                        <separator string="Log error" colspan="2"/>
+                                        
+                                        <field name="log" nolabel="1" colspan="2" />
+                                        <field name="log_warning" nolabel="1" colspan="2" />
+                                        <field name="log_error" nolabel="1" colspan="2" />
+                                    </group>
+                                </page>
+                                <page string="Origin">
+                                    <group col="4" colspan="4">
+                                        <separator string="Origin" colspan="4"/>
+                                        <field name="origin" nolabel="1" colspan="4" />
+                                    </group>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>        
+                </form>
+            </field>
+        </record>        
+        <record model="ir.ui.view" id="view_log_activity_event_tree">
+            <field name="name">log.activity.event.form</field>
+            <field name="model">log.activity.event</field>
+            <field name="arch" type="xml">
+                <tree string="Event" version="7.0" colors="grey:active==False">
+                    <field name="datetime" />
+                    <field name="activity_id" />
+                    <field name="start" />
+                    <field name="end" />
+                    <field name="duration" />
+                    <field name="mark_ok" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_log_activity_event">
+            <field name="name">Event log</field>
+            <field name="res_model">log.activity.event</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_log_activity_event_tree"/>
             <field name="context">{}</field>
             <field name="domain">[]</field>
         </record>
         
-        <menuitem parent="log_menu_root" id="menu_log_root" name="Log" sequence="10" />
-            <menuitem parent="menu_log_root" id="menu_log_activity" sequence="10" />
+        <menuitem 
+            id="menu_log_root" 
+            name="Log" 
+            sequence="10" 
+            />
+            <menuitem 
+                parent="menu_log_root" 
+                id="menu_log_activity" 
+                sequence="10" 
+                name="Logs"
+                />
+                <menuitem 
+                    parent="menu_log_root" 
+                    id="menu_action_event_log" 
+                    action="action_log_activity_event"
+                    />
                 
         
-            <menuitem parent="menu_log_root" id="menu_log_configuration_root"  sequence="90" />
+            <menuitem 
+                parent="menu_log_root" 
+                id="menu_log_configuration_root"  
+                name="Configuration"
+                sequence="90" 
+                />
                 <menuitem 
                     parent="menu_log_configuration_root" 
                     id="menu_log_category" 
                     action="action_log_category"
-                    sequece="10"
+                    sequence="10"
                     />
                 
             

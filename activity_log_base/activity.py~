@@ -57,8 +57,8 @@ class LogEvent(orm.Model):
     """ Model name: Log event
     """
     
-    _name = 'log.event'
-    _description = 'Log event'
+    _name = 'log.activity'
+    _description = 'Log activity'
     _rec_name = 'name'
     _order = 'name'
     
@@ -74,6 +74,8 @@ class LogEvent(orm.Model):
         'to_date': fields.date('To date', help='End period for timed event'),
         'duration': fields.float(
             'Duration', digits=(16, 3), help='Normal duration of operation'),
+        'check_duration':fields.boolean(
+            'Check duration', help='Check duration period of operation'),
         'duration_warning_range': fields.float(
             'Warning range', digits=(16, 3), 
             help='-/+ perc. time for raise warning'),
@@ -129,8 +131,8 @@ class LogActivityEvent(orm.Model):
         'log': fields.text('Log'),
         'log_warning': fields.text('Log warning'),
         'log_error': fields.text('Log error'),
-        'mark_ok': fields.boolean('Mark as OK' 
-            help='For error / warning message', 
+        'mark_ok': fields.boolean('Mark as OK',
+            help='For error / warning message'), 
         'state': fields.selection([
             ('correct', 'Correct'),
             ('warning', 'Warning'),
