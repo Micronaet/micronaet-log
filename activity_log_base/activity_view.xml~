@@ -74,21 +74,21 @@
                             <field name="code" />
                             <field name="name" />
                             <field name="category_id" />
-                            <field name="partner_id" domain="[('is_company', '=', True)]"/>
+                            <field name="partner_id" domain="[('is_company', '=', True)]" context="{'default_is_company': True}"/>
                             <notebook colspan="4">
                                 <page string="Period">
                                     <group col="4" colspan="4">
                                         <field name="from_date" />
                                         <field name="to_date" />
 
-                                        <field name="duration" />
+                                        <field name="duration" widget="float_time"/>
                                         <field name="auto_duration" />
 
                                         <field name="check_duration" />
                                         <newline/>
 
-                                        <field name="duration_warning_range" />
-                                        <field name="duration_error_range" />
+                                        <field name="duration_warning_range" attrs="{'invisible': [('check_duration','=',False)]}"/>
+                                        <field name="duration_error_range" attrs="{'invisible': [('check_duration','=',False)]}"/>
                                     </group>                    
                                 </page>
                                 <page string="Notification">
@@ -143,7 +143,7 @@
                             <field name="activity_id" />
                             <field name="start" />
                             <field name="end" />
-                            <field name="duration" />
+                            <field name="duration" widget="float_time"/>
                             <field name="mark_ok" />
                             
                             <notebook colspan="4">
