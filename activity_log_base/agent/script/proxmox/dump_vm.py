@@ -70,7 +70,8 @@ for row in open(logfile, 'r'):
     # -------------------------------------------------------------------------
     # Information:
     # -------------------------------------------------------------------------
-    if 'Finished Backup' in row:
+    row = row.lower()
+    if 'finished backup' in row:
         # Finish backup VM:
         log_g['info'].write('%s\n' % row)
     elif ' transferred ' in row:     
@@ -87,11 +88,14 @@ for row in open(logfile, 'r'):
     # -------------------------------------------------------------------------
     # Error: 
     # -------------------------------------------------------------------------
+    elif 'error' in row:     
+        # Archive info
+        log_g['error'].write('%s\n' % row)
 
     # -------------------------------------------------------------------------
     # Check elements:
     # -------------------------------------------------------------------------
-    elif 'Task OK' in row:
+    elif 'task ok' in row:
         task_ok = True    
 
 if not task_ok:
