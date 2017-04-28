@@ -202,11 +202,11 @@
                             <notebook colspan="4">
                                 <page string="Log">
                                     <group col="6" colspan="4">
-                                        <separator string="Log" colspan="2"/>
-                                        <separator string="Log warning" colspan="2"/>
-                                        <separator string="Log error" colspan="2"/>
+                                        <separator string="Info" colspan="2"/>
+                                        <separator string="Warning" colspan="2"/>
+                                        <separator string="Error" colspan="2"/>
                                         
-                                        <field name="log" nolabel="1" colspan="2" />
+                                        <field name="log_info" nolabel="1" colspan="2" />
                                         <field name="log_warning" nolabel="1" colspan="2" />
                                         <field name="log_error" nolabel="1" colspan="2" />
                                     </group>

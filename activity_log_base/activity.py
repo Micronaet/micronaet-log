@@ -235,7 +235,7 @@ class LogActivityEvent(orm.Model):
             'end': end,
             'duration': duration,
             'origin': origin,
-            'log': log_info,
+            'log_info': log_info,
             'log_warning': log_warning,
             'log_error': log_error,
             }, context=context)                
@@ -250,7 +250,7 @@ class LogActivityEvent(orm.Model):
             'Duration', digits=(16, 3), help='Duration of operation'),
             
         'origin': fields.text('Origin', help='Server info (log origin)'),
-        'log': fields.text('Log'),
+        'log_info': fields.text('Log info'),
         'log_warning': fields.text('Log warning'),
         'log_error': fields.text('Log error'),
         'mark_ok': fields.boolean('Mark as OK',
