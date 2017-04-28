@@ -28,7 +28,6 @@ from datetime import datetime
 #                                Parameters
 # -----------------------------------------------------------------------------
 # Extract config file name from current name
-import pdb; pdb.set_trace()
 name = __file__
 fullname = '%scfg' % name[:-2] # remove py # XXX BETTER!!! (also pyw)
 
