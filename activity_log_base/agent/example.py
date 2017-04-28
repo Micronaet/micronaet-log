@@ -42,13 +42,13 @@ password = config.get('XMLRPC', 'password')
 
 code_partner = config.get('code', 'partner')
 code_activity = config.get('code', 'activity')
+origin = config.get('code', 'origin')
 
 script = config.get('script', 'command')
 
 # -----------------------------------------------------------------------------
 # ERPPEEK Client connection:
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 erp = erppeek.Client(
     'http://%s:%s' % (hostname, port),
     db=database,
@@ -59,15 +59,26 @@ erp = erppeek.Client(
 # -----------------------------------------------------------------------------
 # Launch script:
 # -----------------------------------------------------------------------------
+# Variables:
+data = {
+    'code_partner': code_partner,
+    'code_activity': code_activity,
+    'start': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 
+    #'end': ,
+    'origin': origin,
+    'log': '',
+    'log_warning': '',
+    'log_error': '',
+    }
+    
 if script:
     os.system(script)
+    
+data['end'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
 # -----------------------------------------------------------------------------
 # Log activity:
 # -----------------------------------------------------------------------------
-erp_pool = erp.LogActivityEvent
-data = {
-    }
-    
+erp_pool = erp.LogActivityEvent    
 erp_pool.log_event(data)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

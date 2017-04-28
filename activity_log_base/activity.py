@@ -123,9 +123,122 @@ class LogActivityEvent(orm.Model):
     # -------------------------------------------------------------------------
     def log_event(self, cr, uid, data):
         ''' ERPEEK procedure called for create event from remote scripts
+            data dict contain:
+                code_partner: Key field for reach partner, inserad use copmany
+                code_activity: Key field for reach activity, instead create ERR
+                start: datetime start
+                end: datetime stop
+                origin: note for origin server
+                log: log text
+                log_warning: warning text
+                log_error: error text
         '''
         import pdb; pdb.set_trace()
-        return True
+        # Pool used:
+        category_pool = self.pool.get('log.category')
+        activity_pool = self.pool.get('log.activity')
+        partner_pool = self.pool.get('res.partner')
+        
+        # Read key field:
+        code_partner = data.get('code_partner', False) # default company
+        code_activity = data.get('code_activity', False)
+
+        # ---------------------------------------------------------------------
+        # Search foreign keys:
+        # ---------------------------------------------------------------------
+        # partner_id    
+        if code_partner:
+            _logger.error('Code partner present (take company)!')
+            partner_id = 1 # Use detault company address
+        else: 
+            partner_ids = partner_pool.search(cr, uid, [
+                ('log_code', '=', code_partner),
+                ], context=context)
+            if partner_ids:
+                partner_id = partner_ids[0]    
+            else:
+                _logger.error('Code partner not present %s (take company)!' % (
+                    code_partner))
+                partner_id = 1 # Use default     
+
+        # activity_id
+        if not code_activity:
+            _logger.error('Code activity not present (take ERR)!')
+            code_activity = 'ERR'
+        activity_ids = activity_pool.search(cr, uid, [
+            ('partner_id', '=', partner_id),
+            ('code', '=', code_activity),
+            ], context=context)
+            
+        if activity_ids:
+            # Find:
+            activity_id = activity_ids[0]    
+        else:
+            # Create new (to compile after on ODOO:
+            # Get error category:
+            category_ids = category_pool.search(cr, uid, [
+                ('code', '=', code_activity), # use same code (cat.-act.)
+                ], context=context)
+            if category_ids:
+                category_id = category_ids[0]    
+            else:
+                _logger.error('Code category not present (take ERR)!')
+                category_id = category_pool.create(cr, uid, {
+                    'code': code_activity,
+                    'name': 'Error',
+                    'note': 'Log error activity of the system (admin purpose)'
+                    }, context=context)
+            
+            # Get activity:
+            activity_id = activity_pool.create(cr, uid, {
+                'code': code_activity,
+                'name': ,
+                'from_date': ,
+                'to_date': ,
+                'duration': ,
+                'partner_id': partner_id,
+                'category_id': category_id,
+                #'active'
+                #'monitor' 
+                #'check_duration':
+                #'duration_warning_range': 
+                #'duration_error_range': 
+                #'auto_duration': 
+                #'email_alert': 
+                #'email_error': 
+                #'email_warning': 
+                #'script': 
+                #'origin': 
+                #'note': 
+                #'state': 
+                }, context=context)
+            _logger.error('Code activity not present %s create empty!' % (
+                code_activity))
+
+        # ---------------------------------------------------------------------
+        # Create event:
+        # ---------------------------------------------------------------------
+        # Get data passed
+        start = data.get('start', False)
+        end = data.get('end', False)
+        origin = data.get('origin', '')
+        log = data.get('log', '')
+        log_warning = data.get('log_warning', '')
+        log_error = data.get('log_error', '')
+        duration = 0 # TODO
+        
+        return self.create(cr, uid, {
+            #'datetime': now
+            #'mark_ok': False,
+            'activity_id': activity_id,
+            'start': start,
+            'end': end,
+            'duration': duration,
+            'origin': origin,
+            'log': log,
+            'log_warning': log_warning,
+            'log_error': log_error,
+            }, context=context)                
         
     _columns = {
         'datetime': fields.date('Date', required=True),

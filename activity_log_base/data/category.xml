@@ -2,6 +2,12 @@
 <openerp>
     <data>
         <!--log.category-->
+        <record model="log.category" id="log_category_error">
+            <field name="active">1</field>
+            <field name="code">ERR</field>
+            <field name="name">Error</field>
+            <field name="note">Log error activity of the system (admin purpose)</field>
+        </record>     
         <record model="log.category" id="log_category_backup">
             <field name="active">1</field>
             <field name="code">BAK</field>
