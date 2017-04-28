@@ -228,7 +228,7 @@ class LogActivityEvent(orm.Model):
         duration = 0 # TODO
         
         if not end:
-            state = 'start'
+            state = 'started'
         elif error:
             state = 'error'
         elif warning:
