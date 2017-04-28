@@ -36,7 +36,7 @@ config = ConfigParser.ConfigParser()
 config.read([fullname])
 
 # Read from config file:
-command = config.get('proxmox', 'backup') 
+script = config.get('proxmox', 'backup') 
 logfile = config.get('proxmox', 'logfile')
 
 folder = config.get('log', 'folder')
@@ -62,7 +62,7 @@ for mode in log:
         print '[WARNING] File log not found: %s' % log[mode]
 
 if script:
-    os.system(command)
+    os.system(script)
 
 # Parse log file (save in log file info, warning, error):
 task_ok = False
