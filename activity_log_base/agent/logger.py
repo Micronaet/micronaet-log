@@ -70,7 +70,7 @@ erp = erppeek.Client(
 # -----------------------------------------------------------------------------
 # TODO log start operation?
 # -----------------------------------------------------------------------------
-
+#event_id = 
 # -----------------------------------------------------------------------------
 # Launch script:
 # -----------------------------------------------------------------------------
@@ -106,5 +106,5 @@ for mode in log:
 # Log activity:
 # -----------------------------------------------------------------------------
 erp_pool = erp.LogActivityEvent    
-erp_pool.log_event(data)
+event_id = erp_pool.log_event(data)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
