@@ -227,6 +227,15 @@ class LogActivityEvent(orm.Model):
         log_error = data.get('log_error', '')
         duration = 0 # TODO
         
+        if not end:
+            state = 'start'
+        elif error:
+            state = 'error'
+        elif warning:
+            state = 'warning'
+        else:
+            state = 'correct'
+            
         record = {
             #'datetime': now
             #'mark_ok': False,
@@ -238,6 +247,7 @@ class LogActivityEvent(orm.Model):
             'log_info': log_info,
             'log_warning': log_warning,
             'log_error': log_error,
+            'state': state,
             }
             
         if update_id:
