@@ -28,6 +28,7 @@ from datetime import datetime
 #                                Parameters
 # -----------------------------------------------------------------------------
 # Extract config file name from current name
+import pdb; pdb.set_trace()
 name = __file__
 fullname = '%scfg' % name[:-2] # remove py # XXX BETTER!!! (also pyw)
 
@@ -47,6 +48,16 @@ origin = config.get('code', 'origin')
 
 script = config.get('script', 'command')
 
+log_folder = config.get('log', 'folder')
+log = {
+    'log_info': os.path.join(
+        log_folder, config.get('log', 'info')),
+    'log_warning': os.path.join(
+        log_folder, config.get('log', 'warning')),
+    'log_error': os.path.join(
+        log_folder, config.get('log', 'error')),
+    }
+
 # -----------------------------------------------------------------------------
 # ERPPEEK Client connection:
 # -----------------------------------------------------------------------------
@@ -58,24 +69,39 @@ erp = erppeek.Client(
     )
 
 # -----------------------------------------------------------------------------
+# TODO log start operation?
+# -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 # Launch script:
 # -----------------------------------------------------------------------------
-# Variables:
 data = {
     'code_partner': code_partner,
     'code_activity': code_activity,
     'start': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 
     #'end': ,
     'origin': origin,
-    'log': '',
+    'log_info': '',
     'log_warning': '',
     'log_error': '',
     }
-    
+
 if script:
     os.system(script)
-    
+
+# -----------------------------------------------------------------------------
+# Log end operation:
+# -----------------------------------------------------------------------------
+# End time:
 data['end'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+# Log status from file:
+log_text = {}
+for mode in log:
+    f = open(log[mode], 'r')
+    for row in f:
+        data[mode] += row
+    f.close()
     
 # -----------------------------------------------------------------------------
 # Log activity:

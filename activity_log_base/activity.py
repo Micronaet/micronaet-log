@@ -222,7 +222,7 @@ class LogActivityEvent(orm.Model):
         start = data.get('start', False)
         end = data.get('end', False)
         origin = data.get('origin', '')
-        log = data.get('log', '')
+        log_info = data.get('log_info', '')
         log_warning = data.get('log_warning', '')
         log_error = data.get('log_error', '')
         duration = 0 # TODO
@@ -235,7 +235,7 @@ class LogActivityEvent(orm.Model):
             'end': end,
             'duration': duration,
             'origin': origin,
-            'log': log,
+            'log': log_info,
             'log_warning': log_warning,
             'log_error': log_error,
             }, context=context)                
