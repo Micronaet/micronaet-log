@@ -67,6 +67,7 @@ erp = erppeek.Client(
     user=username,
     password=password,
     )
+erp_pool = erp.LogActivityEvent    
 
 # -----------------------------------------------------------------------------
 # Log start operation:
@@ -108,7 +109,6 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # Log activity:
 # -----------------------------------------------------------------------------
-erp_pool = erp.LogActivityEvent    
 if log_start: 
     # Update event:
     erp_pool.log_event(data, update_id)
