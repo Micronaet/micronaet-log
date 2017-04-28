@@ -38,10 +38,15 @@ config.read([fullname])
 # Read from config file:
 command = config.get('proxmox', 'backup') 
 logfile = config.get('proxmox', 'logfile')
+
+folder = config.get('log', 'folder')
 log = {
-    'info': config.get('log', 'info'),
-    'warning': config.get('log', 'warning'),
-    'error': config.get('log', 'error'),
+    'info': os.path.join(
+        folder, config.get('log', 'info')),
+    'warning': os.path.join(
+        folder, config.get('log', 'warning')),
+    'error': os.path.join(
+        folder, config.get('log', 'error')),
     }
 # -----------------------------------------------------------------------------
 # Launch script:
