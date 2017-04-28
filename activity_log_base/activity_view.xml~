@@ -30,15 +30,14 @@
                 </tree>
             </field>
         </record>
-        <record model="ir.actions.act_window" id="action_log_category">
-            <field name="name">Log category</field>
+        <record model="ir.actions.act_window" id="action_open_log_category">
+            <field name="name">Category</field>
             <field name="res_model">log.category</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_log_category_tree"/>
-            <field name="context">{}</field>
-            <field name="domain">[]</field>
         </record>
+
 
         <!--log.activity-->
         <record model="ir.ui.view" id="view_log_activity_tree">
@@ -228,8 +227,8 @@
                 />
                 <menuitem 
                     parent="menu_log_configuration_root" 
-                    id="menu_configuration_log_category" 
-                    action="action_log_category"
+                    id="menu_open_configuration_log_category" 
+                    action="action_open_log_category"
                     sequence="10"
                     />
     </data>
