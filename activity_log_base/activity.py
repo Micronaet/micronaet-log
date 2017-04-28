@@ -192,12 +192,12 @@ class LogActivityEvent(orm.Model):
             # Get activity:
             activity_id = activity_pool.create(cr, uid, {
                 'code': code_activity,
-                'name': ,
-                'from_date': ,
-                'to_date': ,
-                'duration': ,
+                'name': 'Error',
                 'partner_id': partner_id,
                 'category_id': category_id,
+                #'from_date': Fa,
+                #'to_date': ,
+                #'duration': ,
                 #'active'
                 #'monitor' 
                 #'check_duration':
