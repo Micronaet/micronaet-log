@@ -40,6 +40,7 @@ port = eval(config.get('XMLRPC', 'port'))
 database = config.get('XMLRPC', 'database')
 username = config.get('XMLRPC', 'username')
 password = config.get('XMLRPC', 'password')
+log_start = config.get('XMLRCP', 'log_start')
 
 code_partner = config.get('code', 'partner')
 code_activity = config.get('code', 'activity')
@@ -68,23 +69,25 @@ erp = erppeek.Client(
     )
 
 # -----------------------------------------------------------------------------
-# TODO log start operation?
-# -----------------------------------------------------------------------------
-#event_id = 
-# -----------------------------------------------------------------------------
-# Launch script:
+# Log start operation:
 # -----------------------------------------------------------------------------
 data = {
     'code_partner': code_partner,
     'code_activity': code_activity,
     'start': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 
-    #'end': ,
+    'end': False, # if False is consider as start event in ODOO
     'origin': origin,
     'log_info': '',
     'log_warning': '',
     'log_error': '',
     }
 
+if log_start:
+    update_id = erp_pool.log_event(data) # Create start event
+    
+# -----------------------------------------------------------------------------
+# Launch script:
+# -----------------------------------------------------------------------------
 if script:
     os.system(script)
 
@@ -106,5 +109,10 @@ for mode in log:
 # Log activity:
 # -----------------------------------------------------------------------------
 erp_pool = erp.LogActivityEvent    
-event_id = erp_pool.log_event(data)
+if log_start: 
+    # Update event:
+    erp_pool.log_event(data, update_id)
+else: 
+    # Normal creation of start stop event:
+    erp_pool.log_event(data)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

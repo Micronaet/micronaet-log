@@ -121,7 +121,7 @@ class LogActivityEvent(orm.Model):
     # -------------------------------------------------------------------------
     # XMLRPC Procedure:
     # -------------------------------------------------------------------------
-    def log_event(self, cr, uid, data, context=None):
+    def log_event(self, cr, uid, data, update_id=False, context=None):
         ''' ERPEEK procedure called for create event from remote scripts
             data dict contain:
                 code_partner: Key field for reach partner, inserad use copmany
@@ -227,7 +227,7 @@ class LogActivityEvent(orm.Model):
         log_error = data.get('log_error', '')
         duration = 0 # TODO
         
-        return self.create(cr, uid, {
+        record = {
             #'datetime': now
             #'mark_ok': False,
             'activity_id': activity_id,
@@ -238,7 +238,12 @@ class LogActivityEvent(orm.Model):
             'log_info': log_info,
             'log_warning': log_warning,
             'log_error': log_error,
-            }, context=context)                
+            }
+            
+        if update_id:
+            return self.write(cr, uid, update_id, record, context=context)
+        else:
+            return self.create(cr, uid, record, context=context)                
         
     _columns = {
         'datetime': fields.date('Date', required=True),
