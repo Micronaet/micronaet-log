@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!--log.category-->
+        <record model="log.category" id="log_category_backup">
+            <field name="active">1</field>
+            <field name="code">BAK</field>
+            <field name="name">Backup</field>
+            <field name="note">Log for backup activity</field>
+        </record>     
+        <record model="log.category" id="log_category_status">
+            <field name="active">1</field>
+            <field name="code">STAT</field>
+            <field name="name">Status</field>
+            <field name="note">Log for server status (system)</field>
+        </record>     
+        <record model="log.category" id="log_category_disk">
+            <field name="active">1</field>
+            <field name="code">DISK</field>
+            <field name="name">Disk</field>
+            <field name="note">Log for disk status and RAID</field>
+        </record>     
+        <record model="log.category" id="log_category_mount">
+            <field name="active">1</field>
+            <field name="code">MNT</field>
+            <field name="name">Mount</field>
+            <field name="note">Log for remote disk mounted</field>
+        </record>     
+        <record model="log.category" id="log_category_EDI">
+            <field name="active">1</field>
+            <field name="code">EDI</field>
+            <field name="name">EDI operation</field>
+            <field name="note">Log for EDI operation error</field>
+        </record>     
+        <record model="log.category" id="log_category_temperature">
+            <field name="active">1</field>
+            <field name="code">TEMP</field>
+            <field name="name">Temperature</field>
+            <field name="note">Log for server temperature</field>
+        </record>     
+    </data>
+</openerp>
+

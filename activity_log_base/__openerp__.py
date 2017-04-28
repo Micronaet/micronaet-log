@@ -41,6 +41,9 @@
     'data': [
         'security/ir.model.access.csv',    
         'activity_view.xml',
+        
+        # Data:
+        'data/category.xml'
         ],
     'active': False,
     'installable': True,

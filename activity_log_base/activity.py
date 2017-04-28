@@ -83,8 +83,10 @@ class LogActivity(orm.Model):
         'auto_duration': fields.boolean(
             'Autoduration', 
             help='If checked duration will be update automatically'),
-        'partner_id': fields.many2one('res.partner', 'Partner'),
-        'category_id': fields.many2one('log.category', 'Category'),
+        'partner_id': fields.many2one(
+            'res.partner', 'Partner', required=True),
+        'category_id': fields.many2one(
+            'log.category', 'Category', required=True),
         'email_alert': fields.boolean('Email alert'),
         'email_error': fields.char('Email error', size=180),
         'email_warning': fields.char('Email warning', size=180),
@@ -116,6 +118,14 @@ class LogActivityEvent(orm.Model):
     _rec_name = 'datetime'
     _order = 'datetime'
     
+    # -------------------------------------------------------------------------
+    # XMLRPC Procedure:
+    # -------------------------------------------------------------------------
+    def log_event(self, cr, uid, data):
+        ''' ERPEEK procedure called for create event from remote scripts
+        '''
+        return True
+        
     _columns = {
         'datetime': fields.date('Date', required=True),
         'activity_id': fields.many2one(
@@ -169,6 +179,8 @@ class ResPartner(orm.Model):
     _inherit = 'res.partner'
     
     _columns = {
+        'log_code': fields.char('Partner log code', size=64,
+            help='Partner code for link activity'),
         'log_users_ids': fields.one2many(
             'res.users', 'log_partner_id', 'Log user'),
         'log_activity_ids': fields.one2many(
