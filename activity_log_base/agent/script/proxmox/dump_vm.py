@@ -28,7 +28,6 @@ from datetime import datetime
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 # Extract config file name from current name
 fullname = './proxmox.cfg' # same folder
 
