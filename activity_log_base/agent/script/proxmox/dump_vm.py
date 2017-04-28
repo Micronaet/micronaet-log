@@ -73,13 +73,13 @@ for row in open(logfile, 'r'):
     row = row.lower()
     if 'finished backup' in row:
         # Finish backup VM:
-        log_g['info'].write('%s\n' % row)
+        log_f['info'].write('%s\n' % row)
     elif ' transferred ' in row:     
         # Transfer performance:
-        log_g['info'].write('%s\n' % row)
+        log_f['info'].write('%s\n' % row)
     elif 'creating archive' in row:     
         # Archive info
-        log_g['info'].write('%s\n' % row)
+        log_f['info'].write('%s\n' % row)
         
     # -------------------------------------------------------------------------
     # Warning:
@@ -90,7 +90,7 @@ for row in open(logfile, 'r'):
     # -------------------------------------------------------------------------
     elif 'error' in row:     
         # Archive info
-        log_g['error'].write('%s\n' % row)
+        log_f['error'].write('%s\n' % row)
 
     # -------------------------------------------------------------------------
     # Check elements:
@@ -99,7 +99,7 @@ for row in open(logfile, 'r'):
         task_ok = True    
 
 if not task_ok:
-    log_g['error'].write('Task KO\n')
+    log_f['error'].write('Task KO\n')
 
 # Close log file:
 for mode in log_f:
