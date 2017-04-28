@@ -244,22 +244,30 @@ class LogActivityEvent(orm.Model):
         'datetime': fields.date('Date', required=True),
         'activity_id': fields.many2one(
             'log.activity', 'Activity'),
+        'partner_id': fields.related(
+            'activity_id', 'partner_id', 
+            type='many2one', relation='res.partner', 
+            string='Partner', store=True),    
+
         'start': fields.datetime('Start'),
         'end': fields.datetime('End'),
         'duration': fields.float(
             'Duration', digits=(16, 3), help='Duration of operation'),
             
         'origin': fields.text('Origin', help='Server info (log origin)'),
+        
         'log_info': fields.text('Log info'),
         'log_warning': fields.text('Log warning'),
         'log_error': fields.text('Log error'),
+        
         'mark_ok': fields.boolean('Mark as OK',
             help='For error / warning message'), 
         'state': fields.selection([
-            ('correct', 'Correct'),
-            ('warning', 'Warning'),
-            ('error', 'Error'),
-            ], 'State'),
+            ('started', 'Started'), # Start
+            ('correct', 'Correct'), # End 
+            ('warning', 'Warning'), # End with warning
+            ('error', 'Error'), # End with error
+            ], 'State', help='State info, not workflow management here'),
         }
     
     _defaults = {

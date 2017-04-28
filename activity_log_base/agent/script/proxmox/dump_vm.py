@@ -94,11 +94,11 @@ for row in open(logfile, 'r'):
     # -------------------------------------------------------------------------
     # Check elements:
     # -------------------------------------------------------------------------
-    elif 'task ok' in row:
-        task_ok = True    
+    #elif 'task ok' in row:
+    #    task_ok = True    
 
-if not task_ok:
-    log_f['error'].write('Task KO\n')
+#if not task_ok:
+#    log_f['error'].write('Task KO\n')
 
 # Close log file:
 for mode in log_f:
