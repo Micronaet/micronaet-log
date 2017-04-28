@@ -288,7 +288,7 @@ class LogActivityEvent(orm.Model):
     _defaults = {
         'datetime': lambda *a: datetime.now().strftime(
             DEFAULT_SERVER_DATETIME_FORMAT),
-        'state': lambda *x: 'correct',
+        'state': lambda *x: 'started',
         }
 
 class LogCategory(orm.Model):
