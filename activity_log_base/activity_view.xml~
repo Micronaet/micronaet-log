@@ -228,14 +228,10 @@
                 />
                 <menuitem 
                     parent="menu_log_configuration_root" 
-                    id="menu_log_category" 
+                    id="menu_configuration_log_category" 
                     action="action_log_category"
                     sequence="10"
                     />
-                
-            
-        
-        
     </data>
 </openerp>
 

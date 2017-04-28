@@ -43,7 +43,6 @@ class LogCategory(orm.Model):
     """    
     _name = 'log.category'
     _description = 'Log category'
-    _rec_name = 'name'
     _order = 'name'
     
     _columns = {
@@ -53,13 +52,12 @@ class LogCategory(orm.Model):
         'note': fields.text('Note'),
         }
     
-class LogEvent(orm.Model):
+class LogActivity(orm.Model):
     """ Model name: Log event
     """
     
     _name = 'log.activity'
     _description = 'Log activity'
-    _rec_name = 'name'
     _order = 'name'
     
     _columns = {
