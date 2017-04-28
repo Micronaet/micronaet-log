@@ -121,7 +121,7 @@ class LogActivityEvent(orm.Model):
     # -------------------------------------------------------------------------
     # XMLRPC Procedure:
     # -------------------------------------------------------------------------
-    def log_event(self, cr, uid, data):
+    def log_event(self, cr, uid, data, context=None):
         ''' ERPEEK procedure called for create event from remote scripts
             data dict contain:
                 code_partner: Key field for reach partner, inserad use copmany
@@ -133,7 +133,6 @@ class LogActivityEvent(orm.Model):
                 log_warning: warning text
                 log_error: error text
         '''
-        import pdb; pdb.set_trace()
         # Pool used:
         category_pool = self.pool.get('log.category')
         activity_pool = self.pool.get('log.activity')
@@ -148,9 +147,6 @@ class LogActivityEvent(orm.Model):
         # ---------------------------------------------------------------------
         # partner_id    
         if code_partner:
-            _logger.error('Code partner present (take company)!')
-            partner_id = 1 # Use detault company address
-        else: 
             partner_ids = partner_pool.search(cr, uid, [
                 ('log_code', '=', code_partner),
                 ], context=context)
@@ -160,11 +156,15 @@ class LogActivityEvent(orm.Model):
                 _logger.error('Code partner not present %s (take company)!' % (
                     code_partner))
                 partner_id = 1 # Use default     
+        else: 
+            _logger.error('Code partner present (take company)!')
+            partner_id = 1 # Use detault company address
 
         # activity_id
         if not code_activity:
             _logger.error('Code activity not present (take ERR)!')
             code_activity = 'ERR'
+
         activity_ids = activity_pool.search(cr, uid, [
             ('partner_id', '=', partner_id),
             ('code', '=', code_activity),
@@ -244,8 +244,8 @@ class LogActivityEvent(orm.Model):
         'datetime': fields.date('Date', required=True),
         'activity_id': fields.many2one(
             'log.activity', 'Activity'),
-        'start': fields.date('Start'),
-        'end': fields.date('End'),
+        'start': fields.datetime('Start'),
+        'end': fields.datetime('End'),
         'duration': fields.float(
             'Duration', digits=(16, 3), help='Duration of operation'),
             

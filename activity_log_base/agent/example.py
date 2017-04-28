@@ -22,6 +22,7 @@ import os
 import sys
 import ConfigParser
 import erppeek
+from datetime import datetime
 
 # -----------------------------------------------------------------------------
 #                                Parameters
