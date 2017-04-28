@@ -27,9 +27,8 @@ import erppeek
 #                                Parameters
 # -----------------------------------------------------------------------------
 # Extract config file name from current name
-import pdb; pdb.set_trace()
 name = __file__
-fullname = '%s.cfg' % name[:-2]
+fullname = '%scfg' % name[:-2] # remove py # XXX BETTER!!! (also pyw)
 
 config = ConfigParser.ConfigParser()
 config.read([fullname])
@@ -37,14 +36,19 @@ config.read([fullname])
 # Read from config file:
 hostname = config.get('XMLRPC', 'host') 
 port = eval(config.get('XMLRPC', 'port'))
-database = eval(config.get('XMLRPC', 'database'))
-username = eval(config.get('XMLRPC', 'username'))
-password = eval(config.get('XMLRPC', 'password'))
+database = config.get('XMLRPC', 'database')
+username = config.get('XMLRPC', 'username')
+password = config.get('XMLRPC', 'password')
 
-code_partner = eval(config.get('code', 'partner'))
-code_activity = eval(config.get('code', 'activity'))
+code_partner = config.get('code', 'partner')
+code_activity = config.get('code', 'activity')
 
-# ERPPEEK CLIENT:
+script = config.get('script', 'command')
+
+# -----------------------------------------------------------------------------
+# ERPPEEK Client connection:
+# -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
 erp = erppeek.Client(
     'http://%s:%s' % (hostname, port),
     db=database,
@@ -52,9 +56,18 @@ erp = erppeek.Client(
     password=password,
     )
 
+# -----------------------------------------------------------------------------
+# Launch script:
+# -----------------------------------------------------------------------------
+if script:
+    os.system(script)
+    
+# -----------------------------------------------------------------------------
+# Log activity:
+# -----------------------------------------------------------------------------
 erp_pool = erp.LogActivityEvent
 data = {
     }
+    
 erp_pool.log_event(data)
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

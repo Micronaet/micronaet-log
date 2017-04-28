@@ -124,6 +124,7 @@ class LogActivityEvent(orm.Model):
     def log_event(self, cr, uid, data):
         ''' ERPEEK procedure called for create event from remote scripts
         '''
+        import pdb; pdb.set_trace()
         return True
         
     _columns = {
