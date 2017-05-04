@@ -229,9 +229,9 @@ class LogActivityEvent(orm.Model):
         
         if not end:
             state = 'started'
-        elif error:
+        elif log_error:
             state = 'error'
-        elif warning:
+        elif log_warning:
             state = 'warning'
         else:
             state = 'correct'
