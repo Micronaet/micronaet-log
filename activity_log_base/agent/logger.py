@@ -98,9 +98,9 @@ if log_start:
 # -----------------------------------------------------------------------------
 # Launch script:
 # -----------------------------------------------------------------------------
-#if script:
-#    os.system(script)
-import pdb; pdb.set_trace()
+if script:
+    os.system(script)
+
 # -----------------------------------------------------------------------------
 # Log end operation:
 # -----------------------------------------------------------------------------
@@ -127,4 +127,5 @@ if log_start:
 else: 
     # Normal creation of start stop event:
     erp_pool.log_event(data)
+    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
