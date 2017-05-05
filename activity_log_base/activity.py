@@ -26,7 +26,7 @@ import openerp.addons.decimal_precision as dp
 from openerp.osv import fields, osv, expression, orm
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from openerp import SUPERUSER_ID, api
+from openerp import SUPERUSER_ID#, api
 from openerp import tools
 from openerp.tools.translate import _
 from openerp.tools.float_utils import float_round as round
@@ -256,7 +256,7 @@ class LogActivityEvent(orm.Model):
             return self.create(cr, uid, record, context=context)                
         
     _columns = {
-        'datetime': fields.date('Date', required=True),
+        'datetime': fields.datetime('Date', required=True),
         'activity_id': fields.many2one(
             'log.activity', 'Activity'),
         'partner_id': fields.related(
