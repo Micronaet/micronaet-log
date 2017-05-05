@@ -61,7 +61,7 @@ log = {
 # -----------------------------------------------------------------------------
 # Utility:
 # -----------------------------------------------------------------------------
-def get_erp_pool(URL, database, user, password):
+def get_erp_pool(URL, database, username, password):
     ''' Connect to log table in ODOO
     '''
     erp = erppeek.Client(
