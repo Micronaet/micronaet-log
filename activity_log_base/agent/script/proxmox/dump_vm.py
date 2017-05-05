@@ -99,7 +99,7 @@ for row in open(logfile, 'r'):
 
 if not task_ok:
     log_f['error'].write('Task KO\n')
-import pdb; pdb.set_trace()
+
 # Close log file:
 for mode in log_f:
     log_f[mode].close()
