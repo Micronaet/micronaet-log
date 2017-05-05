@@ -59,15 +59,29 @@ log = {
     }
 
 # -----------------------------------------------------------------------------
+# Utility:
+# -----------------------------------------------------------------------------
+def get_erp_pool(URL, database, user, password):
+    ''' Connect to log table in ODOO
+    '''
+    erp = erppeek.Client(
+        URL,     
+        db=database,
+        user=username,
+        password=password,
+        )   
+    return erp.LogActivityEvent    
+    
+# -----------------------------------------------------------------------------
 # ERPPEEK Client connection:
 # -----------------------------------------------------------------------------
-erp = erppeek.Client(
-    'http://%s:%s' % (hostname, port),
+URL = 'http://%s:%s' % (hostname, port),    
+erp_pool = erppeek.Client(
+    URL,
     db=database,
     user=username,
     password=password,
     )
-erp_pool = erp.LogActivityEvent    
 
 # -----------------------------------------------------------------------------
 # Log start operation:
@@ -109,6 +123,14 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # Log activity:
 # -----------------------------------------------------------------------------
+# Reconnect for timeout problem:
+erp_pool = erppeek.Client(
+    URL,
+    db=database,
+    user=username,
+    password=password,
+    )
+
 if log_start: 
     # Update event:
     erp_pool.log_event(data, update_id)
