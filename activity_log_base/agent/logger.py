@@ -75,7 +75,7 @@ def get_erp_pool(URL, database, username, password):
 # -----------------------------------------------------------------------------
 # ERPPEEK Client connection:
 # -----------------------------------------------------------------------------
-URL = 'http://%s:%s' % (hostname, port),    
+URL = 'http://%s:%s' % (hostname, port) 
 erp_pool = get_erp_pool(URL, database, username, password)
 
 # -----------------------------------------------------------------------------
