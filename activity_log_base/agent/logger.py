@@ -119,6 +119,7 @@ for mode in log:
 # Log activity:
 # -----------------------------------------------------------------------------
 # Reconnect for timeout problem:
+import pdb; pdb.set_trace()
 erp_pool = get_erp_pool(URL, database, username, password)
 
 if log_start: 
