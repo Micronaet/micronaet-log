@@ -76,7 +76,7 @@ def get_erp_pool(URL, database, user, password):
 # ERPPEEK Client connection:
 # -----------------------------------------------------------------------------
 URL = 'http://%s:%s' % (hostname, port),    
-erp_pool = erppeek.Client(URL, database, username, password)
+erp_pool = get_erp_pool(URL, database, username, password)
 
 # -----------------------------------------------------------------------------
 # Log start operation:
@@ -119,7 +119,7 @@ for mode in log:
 # Log activity:
 # -----------------------------------------------------------------------------
 # Reconnect for timeout problem:
-erp_pool = erppeek.Client(URL, database, username, password)
+erp_pool = get_erp_pool(URL, database, username, password)
 
 if log_start: 
     # Update event:
