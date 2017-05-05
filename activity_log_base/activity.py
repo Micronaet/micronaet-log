@@ -133,6 +133,7 @@ class LogActivityEvent(orm.Model):
                 log_warning: warning text
                 log_error: error text
         '''
+        import pdb; pdb.set_trace()
         # Pool used:
         category_pool = self.pool.get('log.category')
         activity_pool = self.pool.get('log.activity')

@@ -40,7 +40,7 @@ port = eval(config.get('XMLRPC', 'port'))
 database = config.get('XMLRPC', 'database')
 username = config.get('XMLRPC', 'username')
 password = config.get('XMLRPC', 'password')
-log_start = config.get('XMLRPC', 'log_start')
+log_start = eval(config.get('XMLRPC', 'log_start'))
 
 code_partner = config.get('code', 'partner')
 code_activity = config.get('code', 'activity')
@@ -98,7 +98,6 @@ if log_start:
 # -----------------------------------------------------------------------------
 # Launch script:
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 #if script:
 #    os.system(script)
 import pdb; pdb.set_trace()
