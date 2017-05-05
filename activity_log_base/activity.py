@@ -135,7 +135,7 @@ class LogActivityEvent(orm.Model):
         '''
         _logger.info('Register data event: [ID %s] %s' % (
             update_id,
-            event, 
+            data, 
             ))
 
         # Pool used:
