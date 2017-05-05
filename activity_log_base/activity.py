@@ -133,6 +133,11 @@ class LogActivityEvent(orm.Model):
                 log_warning: warning text
                 log_error: error text
         '''
+        _logger.info('Register data event: [ID %s] %s' % (
+            update_id,
+            event, 
+            ))
+
         # Pool used:
         category_pool = self.pool.get('log.category')
         activity_pool = self.pool.get('log.activity')
