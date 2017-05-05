@@ -1,3 +1,4 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 access_log_category_user,log.category,model_log_category,base.group_user,1,1,1,1
-
+access_log_activity,access_log_activity,model_log_activity,base.group_user,1,1,1,1
+access_log_activity_event,access_log_activity_event,model_log_activity_event,base.group_user,1,1,1,1
