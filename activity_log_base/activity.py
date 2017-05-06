@@ -51,6 +51,26 @@ class LogCategory(orm.Model):
         'name': fields.char('Category', size=64, required=True),
         'note': fields.text('Note'),
         }
+
+class LogActivityMedia(orm.Model):
+    """ Model name: Log media, manage all method for send log events
+        (mail, sms, chat message etc)
+        Every media will be add with a module
+        Only mail is created here for default situation for logging
+    """
+    
+    _name = 'log.activity.media'
+    _description = 'Log media'
+    _order = 'name'
+    
+    _columns = {
+        'active': fields.boolean('Active'),
+        'name': fields.char('Media', size=64, required=True),
+        'partner_id': fields.many2one(
+            'res.partner', 'Partner', required=True),
+        'address': fields.char('Address', size=64, 
+            help='Sometimes is the reference of sender (mail, chat ref.)'),
+        }
     
 class LogActivity(orm.Model):
     """ Model name: Log event
@@ -327,6 +347,8 @@ class ResPartner(orm.Model):
             'res.users', 'log_partner_id', 'Log user'),
         'log_activity_ids': fields.one2many(
             'log.activity', 'partner_id', 'Log activity'),
+        'log_media_ids': fields.one2many(
+            'log.activity.media', 'partner_id', 'Log media'),
     }
     
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
