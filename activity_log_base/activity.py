@@ -84,6 +84,7 @@ class LogActivity(orm.Model):
             self, cr, uid, context=None):
         ''' Check duration period
         '''    
+        # TODO
         return True
         
     _columns = {
