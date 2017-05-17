@@ -80,13 +80,6 @@ class LogActivity(orm.Model):
     _description = 'Log activity'
     _order = 'name'
     
-    def scheduled_log_activity_check_activity_duration(
-            self, cr, uid, context=None):
-        ''' Check duration period
-        '''    
-        # TODO
-        return True
-        
     _columns = {
         'active': fields.boolean('Active'),
         'code': fields.char('Code', size=15),
@@ -145,6 +138,36 @@ class LogActivityEvent(orm.Model):
     _rec_name = 'datetime'
     _order = 'datetime'
     
+    # -------------------------------------------------------------------------
+    # Schedule procedure:
+    # -------------------------------------------------------------------------
+    def scheduled_log_activity_check_activity_duration(
+            self, cr, uid, context=None):
+        ''' Check duration period
+        '''
+        _logger.info('Start check activity duration')
+        event_ids = self.search(cr, uid, [
+            ('state', '=', 'started'),
+            ('activity_id.check_duration', '=', True),            
+            ], context=context) 
+        now = datetime.now()    
+
+        i = 0
+        for event in self.browse(cr, uid, event_ids, context=context):
+            duration = event.activity_id.duration * 60.0
+            error_range = event.activity_id.duration_error_range
+            max_duration = duration * (100.0 + error_range) / 100.0 # minutes
+            gap = now - datetime.strptime(
+                event.start, DEFAULT_SERVER_DATETIME_FORMAT)
+            gap_min = (gap.days * 24 * 60) + (gap.seconds / 60)
+            if gap_min > max_duration:
+                i += 1
+                self.write(cr, uid, event.id, {
+                    'state': 'error',
+                    }, context=context)           
+        _logger.info('End check activity duration (error: %s)' % i)
+        return True
+
     # -------------------------------------------------------------------------
     # XMLRPC Procedure:
     # -------------------------------------------------------------------------
