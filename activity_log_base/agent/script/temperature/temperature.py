@@ -92,7 +92,7 @@ if degree >= error:
 elif degree >= warning: 
     status_text = \
         '[WARNING] Rilevato %s°C, passato il range di allerta: %s' % (
-            degree, error)
+            degree, warning)
     error_status = 1         
 else:
     status_text = '[INFO]: Rilevato %s°C, nel range corretto < %s' % (

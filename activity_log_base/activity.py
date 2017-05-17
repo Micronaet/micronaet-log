@@ -80,6 +80,12 @@ class LogActivity(orm.Model):
     _description = 'Log activity'
     _order = 'name'
     
+    def scheduled_log_activity_check_activity_duration(
+            self, cr, uid, context=None):
+        ''' Check duration period
+        '''    
+        return True
+        
     _columns = {
         'active': fields.boolean('Active'),
         'code': fields.char('Code', size=15),
