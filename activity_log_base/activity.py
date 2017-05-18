@@ -138,6 +138,19 @@ class LogActivityEvent(orm.Model):
     _rec_name = 'datetime'
     _order = 'datetime'
     
+    def get_duration_hour(self, start, end):
+        ''' Diference from 2 date in hours
+        '''
+        if not start or not end:
+            return 0.0
+            
+        start = datetime.strptime(
+            start, DEFAULT_SERVER_DATETIME_FORMAT)
+        end = datetime.strptime(
+            start, DEFAULT_SERVER_DATETIME_FORMAT)
+        gap = end - start
+        return (gap.days * 24) + (gap.seconds / 3660)
+
     # -------------------------------------------------------------------------
     # Schedule procedure:
     # -------------------------------------------------------------------------
@@ -274,7 +287,7 @@ class LogActivityEvent(orm.Model):
             # Find:
             activity_id = activity_ids[0]    
         else:
-            # Create new (to compile after on ODOO:
+            # Create new (to compile after on ODOO):
             # Get error category:
             category_ids = category_pool.search(cr, uid, [
                 ('code', '=', code_activity), # use same code (cat.-act.)
@@ -325,7 +338,7 @@ class LogActivityEvent(orm.Model):
         log_info = data.get('log_info', '')
         log_warning = data.get('log_warning', '')
         log_error = data.get('log_error', '')
-        duration = 0 # TODO
+        duration = self.get_duration_hour(start, end)
         
         if not end:
             state = 'started'
