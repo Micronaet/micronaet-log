@@ -96,6 +96,7 @@ def log_event(log_f, event, mode='info'):
 # -----------------------------------------------------------------------------
 # ERPPEEK Client connection:
 # -----------------------------------------------------------------------------
+log_event(log_f, 'Start launcher, log file: %s' % log_activity)
 URL = 'http://%s:%s' % (hostname, port) 
 erp_pool = get_erp_pool(URL, database, username, password)
 log_event(log_f, 'Access to URL: %s' % URL)
