@@ -146,28 +146,60 @@ class LogActivityEvent(orm.Model):
         ''' Check activity for mark and validate:
             1. check if started are in duration range (if needed)
             2. check if closed are in duration range else mark as OK
-        '''        
+        '''
+        # Read started / closed (check duration activity)
         _logger.info('Start check activity duration')
         event_ids = self.search(cr, uid, [
-            ('state', '=', 'started'),
-            ('activity_id.check_duration', '=', True),            
+            ('state', 'in', ('started', 'closed')),
+            ('activity_id.check_duration', '=', True),
+            ('mark_ok', '=', False),
             ], context=context) 
-        now = datetime.now()    
+        now = datetime.now()  
 
         i = 0
         for event in self.browse(cr, uid, event_ids, context=context):
-            duration = event.activity_id.duration * 60.0
-            error_range = event.activity_id.duration_error_range
-            max_duration = duration * (100.0 + error_range) / 100.0 # minutes
-            gap = now - datetime.strptime(
+            # Read parameters:
+            duration = event.activity_id.duration * 60.0 # min
+            warning_range = event.activity_id.duration_warning_range # %
+            error_range = event.activity_id.duration_error_range # %
+            
+            # Calculate parameters:
+            warning_duration = duration * (100.0 + warning_range) / 100.0 # min
+            error_duration = duration * (100.0 + error_range) / 100.0 # min
+            start = datetime.strptime(
                 event.start, DEFAULT_SERVER_DATETIME_FORMAT)
-            gap_min = (gap.days * 24 * 60) + (gap.seconds / 60)
-            if gap_min > max_duration:
+            if event.state == 'started':
+                stop = now
+            else: # closed  
+                stop = datetime.strptime(
+                    event.end, DEFAULT_SERVER_DATETIME_FORMAT)
+            
+            gap = stop - start
+            gap_min = (gap.days * 24 * 60) + (gap.seconds / 60) # min
+            
+            # Check range:
+            if gap_min > error_duration:
                 i += 1
                 self.write(cr, uid, event.id, {
                     'state': 'error',
-                    }, context=context)           
+                    }, context=context)
+            elif event.state == 'closed' and gap_min > warning_duration:
+                self.write(cr, uid, event.id, {
+                    'state': 'warning',
+                    }, context=context)
+            elif event.state == 'closed': # correct range
+                self.write(cr, uid, event.id, {
+                    'mark_ok': True,
+                    }, context=context)
+            
         _logger.info('End check activity duration (error: %s)' % i)
+        
+        # Read closed (no check duration activity)
+        event_ids = self.search(cr, uid, [
+            ('state', '=', 'closed'),
+            ('activity_id.check_duration', '=', False),
+            ('mark_ok', '=', True),
+            ], context=context) 
         return True
 
     # -------------------------------------------------------------------------

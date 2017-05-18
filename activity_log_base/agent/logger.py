@@ -85,7 +85,7 @@ def get_erp_pool(URL, database, username, password):
 def log_event(log_f, event, mode='info'):
     ''' Log event on file
     '''    
-    event = '[%s] %s - %s' % (
+    event = '[%s] %s - %s\n' % (
         mode.upper(),
         datetime.now(),
         event,
