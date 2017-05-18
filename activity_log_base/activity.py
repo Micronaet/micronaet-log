@@ -241,7 +241,6 @@ class LogActivityEvent(orm.Model):
                 log_warning: warning text
                 log_error: error text
         '''
-        import pdb; pdb.set_trace()
         _logger.info('Register data event: [ID %s] %s' % (
             update_id,
             data, 
