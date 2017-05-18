@@ -181,10 +181,14 @@ class LogActivityEvent(orm.Model):
             if gap_min > error_duration:
                 i += 1
                 self.write(cr, uid, event.id, {
+                    'error_comment': _('Over max duration') \
+                        if event.state == 'closed' \
+                        else _('Started but not closed'),
                     'state': 'error',
                     }, context=context)
             elif event.state == 'closed' and gap_min > warning_duration:
                 self.write(cr, uid, event.id, {
+                    'error_comment': _('Duration in warning period'),
                     'state': 'warning',
                     }, context=context)
             elif event.state == 'closed': # correct range
@@ -370,6 +374,7 @@ class LogActivityEvent(orm.Model):
         'log_info': fields.text('Log info'),
         'log_warning': fields.text('Log warning'),
         'log_error': fields.text('Log error'),
+        'error_comment': fields.char('Error comment', size=80, readonly=True),
         
         'mark_ok': fields.boolean('Mark as OK',
             help='Scheduled masked as OK or manually with button'), 

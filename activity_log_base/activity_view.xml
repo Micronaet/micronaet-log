@@ -233,6 +233,7 @@
                             <field name="start" />
                             <field name="end" />
                             <field name="duration" widget="float_time"/>
+                            <field name="error_comment" />
                             <field name="mark_ok" />
                             
                             <notebook colspan="4">
@@ -271,6 +272,7 @@
                     <field name="end" />
                     <field name="duration" />
                     <field name="mark_ok" />
+                    <field name="error_comment" />
                     <field name="state" />
                 </tree>
             </field>
