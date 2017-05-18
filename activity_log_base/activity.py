@@ -339,7 +339,7 @@ class LogActivityEvent(orm.Model):
         log_warning = data.get('log_warning', '')
         log_error = data.get('log_error', '')
         duration = self.get_duration_hour(start, end)
-        
+
         if not end:
             state = 'started'
         elif log_error:
