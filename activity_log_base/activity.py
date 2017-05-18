@@ -143,8 +143,10 @@ class LogActivityEvent(orm.Model):
     # -------------------------------------------------------------------------
     def scheduled_log_activity_check_activity_duration(
             self, cr, uid, context=None):
-        ''' Check duration period
-        '''
+        ''' Check activity for mark and validate:
+            1. check if started are in duration range (if needed)
+            2. check if closed are in duration range else mark as OK
+        '''        
         _logger.info('Start check activity duration')
         event_ids = self.search(cr, uid, [
             ('state', '=', 'started'),
@@ -289,7 +291,7 @@ class LogActivityEvent(orm.Model):
         elif log_warning:
             state = 'warning'
         else:
-            state = 'correct'
+            state = 'closed'
             
         record = {
             #'datetime': now
@@ -331,12 +333,12 @@ class LogActivityEvent(orm.Model):
         'log_error': fields.text('Log error'),
         
         'mark_ok': fields.boolean('Mark as OK',
-            help='For error / warning message'), 
+            help='Scheduled masked as OK or manually with button'), 
         'state': fields.selection([
-            ('started', 'Started'), # Start
-            ('correct', 'Correct'), # End 
-            ('warning', 'Warning'), # End with warning
-            ('error', 'Error'), # End with error
+            ('started', 'Started'), # Start (new event)
+            ('closed', 'Closed'), # End (closed from activity with end time)
+            ('warning', 'Warning'), # End with warning (scheduled check)
+            ('error', 'Error'), # End with error (scheduled check)
             ], 'State', help='State info, not workflow management here'),
         }
     
