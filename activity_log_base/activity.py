@@ -191,15 +191,22 @@ class LogActivityEvent(orm.Model):
                 self.write(cr, uid, event.id, {
                     'mark_ok': True,
                     }, context=context)
-            
-        _logger.info('End check activity duration (error: %s)' % i)
         
         # Read closed (no check duration activity)
+        _logger.info('Mark ok closed record without check duration')
         event_ids = self.search(cr, uid, [
             ('state', '=', 'closed'),
             ('activity_id.check_duration', '=', False),
-            ('mark_ok', '=', True),
+            ('mark_ok', '=', False),
             ], context=context) 
+        self.write(cr, uid, event_ids, {
+            'mark_ok': True,
+            }, context=context)
+        _logger.info(
+            'Mark ok closed record without check duration, tot.: %s' % (
+                len(event_ids)))
+
+        _logger.info('End check activity duration (error: %s)' % i)
         return True
 
     # -------------------------------------------------------------------------
