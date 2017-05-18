@@ -34,7 +34,10 @@ fullname = '%scfg' % name[:-2] # remove py # XXX BETTER!!! (also pyw)
 config = ConfigParser.ConfigParser()
 config.read([fullname])
 
+# -----------------------------------------------------------------------------
 # Read from config file:
+# -----------------------------------------------------------------------------
+# XMLRPC connection data:
 hostname = config.get('XMLRPC', 'host') 
 port = eval(config.get('XMLRPC', 'port'))
 database = config.get('XMLRPC', 'database')
@@ -42,12 +45,16 @@ username = config.get('XMLRPC', 'username')
 password = config.get('XMLRPC', 'password')
 log_start = eval(config.get('XMLRPC', 'log_start'))
 
+# Link to activity data:
 code_partner = config.get('code', 'partner')
 code_activity = config.get('code', 'activity')
 origin = config.get('code', 'origin')
 
+# Script data:
 script = config.get('script', 'command')
 
+# Log data:
+log_activity = config.get('log', 'activity')
 log_folder = config.get('log', 'folder')
 log = {
     'log_info': os.path.join(
@@ -57,6 +64,7 @@ log = {
     'log_error': os.path.join(
         log_folder, config.get('log', 'error')),
     }
+log_f = open(log_activity, 'a')
 
 # -----------------------------------------------------------------------------
 # Utility:
@@ -71,12 +79,24 @@ def get_erp_pool(URL, database, username, password):
         password=password,
         )   
     return erp.LogActivityEvent    
+
+def log_event(log_f, event, mode='info'):
+    ''' Log event on file
+    '''    
+    event = '[%s] %s - %s' % (
+        mode.upper(),
+        datetime.now(),
+        event,
+        )
+    log_f.write(event)
+    return True
     
 # -----------------------------------------------------------------------------
 # ERPPEEK Client connection:
 # -----------------------------------------------------------------------------
 URL = 'http://%s:%s' % (hostname, port) 
 erp_pool = get_erp_pool(URL, database, username, password)
+log_event(log_event, 'Access to URL: %s' % URL)
 
 # -----------------------------------------------------------------------------
 # Log start operation:
@@ -94,12 +114,16 @@ data = {
 
 if log_start:
     update_id = erp_pool.log_event(data) # Create start event
+    log_event(
+        log_event, 'Log the start of operation: event ID: %s' % update_id)
     
 # -----------------------------------------------------------------------------
 # Launch script:
 # -----------------------------------------------------------------------------
 if script:
+    log_event(log_event, 'Launch script: %s' % script)
     os.system(script)
+    log_event(log_event, 'End script: %s' % script)
 
 # -----------------------------------------------------------------------------
 # Log end operation:
@@ -114,18 +138,21 @@ for mode in log:
     for row in f:
         data[mode] += row
     f.close()
+    log_event(log_event, 'Get log esit mode: %s' % mode)
     
 # -----------------------------------------------------------------------------
 # Log activity:
 # -----------------------------------------------------------------------------
 # Reconnect for timeout problem:
 erp_pool = get_erp_pool(URL, database, username, password)
+log_event(log_event, 'Reconnect ERP: %s' % erp_pool)
 
 if log_start: 
     # Update event:
     erp_pool.log_event(data, update_id)
+    log_event(log_event, 'Update started event: %s' % update_id)
 else: 
     # Normal creation of start stop event:
     erp_pool.log_event(data)
-    
+    log_event(log_event, 'Create start / stop event: %s' % (data, ))    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
