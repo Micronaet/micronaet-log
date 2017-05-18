@@ -64,6 +64,8 @@ log = {
     'log_error': os.path.join(
         log_folder, config.get('log', 'error')),
     }
+
+# Open log file:    
 log_f = open(log_activity, 'a')
 
 # -----------------------------------------------------------------------------
@@ -96,7 +98,7 @@ def log_event(log_f, event, mode='info'):
 # -----------------------------------------------------------------------------
 URL = 'http://%s:%s' % (hostname, port) 
 erp_pool = get_erp_pool(URL, database, username, password)
-log_event(log_event, 'Access to URL: %s' % URL)
+log_event(log_f, 'Access to URL: %s' % URL)
 
 # -----------------------------------------------------------------------------
 # Log start operation:
@@ -115,15 +117,15 @@ data = {
 if log_start:
     update_id = erp_pool.log_event(data) # Create start event
     log_event(
-        log_event, 'Log the start of operation: event ID: %s' % update_id)
+        log_f, 'Log the start of operation: event ID: %s' % update_id)
     
 # -----------------------------------------------------------------------------
 # Launch script:
 # -----------------------------------------------------------------------------
 if script:
-    log_event(log_event, 'Launch script: %s' % script)
+    log_event(log_f, 'Launch script: %s' % script)
     os.system(script)
-    log_event(log_event, 'End script: %s' % script)
+    log_event(log_f, 'End script: %s' % script)
 
 # -----------------------------------------------------------------------------
 # Log end operation:
@@ -138,21 +140,21 @@ for mode in log:
     for row in f:
         data[mode] += row
     f.close()
-    log_event(log_event, 'Get log esit mode: %s' % mode)
+    log_event(log_f, 'Get log esit mode: %s' % mode)
     
 # -----------------------------------------------------------------------------
 # Log activity:
 # -----------------------------------------------------------------------------
 # Reconnect for timeout problem:
 erp_pool = get_erp_pool(URL, database, username, password)
-log_event(log_event, 'Reconnect ERP: %s' % erp_pool)
+log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
 
 if log_start: 
     # Update event:
     erp_pool.log_event(data, update_id)
-    log_event(log_event, 'Update started event: %s' % update_id)
+    log_event(log_f, 'Update started event: %s' % update_id)
 else: 
     # Normal creation of start stop event:
     erp_pool.log_event(data)
-    log_event(log_event, 'Create start / stop event: %s' % (data, ))    
+    log_event(log_f, 'Create start / stop event: %s' % (data, ))    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
