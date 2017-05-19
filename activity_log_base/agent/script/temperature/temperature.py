@@ -86,16 +86,16 @@ degree = temperature['01-Inlet Ambient']['currentreading'][0]
 error_status = 0
 if degree >= error: 
     status_text = \
-        '[ERROR] Rilevato %s°C, passato il range massimo: %s' % (
+        '[ERROR] Rilevato %s°C, passato il range massimo: %s°C' % (
             degree, error)
     error_status = 2        
 elif degree >= warning: 
     status_text = \
-        '[WARNING] Rilevato %s°C, passato il range di allerta: %s' % (
+        '[WARNING] Rilevato %s°C, passato il range di allerta: %s°C' % (
             degree, warning)
     error_status = 1         
 else:
-    status_text = '[INFO]: Rilevato %s°C, nel range corretto < %s' % (
+    status_text = '[INFO]: Rilevato %s°C, nel range corretto < %s°C' % (
         degree, warning)
 print status_text        
 
