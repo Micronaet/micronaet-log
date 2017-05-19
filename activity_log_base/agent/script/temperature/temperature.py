@@ -40,7 +40,7 @@ from datetime import datetime
 # Extract config file name from current name
 fullname = './ilo.cfg' # same folder
 pickle_file = './temperature_history.pickle'
-notification_info = 86400 # seconds
+notification_info = 24 * 60 * 60 # seconds
 
 config = ConfigParser.ConfigParser()
 config.read([fullname])
@@ -113,7 +113,9 @@ except:
     
 last = history.get('last', False)
 notification = False
-if not last or (now - last).seconds > notification_info:
+gap = now - last
+gap_seconds = gap.days * 24 * 60 * 60 + gap.seconds
+if not last or gap_seconds  > notification_info:
     notification = True    
     history = {
         'last': now,
