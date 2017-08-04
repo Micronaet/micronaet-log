@@ -181,14 +181,14 @@ if log_start:
     log_event(log_f, 'Update started event: %s' % update_id)
 else: 
     # Normal creation of start stop event:
-    for i in range(0, 4):    
+    for i in range(1, 5):
         try:
             #XXX erp_pool.log_event(data)
             sock.execute( # search current ref
                 database, uid, password, 'log.activity.event', 'create', data)   
             break 
         except:
-            log_event(log_f, 'Create start / stop event: %s' % (data, ))
+            log_event(log_f, 'Timeoun try: %s ' % i)
             continue    
         
     log_event(log_f, 'Create start / stop event: %s' % (data, ))
