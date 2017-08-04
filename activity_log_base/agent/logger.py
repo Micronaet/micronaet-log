@@ -174,7 +174,7 @@ sock = xmlrpclib.ServerProxy(
     'http://%s:%s/xmlrpc/object' % (hostname, port), allow_none=True)
 
 sock.execute( # search current ref
-    database, uid, pwd, 'log.activity.event', 'create', data)                   
+    database, uid, password, 'log.activity.event', 'create', data)                   
 
 #if log_start: 
 #    # Update event:
