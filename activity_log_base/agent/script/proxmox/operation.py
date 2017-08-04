@@ -20,52 +20,52 @@
 ###############################################################################
 import os
 import sys
-#import shutil
 import ConfigParser
-import erppeek
 from datetime import datetime
 
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
 # Extract config file name from current name
-fullname = './config/proxmox.cfg' # same folder
-
+path, name = os.path.split(os.path.abspath(__file__))
+fullname = os.path.join(path, 'operation.cfg')
+log_folder = os.path.join(path, 'log') # log folder path (always in this folder)
+# syslog file? (now no log)
 config = ConfigParser.ConfigParser()
 config.read([fullname])
 
 # Read from config file:
-script = config.get('proxmox', 'backup') 
-logfile = config.get('proxmox', 'logfile')
+script = config.get('operation', 'backup') 
+result = config.get('operation', 'result')
 
-folder = config.get('log', 'folder')
+# -----------------------------------------------------------------------------
+# Log event:
+# -----------------------------------------------------------------------------
 log = {
-    'info': os.path.join(
-        folder, config.get('log', 'info')),
-    'warning': os.path.join(
-        folder, config.get('log', 'warning')),
-    'error': os.path.join(
-        folder, config.get('log', 'error')),
+    'info': os.path.join(log_folder, 'info.log'),
+    'warning': os.path.join(log_folder, 'warning.log'),
+    'error': os.path.join(log_folder, 'error.log'),
     }
-# -----------------------------------------------------------------------------
-# Launch script:
-# -----------------------------------------------------------------------------
+
 # Remove log file and create new:
 log_f = {}
 for mode in log:
     try:
-        #os.remove(log[mode]) # W delete file
         log_f[mode] = open(log[mode], 'w')
         print '[INFO] File log reset: %s' % log[mode]
     except:
         print '[WARNING] File log not found: %s' % log[mode]
 
-if script:
-    os.system(script)
+# -----------------------------------------------------------------------------
+# Launch script:
+# -----------------------------------------------------------------------------
+os.system(script)
 
+# -----------------------------------------------------------------------------
 # Parse log file (save in log file info, warning, error):
+# -----------------------------------------------------------------------------
 task_ok = False
-for row in open(logfile, 'r'):
+for row in open(result, 'r'):
     # -------------------------------------------------------------------------
     # Information:
     # -------------------------------------------------------------------------
@@ -102,6 +102,5 @@ if not task_ok:
 
 # Close log file:
 for mode in log_f:
-    log_f[mode].close()
-    
+    log_f[mode].close()    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
