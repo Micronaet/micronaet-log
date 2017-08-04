@@ -24,6 +24,7 @@ import ConfigParser
 import erppeek
 from datetime import datetime
 
+import pdb; pdb.set_trace()
 # -----------------------------------------------------------------------------
 # Utility:
 # -----------------------------------------------------------------------------
