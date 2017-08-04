@@ -25,50 +25,6 @@ import erppeek
 from datetime import datetime
 
 # -----------------------------------------------------------------------------
-#                                Parameters
-# -----------------------------------------------------------------------------
-# Extract config file name from current name
-name = __file__
-fullname = '%scfg' % name[:-2] # remove py # XXX BETTER!!! (also pyw)
-
-config = ConfigParser.ConfigParser()
-config.read([fullname])
-
-# -----------------------------------------------------------------------------
-# Read from config file:
-# -----------------------------------------------------------------------------
-# XMLRPC connection data:
-hostname = config.get('XMLRPC', 'host') 
-port = eval(config.get('XMLRPC', 'port'))
-database = config.get('XMLRPC', 'database')
-username = config.get('XMLRPC', 'username')
-password = config.get('XMLRPC', 'password')
-log_start = eval(config.get('XMLRPC', 'log_start'))
-
-# Link to activity data:
-code_partner = config.get('code', 'partner')
-code_activity = config.get('code', 'activity')
-origin = config.get('code', 'origin')
-
-# Script data:
-script = config.get('script', 'command')
-
-# Log data:
-log_activity = config.get('log', 'activity')
-log_folder = config.get('log', 'folder')
-log = {
-    'log_info': os.path.join(
-        log_folder, config.get('log', 'info')),
-    'log_warning': os.path.join(
-        log_folder, config.get('log', 'warning')),
-    'log_error': os.path.join(
-        log_folder, config.get('log', 'error')),
-    }
-
-# Open log file:    
-log_f = open(log_activity, 'a')
-
-# -----------------------------------------------------------------------------
 # Utility:
 # -----------------------------------------------------------------------------
 def get_erp_pool(URL, database, username, password):
@@ -92,7 +48,61 @@ def log_event(log_f, event, mode='info'):
         )
     log_f.write(event)
     return True
-    
+
+# -----------------------------------------------------------------------------
+#                                PARAMETERS:
+# -----------------------------------------------------------------------------
+# Extract config file name from current name
+path, name = os.path.split(os.path.abspath(__file__))
+fullname = os.path.join(path, 'logger.cfg')
+master_config = ConfigParser.ConfigParser()
+master_config.read([fullname])
+
+# -----------------------------------------------------------------------------
+# MASTER PARAMETER:
+# -----------------------------------------------------------------------------
+# Master configuration file:
+hostname = master_config.get('XMLRPC', 'host') 
+port = eval(master_config.get('XMLRPC', 'port'))
+database = master_config.get('XMLRPC', 'database')
+username = master_config.get('XMLRPC', 'username')
+password = master_config.get('XMLRPC', 'password')
+code_partner = master_config.get('XMLRPC', 'partner')
+
+log_activity = master_config.get('log', 'activity')
+
+# Open log file:    
+log_f = open(log_activity, 'a')
+
+# Link to activity data:
+argv = sys.argv
+if len(argv) != 2: # No parameters:
+    log_event(
+        log_f, 'Launch logger.py PARAM (code of operation mandatory!', 'error')
+
+# Passed parameter [operation code, also folder name]:
+code_activity = argv[1]
+
+# -----------------------------------------------------------------------------
+# OPERATION PARAMETER:
+# -----------------------------------------------------------------------------
+fullname = os.path.join(path, code_activity, 'operation.cfg')
+scriptname = os.path.join(path, code_activity, 'operation.py')
+operation_config = ConfigParser.ConfigParser()
+operation_config.read([fullname])
+
+log_start = eval(operation_config.get('operation', 'log_start'))
+origin = operation_config.get('operation', 'origin')
+
+script = 'python %s' % scriptname # always this command to launch
+
+# Log data:
+log = {
+    'log_info': os.path.join(path, code_activity, 'log', 'info.log'),
+    'log_warning': os.path.join(path, code_activity, 'log', 'warning.log'),
+    'log_error': os.path.join(path, code_activity, 'log', 'error.log'),
+    }
+
 # -----------------------------------------------------------------------------
 # ERPPEEK Client connection:
 # -----------------------------------------------------------------------------
@@ -127,6 +137,9 @@ if script:
     log_event(log_f, 'Launch script: %s' % script)
     os.system(script)
     log_event(log_f, 'End script: %s' % script)
+else:    
+    log_event(log_f, 'Script not present, not launched')
+    sys.exit()
 
 # -----------------------------------------------------------------------------
 # Log end operation:
@@ -157,5 +170,5 @@ if log_start:
 else: 
     # Normal creation of start stop event:
     erp_pool.log_event(data)
-    log_event(log_f, 'Create start / stop event: %s' % (data, ))    
+    log_event(log_f, 'Create start / stop event: %s' % (data, ))
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

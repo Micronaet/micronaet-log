@@ -29,7 +29,7 @@ from datetime import datetime
 #                                Parameters
 # -----------------------------------------------------------------------------
 # Extract config file name from current name
-fullname = './proxmox.cfg' # same folder
+fullname = './config/proxmox.cfg' # same folder
 
 config = ConfigParser.ConfigParser()
 config.read([fullname])
