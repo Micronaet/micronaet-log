@@ -22,7 +22,6 @@ import os
 import sys
 import ConfigParser
 import erppeek
-import xmlrpclib
 from datetime import datetime
 
 # -----------------------------------------------------------------------------
@@ -129,7 +128,10 @@ data = {
 if log_start:
     update_id = erp_pool.log_event(data) # Create start event
     log_event(
-        log_f, 'Log the start of operation: event ID: %s' % update_id)
+        log_f, 'Log the start of operation: event ID: %s %s' % (
+            update_id,
+            data, 
+            ))
         
 log_event(log_f, 'Closing ERP connection')
 del(erp_pool) # For close connection
@@ -166,17 +168,8 @@ for mode in log:
 # Reconnect for timeout problem:
 erp_pool = get_erp_pool(URL, database, username, password)
 log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
-
-# XXX XMLRPC MODE
-#sock = xmlrpclib.ServerProxy(
-#    'http://%s:%s/xmlrpc/common' % (hostname, port), allow_none=True)
-#uid = sock.login(database, username, password)
-#sock = xmlrpclib.ServerProxy(
-#    'http://%s:%s/xmlrpc/object' % (hostname, port), allow_none=True)
-# XXX                     
-
 if log_start: # Update event:
-    for i in range(1, 5):
+    for i in range(1, 5): # For timout problems:
         try:
             erp_pool.log_event(data, update_id)
             log_event(log_f, 'Update started event: %s' % update_id)
@@ -185,16 +178,12 @@ if log_start: # Update event:
             log_event(log_f, 'Timeout try: %s ' % i)
             continue    
 else: # Normal creation of start stop event:
-    for i in range(1, 5):
+    for i in range(1, 5): # For timout problems:
         try:
             erp_pool.log_event(data)
-            #sock.execute( # search current ref
-            #    database, uid, password, 'log.activity.event', 
-            #    'log_event', data)   
             log_event(log_f, 'Create start / stop event: %s' % (data, ))
             break 
         except:
             log_event(log_f, 'Timeout try: %s ' % i)
             continue    
-        
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
