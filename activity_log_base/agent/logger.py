@@ -129,6 +129,7 @@ if log_start:
     update_id = erp_pool.log_event(data) # Create start event
     log_event(
         log_f, 'Log the start of operation: event ID: %s' % update_id)
+del(erp_pool) # For close connection
     
 # -----------------------------------------------------------------------------
 # Launch script:
@@ -137,7 +138,6 @@ if script:
     log_event(log_f, 'Launch script: %s' % script)
     os.system(script)
     log_event(log_f, 'End script: %s' % script)
-    import pdb; pdb.set_trace()
 else:    
     log_event(log_f, 'Script not present, not launched')
     sys.exit()

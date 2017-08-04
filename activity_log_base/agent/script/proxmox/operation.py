@@ -70,7 +70,6 @@ print '[INFO] End backup script: %s' % script
 # -----------------------------------------------------------------------------
 task_ok = False
 print '[INFO] Parse proxmox result file: %s' % result
-import pdb; pdb.set_trace()
 try:
     result_f = open(result, 'r')
     for row in result_f:
