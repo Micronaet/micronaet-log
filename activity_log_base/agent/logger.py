@@ -185,7 +185,8 @@ else:
         try:
             #XXX erp_pool.log_event(data)
             sock.execute( # search current ref
-                database, uid, password, 'log.activity.event', 'create', data)   
+                database, uid, password, 'log.activity.event', 
+                'log_event', data)   
             break 
         except:
             log_event(log_f, 'Timeoun try: %s ' % i)
