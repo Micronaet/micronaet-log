@@ -22,7 +22,6 @@ import os
 import sys
 import ConfigParser
 import erppeek
-import xmlrpclib
 from datetime import datetime
 
 # -----------------------------------------------------------------------------
@@ -109,7 +108,7 @@ log = {
 # -----------------------------------------------------------------------------
 log_event(log_f, 'Start launcher, log file: %s' % log_activity)
 URL = 'http://%s:%s' % (hostname, port) 
-#erp_pool = get_erp_pool(URL, database, username, password)
+erp_pool = get_erp_pool(URL, database, username, password)
 log_event(log_f, 'Access to URL: %s' % URL)
 
 # -----------------------------------------------------------------------------
@@ -132,7 +131,7 @@ if log_start:
         log_f, 'Log the start of operation: event ID: %s' % update_id)
         
 log_event(log_f, 'Closing ERP connection')
-#del(erp_pool) # For close connection
+del(erp_pool) # For close connection
     
 # -----------------------------------------------------------------------------
 # Launch script:
@@ -158,30 +157,38 @@ for mode in log:
     for row in f:
         data[mode] += row
     f.close()
-    log_event(log_f, 'Get log esit mode: %s' % mode)
+    log_event(log_f, 'Get log result mode: %s' % mode)
     
 # -----------------------------------------------------------------------------
 # Log activity:
 # -----------------------------------------------------------------------------
 # Reconnect for timeout problem:
-#erp_pool = get_erp_pool(URL, database, username, password)
-#log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
-os.system('telnet %s %s' % (hostname, port))
+erp_pool = get_erp_pool(URL, database, username, password)
+log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
+
+# XXX XMLRPC MODE
 sock = xmlrpclib.ServerProxy(
     'http://%s:%s/xmlrpc/common' % (hostname, port), allow_none=True)
 uid = sock.login(database, username, password)
 sock = xmlrpclib.ServerProxy(
     'http://%s:%s/xmlrpc/object' % (hostname, port), allow_none=True)
+# XXX                     
 
-sock.execute( # search current ref
-    database, uid, password, 'log.activity.event', 'create', data)                   
-
-#if log_start: 
-#    # Update event:
-#    erp_pool.log_event(data, update_id)
-#    log_event(log_f, 'Update started event: %s' % update_id)
-#else: 
-#    # Normal creation of start stop event:
-#    erp_pool.log_event(data)
-#    log_event(log_f, 'Create start / stop event: %s' % (data, ))
+if log_start: 
+    # Update event:
+    erp_pool.log_event(data, update_id)
+    log_event(log_f, 'Update started event: %s' % update_id)
+else: 
+    # Normal creation of start stop event:
+    for i = range(0, 4):    
+        try:
+            #XXX erp_pool.log_event(data)
+            sock.execute( # search current ref
+                database, uid, password, 'log.activity.event', 'create', data)   
+            break 
+        except:
+            log_event(log_f, 'Create start / stop event: %s' % (data, ))
+            continue    
+        
+    log_event(log_f, 'Create start / stop event: %s' % (data, ))
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
