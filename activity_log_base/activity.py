@@ -46,7 +46,7 @@ class LogCategory(orm.Model):
     _order = 'name'
     
     _columns = {
-        'active': fields.boolean('Active'),
+        'is_active': fields.boolean('Active'),
         'code': fields.char('Code', size=15),
         'name': fields.char('Category', size=64, required=True),
         'note': fields.text('Note'),
@@ -64,13 +64,16 @@ class LogActivityMedia(orm.Model):
     _order = 'name'
     
     _columns = {
-        'active': fields.boolean('Active'),
+        'is_active': fields.boolean('Active'),
         'name': fields.char('Media', size=64, required=True),
         'partner_id': fields.many2one(
             'res.partner', 'Partner', required=True),
         'address': fields.char('Address', size=64, 
             help='Sometimes is the reference of sender (mail, chat ref.)'),
         }
+    _defaults = {
+        'is_active': lambda *x: True,
+        }    
     
 class LogActivity(orm.Model):
     """ Model name: Log event
@@ -81,7 +84,7 @@ class LogActivity(orm.Model):
     _order = 'name'
     
     _columns = {
-        'active': fields.boolean('Active'),
+        'is_active': fields.boolean('Active'),
         'code': fields.char('Code', size=15),
         'monitor': fields.boolean(
             'Monitor', help='Monitored event are represented in dashboard'),
@@ -126,7 +129,7 @@ class LogActivity(orm.Model):
     
     _defaults = {
         # Default value for state:
-        'active': lambda *x: True,
+        'is_active': lambda *x: True,
         'state': lambda *x: 'active',
         }
 
@@ -312,7 +315,7 @@ class LogActivityEvent(orm.Model):
                 #'from_date': Fa,
                 #'to_date': ,
                 #'duration': ,
-                #'active'
+                #'is_active'
                 #'monitor' 
                 #'check_duration':
                 #'duration_warning_range': 

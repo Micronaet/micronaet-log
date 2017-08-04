@@ -58,7 +58,7 @@
                 <form string="Category" version="7.0">        
                     <sheet>
                         <group col="4" colspan="4">
-                            <field name="active" />
+                            <field name="is_active" />
                             <field name="code" />
                             <field name="name" />
                             <notebook colspan="4">
@@ -84,8 +84,8 @@
             <field name="name">log.category.tree</field>
             <field name="model">log.category</field>
             <field name="arch" type="xml">
-                <tree string="Category" version="7.0" colors="grey:active==False">        
-                    <field name="active" />
+                <tree string="Category" version="7.0" colors="grey:is_active==False">        
+                    <field name="is_active" />
                     <field name="code" />
                     <field name="name" />
                 </tree>
@@ -106,7 +106,7 @@
             <field name="model">log.activity</field>
             <field name="arch" type="xml">
                 <tree string="Activity" version="7.0" colors="blue:monitor==True">  
-                    <field name="active" invisible="1"/>      
+                    <field name="is_active" invisible="1"/>      
                     <field name="monitor" invisible="1"/>
                     <field name="email_alert" />
                     <field name="code" />
@@ -125,7 +125,7 @@
             <field name="arch" type="xml">
                 <form string="Activity" version="7.0">        
                     <header>
-                        <field name="active" /><!--TODO button-->
+                        <field name="is_active" /><!--TODO button-->
                         <field name="monitor" /><!--TODO button-->
                         <field name="state" widget="statusbar" />
                     </header>
@@ -264,7 +264,7 @@
             <field name="name">log.activity.event.tree</field>
             <field name="model">log.activity.event</field>
             <field name="arch" type="xml">
-                <tree string="Event" version="7.0" colors="blue:state=='started',green:state=='correct',red:state=='error',orange:state=='warning'">
+                <tree string="Event" version="7.0" colors="blue:state=='started';green:state=='correct';red:state=='error';orange:state=='warning'">
                     <field name="datetime" />
                     <field name="activity_id" />
                     <field name="partner_id" />
