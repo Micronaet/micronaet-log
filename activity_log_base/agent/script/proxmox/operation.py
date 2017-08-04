@@ -68,38 +68,41 @@ os.system(script)
 # Parse log file (save in log file info, warning, error):
 # -----------------------------------------------------------------------------
 task_ok = False
-for row in open(result, 'r'):
-    # -------------------------------------------------------------------------
-    # Information:
-    # -------------------------------------------------------------------------
-    row = row.lower()
-    if 'finished backup' in row:
-        # Finish backup VM:
-        log_f['info'].write('%s\n' % row)
-    elif ' transferred ' in row:     
-        # Transfer performance:
-        log_f['info'].write('%s\n' % row)
-    elif 'creating archive' in row:     
-        # Archive info
-        log_f['info'].write('%s\n' % row)
+try:
+    for row in open(result, 'r'):
+        # ---------------------------------------------------------------------
+        # Information:
+        # ---------------------------------------------------------------------
+        row = row.lower()
+        if 'finished backup' in row:
+            # Finish backup VM:
+            log_f['info'].write('%s\n' % row)
+        elif ' transferred ' in row:     
+            # Transfer performance:
+            log_f['info'].write('%s\n' % row)
+        elif 'creating archive' in row:     
+            # Archive info
+            log_f['info'].write('%s\n' % row)
+            
+        # ---------------------------------------------------------------------
+        # Warning:
+        # ---------------------------------------------------------------------
         
-    # -------------------------------------------------------------------------
-    # Warning:
-    # -------------------------------------------------------------------------
+        # ---------------------------------------------------------------------
+        # Error: 
+        # ---------------------------------------------------------------------
+        elif 'error' in row:     
+            # Archive info
+            log_f['error'].write('%s\n' % row)
+
+        # ---------------------------------------------------------------------
+        # Check elements:
+        # ---------------------------------------------------------------------
+        elif 'finished successfully' in row:
+            task_ok = True    
+except:
+    log_f['error'].write('Error reading result file\n')
     
-    # -------------------------------------------------------------------------
-    # Error: 
-    # -------------------------------------------------------------------------
-    elif 'error' in row:     
-        # Archive info
-        log_f['error'].write('%s\n' % row)
-
-    # -------------------------------------------------------------------------
-    # Check elements:
-    # -------------------------------------------------------------------------
-    elif 'finished successfully' in row:
-        task_ok = True    
-
 if not task_ok:
     log_f['error'].write('Task KO\n')
 
