@@ -131,7 +131,7 @@ if log_start:
         log_f, 'Log the start of operation: event ID: %s' % update_id)
         
 log_event(log_f, 'Closing ERP connection')
-del(erp_pool) # For close connection
+#del(erp_pool) # For close connection
     
 # -----------------------------------------------------------------------------
 # Launch script:
