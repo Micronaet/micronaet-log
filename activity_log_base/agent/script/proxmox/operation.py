@@ -61,13 +61,15 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # Launch script:
 # -----------------------------------------------------------------------------
-print '[INFO] Run backup script: %s' % script
+print '[INFO] Start backup script: %s' % script
 os.system(script)
+print '[INFO] End backup script: %s' % script
 
 # -----------------------------------------------------------------------------
-# Parse log file (save in log file info, warning, error):
+#                              PARSE 3 LOG FILE:
 # -----------------------------------------------------------------------------
 task_ok = False
+print '[INFO] Parse proxmox result file: %s' % result
 try:
     result_f = open(result, 'r')
     for row in result_f:
@@ -101,20 +103,26 @@ try:
         # ---------------------------------------------------------------------
         elif 'finished successfully' in row:
             task_ok = True    
-    result_f.close()        
+    result_f.close()
 except:
+    print '[ERROR] No proxmox result file: %s' % result
     log_f['error'].write('Error reading result file\n')
+print '[INFO] End parse proxmox result file: %s' % result
     
 if not task_ok:
+    print '[ERROR] Task esit is KO'
     log_f['error'].write('Task KO\n')
 
 # Close log file:
 for mode in log_f:
     log_f[mode].close()    
 
+# -----------------------------------------------------------------------------
 # Remove proxmox result file:
+# -----------------------------------------------------------------------------
 try:
     os.remove(result)
+    print '[INFO] Remove proxmox result file'
 except:
-    pass # no error    
+    print '[ERROR] Cannot remove proxmox result file'
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
