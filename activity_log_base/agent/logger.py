@@ -166,7 +166,7 @@ for mode in log:
 # Reconnect for timeout problem:
 #erp_pool = get_erp_pool(URL, database, username, password)
 #log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
-
+os.system('telnet %s %s' % (hostname, port))
 sock = xmlrpclib.ServerProxy(
     'http://%s:%s/xmlrpc/common' % (hostname, port), allow_none=True)
 uid = sock.login(database, username, password)
