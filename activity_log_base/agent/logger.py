@@ -22,6 +22,7 @@ import os
 import sys
 import ConfigParser
 import erppeek
+import xmlrpclib
 from datetime import datetime
 
 # -----------------------------------------------------------------------------
