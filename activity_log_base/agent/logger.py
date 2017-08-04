@@ -22,6 +22,7 @@ import os
 import sys
 import ConfigParser
 import erppeek
+import xmlrpclib
 from datetime import datetime
 
 # -----------------------------------------------------------------------------
@@ -163,15 +164,24 @@ for mode in log:
 # Log activity:
 # -----------------------------------------------------------------------------
 # Reconnect for timeout problem:
-erp_pool = get_erp_pool(URL, database, username, password)
-log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
+#erp_pool = get_erp_pool(URL, database, username, password)
+#log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
 
-if log_start: 
-    # Update event:
-    erp_pool.log_event(data, update_id)
-    log_event(log_f, 'Update started event: %s' % update_id)
-else: 
-    # Normal creation of start stop event:
-    erp_pool.log_event(data)
-    log_event(log_f, 'Create start / stop event: %s' % (data, ))
+sock = xmlrpclib.ServerProxy(
+    'http://%s:%s/xmlrpc/common' % (hostname, port), allow_none=True)
+uid = sock.login(database, userame, password)
+sock = xmlrpclib.ServerProxy(
+    'http://%s:%s/xmlrpc/object' % (hostname, port), allow_none=True)
+
+sock.execute( # search current ref
+    database, uid, pwd, 'log.activity.event', 'create', data)                   
+
+#if log_start: 
+#    # Update event:
+#    erp_pool.log_event(data, update_id)
+#    log_event(log_f, 'Update started event: %s' % update_id)
+#else: 
+#    # Normal creation of start stop event:
+#    erp_pool.log_event(data)
+#    log_event(log_f, 'Create start / stop event: %s' % (data, ))
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
