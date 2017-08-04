@@ -180,7 +180,7 @@ if log_start:
     log_event(log_f, 'Update started event: %s' % update_id)
 else: 
     # Normal creation of start stop event:
-    for i = range(0, 4):    
+    for i in range(0, 4):    
         try:
             #XXX erp_pool.log_event(data)
             sock.execute( # search current ref
