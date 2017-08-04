@@ -169,7 +169,7 @@ for mode in log:
 
 sock = xmlrpclib.ServerProxy(
     'http://%s:%s/xmlrpc/common' % (hostname, port), allow_none=True)
-uid = sock.login(database, userame, password)
+uid = sock.login(database, username, password)
 sock = xmlrpclib.ServerProxy(
     'http://%s:%s/xmlrpc/object' % (hostname, port), allow_none=True)
 
