@@ -69,7 +69,8 @@ os.system(script)
 # -----------------------------------------------------------------------------
 task_ok = False
 try:
-    for row in open(result, 'r'):
+    result_f = open(result, 'r')
+    for row in result_f:
         # ---------------------------------------------------------------------
         # Information:
         # ---------------------------------------------------------------------
@@ -100,6 +101,7 @@ try:
         # ---------------------------------------------------------------------
         elif 'finished successfully' in row:
             task_ok = True    
+    result_f.close()        
 except:
     log_f['error'].write('Error reading result file\n')
     
@@ -109,4 +111,10 @@ if not task_ok:
 # Close log file:
 for mode in log_f:
     log_f[mode].close()    
+
+# Remove proxmox result file:
+try:
+    os.remove(result)
+except:
+    pass # no error    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
