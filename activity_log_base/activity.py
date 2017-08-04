@@ -147,7 +147,7 @@ class LogActivityEvent(orm.Model):
         start = datetime.strptime(
             start, DEFAULT_SERVER_DATETIME_FORMAT)
         end = datetime.strptime(
-            start, DEFAULT_SERVER_DATETIME_FORMAT)
+            end, DEFAULT_SERVER_DATETIME_FORMAT)
         gap = end - start
         return (gap.days * 24) + (gap.seconds / 3660)
 

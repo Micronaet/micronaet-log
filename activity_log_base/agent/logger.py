@@ -37,7 +37,7 @@ def get_erp_pool(URL, database, username, password):
         user=username,
         password=password,
         )   
-    return erp.LogActivityEvent    
+    return erp.LogActivityEvent   
 
 def log_event(log_f, event, mode='info'):
     ''' Log event on file
