@@ -168,29 +168,33 @@ erp_pool = get_erp_pool(URL, database, username, password)
 log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
 
 # XXX XMLRPC MODE
-sock = xmlrpclib.ServerProxy(
-    'http://%s:%s/xmlrpc/common' % (hostname, port), allow_none=True)
-uid = sock.login(database, username, password)
-sock = xmlrpclib.ServerProxy(
-    'http://%s:%s/xmlrpc/object' % (hostname, port), allow_none=True)
+#sock = xmlrpclib.ServerProxy(
+#    'http://%s:%s/xmlrpc/common' % (hostname, port), allow_none=True)
+#uid = sock.login(database, username, password)
+#sock = xmlrpclib.ServerProxy(
+#    'http://%s:%s/xmlrpc/object' % (hostname, port), allow_none=True)
 # XXX                     
 
-if log_start: 
-    # Update event:
-    erp_pool.log_event(data, update_id)
-    log_event(log_f, 'Update started event: %s' % update_id)
-else: 
-    # Normal creation of start stop event:
+if log_start: # Update event:
     for i in range(1, 5):
         try:
-            #XXX erp_pool.log_event(data)
-            sock.execute( # search current ref
-                database, uid, password, 'log.activity.event', 
-                'log_event', data)   
+            erp_pool.log_event(data, update_id)
+            log_event(log_f, 'Update started event: %s' % update_id)
             break 
         except:
-            log_event(log_f, 'Timeoun try: %s ' % i)
+            log_event(log_f, 'Timeout try: %s ' % i)
+            continue    
+else: # Normal creation of start stop event:
+    for i in range(1, 5):
+        try:
+            erp_pool.log_event(data)
+            #sock.execute( # search current ref
+            #    database, uid, password, 'log.activity.event', 
+            #    'log_event', data)   
+            log_event(log_f, 'Create start / stop event: %s' % (data, ))
+            break 
+        except:
+            log_event(log_f, 'Timeout try: %s ' % i)
             continue    
         
-    log_event(log_f, 'Create start / stop event: %s' % (data, ))
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

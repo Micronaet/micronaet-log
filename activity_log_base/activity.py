@@ -126,6 +126,7 @@ class LogActivity(orm.Model):
     
     _defaults = {
         # Default value for state:
+        'active': lambda *x: True,
         'state': lambda *x: 'active',
         }
 
