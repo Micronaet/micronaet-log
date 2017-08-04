@@ -46,7 +46,7 @@ class LogCategory(orm.Model):
     _order = 'name'
     
     _columns = {
-        'is_active': fields.boolean('Active'),
+        'is_active': fields.boolean('Is active'),
         'code': fields.char('Code', size=15),
         'name': fields.char('Category', size=64, required=True),
         'note': fields.text('Note'),
@@ -64,7 +64,7 @@ class LogActivityMedia(orm.Model):
     _order = 'name'
     
     _columns = {
-        'is_active': fields.boolean('Active'),
+        'is_active': fields.boolean('Is active'),
         'name': fields.char('Media', size=64, required=True),
         'partner_id': fields.many2one(
             'res.partner', 'Partner', required=True),
@@ -84,7 +84,7 @@ class LogActivity(orm.Model):
     _order = 'name'
     
     _columns = {
-        'is_active': fields.boolean('Active'),
+        'is_active': fields.boolean('Is active'),
         'code': fields.char('Code', size=15),
         'monitor': fields.boolean(
             'Monitor', help='Monitored event are represented in dashboard'),
