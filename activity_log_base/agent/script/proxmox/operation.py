@@ -24,6 +24,16 @@ import ConfigParser
 from datetime import datetime
 
 # -----------------------------------------------------------------------------
+#                                Utility:
+# -----------------------------------------------------------------------------
+def clean_result_file(result):
+    try:
+        os.remove(result)
+        print '[INFO] Remove proxmox result file'
+    except:
+        print '[ERROR] Cannot remove proxmox result file'
+        
+# -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
 # Extract config file name from current name
@@ -39,6 +49,9 @@ config.read([fullname])
 # Read from config file:
 script = config.get('operation', 'backup') 
 result = config.get('operation', 'result')
+
+# Clean previous file:
+clean_result_file(result)
 
 # -----------------------------------------------------------------------------
 # Log event:
@@ -120,9 +133,5 @@ for mode in log_f:
 # -----------------------------------------------------------------------------
 # Remove proxmox result file:
 # -----------------------------------------------------------------------------
-try:
-    os.remove(result)
-    print '[INFO] Remove proxmox result file'
-except:
-    print '[ERROR] Cannot remove proxmox result file'
+clean_result_file(result)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
