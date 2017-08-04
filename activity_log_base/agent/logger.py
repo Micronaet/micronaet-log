@@ -137,6 +137,7 @@ if script:
     log_event(log_f, 'Launch script: %s' % script)
     os.system(script)
     log_event(log_f, 'End script: %s' % script)
+    import pdb; pdb.set_trace()
 else:    
     log_event(log_f, 'Script not present, not launched')
     sys.exit()
