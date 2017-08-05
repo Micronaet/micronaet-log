@@ -15,3 +15,7 @@ easy_install pip
 
 # For XMLRPC connection:
 sudo pip install erpperrk 
+
+# For Mount:
+sudo apt-get install sshfs fuse
+#sudo apt-get install cifs
