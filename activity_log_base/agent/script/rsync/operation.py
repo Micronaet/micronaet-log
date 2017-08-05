@@ -127,7 +127,7 @@ if folders:
         os.system('cat %s >> %s' % (
             result_tmp,
             result
-            )
+            ))
 else: # no folders all
     script = script_mask % (
         from_folder,
