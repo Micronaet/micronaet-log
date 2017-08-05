@@ -110,6 +110,7 @@ if not os.path.isfile(check_file):
     log_f['error'].write('Cannot mount linked server\n')
     closing_operations(log_f, result) # END HERE
 
+import pdb; pdb.set_trace()
 print '[INFO] Start rsync operations, folders: %s' % folders
 if folders:
     for f in folders:
