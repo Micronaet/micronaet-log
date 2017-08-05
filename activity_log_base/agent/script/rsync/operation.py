@@ -67,7 +67,7 @@ config.read([fullname])
 path = config.get('operation', 'path') 
 folders = eval(config.get('operation', 'folders'))
 history = eval(config.get('operation', 'history'))
-from_folder = os.path.join(path, 'smb')
+from_folder = os.path.join(path, 'mount')
 to_folder = os.path.joint(path, '0')
 
 # Mount parameters:
@@ -103,12 +103,12 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # Operation scripts:
 # -----------------------------------------------------------------------------
-print '[INFO] Mount SMB resource: %s' % mount_command
+print '[INFO] Mount linked resource: %s' % mount_command
 os.system(mount_command)
 
 print '[INFO] Check correct mount with file: %s' % check_file
 if not os.path.isfile(check_file):
-    log_f['error'].write('Cannot mount SMB server\n')
+    log_f['error'].write('Cannot mount linked server\n')
     closing_operations(log_f, result) # END HERE
 
 print '[INFO] Start rsync operations: %s' % script
@@ -142,10 +142,10 @@ print '[INFO] History operations, # folder: [1 - %s]' % history
 for h_folder in range(1, history + 1):
     pass # TODO move folder hard copy
     
-print '[INFO] Umount SMB resource: %s' % umount_commmand
+print '[INFO] Umount linked resource: %s' % umount_commmand
 os.system(umount_command)
 if os.path.isfile(check_file):
-    log_f['warning'].write('Cannot umount SMB server\n')
+    log_f['warning'].write('Cannot umount linked server\n')
 
 # -----------------------------------------------------------------------------
 #                              PARSE LOG FILE:
