@@ -52,7 +52,6 @@ def closing_operations(log_f, result):
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 # Extract config file name from current name
 path, name = os.path.split(os.path.abspath(__file__))
 fullname = os.path.join(path, 'operation.cfg')
@@ -69,12 +68,13 @@ folders = eval(config.get('operation', 'folders'))
 history = eval(config.get('operation', 'history'))
 from_folder = os.path.join(path, 'mount')
 to_folder = os.path.join(path, '0')
+import pdb; pdb.set_trace()
 
 # Mount parameters:
 mount_command = config.get('operation', 'mount')
 umount_command = 'umount %s' % from_folder
 check_file = config.get('operation', 'check')
-check_file = os.path.join(path, check_file) # fullname for check file 
+check_file = os.path.join(from_folder, check_file) # fullname for check file 
 
 result = os.path.join(log_folder, 'rsync.log')
 script_mask = 'rsync -avh \'%s\' \'%s\' --log-file=%s'
