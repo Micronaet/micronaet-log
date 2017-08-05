@@ -68,7 +68,7 @@ path = config.get('operation', 'path')
 folders = eval(config.get('operation', 'folders'))
 history = eval(config.get('operation', 'history'))
 from_folder = os.path.join(path, 'mount')
-to_folder = os.path.joint(path, '0')
+to_folder = os.path.join(path, '0')
 
 # Mount parameters:
 mount_command = config.get('operation', 'mount')
