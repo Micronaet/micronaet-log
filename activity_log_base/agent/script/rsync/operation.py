@@ -141,7 +141,7 @@ print '[INFO] History operations, # folder: [1 - %s]' % history
 for h_folder in range(1, history + 1):
     pass # TODO move folder hard copy
     
-print '[INFO] Umount linked resource: %s' % umount_commmand
+print '[INFO] Umount linked resource: %s' % umount_command
 os.system(umount_command)
 if os.path.isfile(check_file):
     log_f['warning'].write('Cannot umount linked server\n')
