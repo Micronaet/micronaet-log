@@ -28,12 +28,27 @@ from datetime import datetime
 #                                Utility:
 # -----------------------------------------------------------------------------
 def clean_result_file(result):
+    ''' Clean result file used
+    '''
     try:
         os.remove(result)
         print '[INFO] Remove rsync result file'
     except:
         print '[ERROR] Cannot remove rsync result file'
        
+def closing_operations(log_f, result):
+    ''' Operation that will be done at the end of the script
+    '''
+    # Close log file:
+    for mode in log_f:
+        log_f[mode].close()
+
+    # Remove rsync result file:
+    clean_result_file(result)
+    
+    # Exit
+    sys.exit()
+    
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
@@ -61,7 +76,7 @@ check_file = config.get('operation', 'check')
 check_file = os.path.join(path, check_file) # fullname for check file 
 
 result = os.path.join(path, 'rsync.log')
-script_mask = 'rsync -avh %s %s --log-file=%s'
+script_mask = 'rsync -avh \'%s\' \'%s\' --log-file=%s'
 
 # Remove rsync result file:    
 clean_result_file(result)
@@ -93,18 +108,19 @@ os.system(mount_command)
 print '[INFO] Check correct mount with file: %s' % check_file
 if not os.path.isfile(check_file):
     log_f['error'].write('Cannot mount SMB server\n')
-    # TODO return log and exit
+    closing_operations(log_f, result) # END HERE
 
-print '[INFO] Rsync operations: %s' % script
+print '[INFO] Start rsync operations: %s' % script
 if folders:
     tmp_file = os.
     for f in folders:
         result_tmp = tempfile.mktemp() # for log file
-        script_multi = script % (
+        script_multi = script_mask % (
             os.path.join(from_folder, f),
             to_folder,
             result_tmp,
             )
+        print '[INFO] Multi rsync operations: %s' % script_multi
         os.system(script_multi)
         
         # Collect tmp file in result file
@@ -112,16 +128,14 @@ if folders:
             result_tmp,
             result
             )
-        
-    pass # TODO
 else: # no folders all
-    script = script % (
+    script = script_mask % (
         from_folder,
         to_folder,
         result,
         )
+    print '[INFO] Rsync operations: %s' % script
     os.system(script)
-    
 
 print '[INFO] History operations, # folder: [1 - %s]' % history
 for h_folder in range(1, history + 1):
@@ -146,7 +160,7 @@ try:
         row = row.lower()
         if 'finished backup' in row:
             # Finish backup VM:
-            log_f['info'].write('%s\n' % row)
+            pass#log_f['info'].write('%s\n' % row)
             
         # ---------------------------------------------------------------------
         # Warning:
@@ -162,24 +176,17 @@ try:
         # ---------------------------------------------------------------------
         # Check elements:
         # ---------------------------------------------------------------------
-        elif 'finished successfully' in row:
-            task_ok = True    
+        #elif 'finished successfully' in row:
+        #    task_ok = True    
     result_f.close()
 except:
-    print '[ERROR] No proxmox result file: %s' % result
+    print '[ERROR] No rsync result file: %s' % result
     log_f['error'].write('Error reading result file\n')
-print '[INFO] End parse proxmox result file: %s' % result
+print '[INFO] End parse rsync result file: %s' % result
     
 if not task_ok:
     print '[ERROR] Task esit is KO'
     log_f['error'].write('Task KO\n')
 
-# Close log file:
-for mode in log_f:
-    log_f[mode].close()    
-
-# -----------------------------------------------------------------------------
-# Remove rsync result file:
-# -----------------------------------------------------------------------------
-clean_result_file(result)
+closing_operations(log_f, result)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
