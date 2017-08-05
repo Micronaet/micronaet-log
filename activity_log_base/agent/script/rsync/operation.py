@@ -52,10 +52,11 @@ def closing_operations(log_f, result):
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
 # Extract config file name from current name
 path, name = os.path.split(os.path.abspath(__file__))
 fullname = os.path.join(path, 'operation.cfg')
-log_folder = os.path.join(path, 'log') # log folder path (always in this folder)
+log_folder = os.path.join(path, 'log') # log folder path
 os.system('mkdir -p %s' % log_folder)
 
 # Config parameter:
@@ -75,7 +76,7 @@ umount_command = 'umount %s' % from_folder
 check_file = config.get('operation', 'check')
 check_file = os.path.join(path, check_file) # fullname for check file 
 
-result = os.path.join(path, 'rsync.log')
+result = os.path.join(log_folder, 'rsync.log')
 script_mask = 'rsync -avh \'%s\' \'%s\' --log-file=%s'
 
 # Remove rsync result file:    
@@ -123,8 +124,8 @@ if folders:
         print '[INFO] Multi rsync operations: %s' % script_multi
         os.system(script_multi)
         
-        # Collect tmp file in result file
-        os.system('cat %s > %s' % (
+        # Collect tmp file in result file (append mode)
+        os.system('cat %s >> %s' % (
             result_tmp,
             result
             )
