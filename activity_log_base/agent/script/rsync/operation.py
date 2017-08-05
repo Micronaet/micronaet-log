@@ -68,7 +68,6 @@ folders = eval(config.get('operation', 'folders'))
 history = eval(config.get('operation', 'history'))
 from_folder = os.path.join(path, 'mount')
 to_folder = os.path.join(path, '0')
-import pdb; pdb.set_trace()
 
 # Mount parameters:
 mount_command = config.get('operation', 'mount')
@@ -111,7 +110,7 @@ if not os.path.isfile(check_file):
     log_f['error'].write('Cannot mount linked server\n')
     closing_operations(log_f, result) # END HERE
 
-print '[INFO] Start rsync operations: %s' % script
+print '[INFO] Start rsync operations, folders: %s' % folders
 if folders:
     for f in folders:
         result_tmp = tempfile.mktemp() # for log file
