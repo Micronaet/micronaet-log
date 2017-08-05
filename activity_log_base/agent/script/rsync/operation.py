@@ -113,7 +113,6 @@ if not os.path.isfile(check_file):
 
 print '[INFO] Start rsync operations: %s' % script
 if folders:
-    tmp_file = os.
     for f in folders:
         result_tmp = tempfile.mktemp() # for log file
         script_multi = script_mask % (
