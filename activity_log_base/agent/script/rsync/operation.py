@@ -138,7 +138,7 @@ else: # no folders all
 
 # Remove folder:
 import pdb; pdb.set_trace()
-command = 'rm -r %s' % os.path.join(path, history) # Last folder
+command = 'rm -r %s' % os.path.join(path, str(history)) # Last folder
 print '[INFO] Remove command: %s' % command
 os.system(command)
 
@@ -146,8 +146,8 @@ os.system(command)
 print '[INFO] History operations, # folder: [1 - %s]' % history
 for h_folder in range(history, 0, -1):
     command = 'cp -rl %s %s' % (
-        os.path.join(path, h_folder - 1),
-        os.path.join(path, h_folder),
+        os.path.join(path, str(h_folder - 1)),
+        os.path.join(path, str(h_folder)),
         )
     print '[INFO] History command: %s' % command
     os.system(command)
