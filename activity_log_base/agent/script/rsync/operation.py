@@ -106,6 +106,7 @@ for mode in log:
 # TODO use subprocess for get result of operation
 command = 'rm -r %s' % os.path.join(path, str(history)) # Last folder
 print '[INFO] Remove command: %s' % command
+import pdb; pdb.set_trace()
 os.system(command)
 
 # Move folder number:
@@ -116,6 +117,7 @@ for h_folder in range(history, 1, -1):
         os.path.join(path, str(h_folder)),
         )
     print '[INFO] Move history command: %s' % command
+    import pdb; pdb.set_trace()
     os.system(command)
 
 # Hard link copy:    
@@ -125,6 +127,7 @@ if history >= 1:
         os.path.join(path, '1'),
         )
     print '[INFO] Hard link copy: %s' % command
+    import pdb; pdb.set_trace()
     os.system(command)
 
 print '[INFO] Mount linked resource: %s' % mount_command
