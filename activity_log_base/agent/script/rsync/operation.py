@@ -103,7 +103,7 @@ for mode in log:
 # Operation scripts:
 # -----------------------------------------------------------------------------
 # Remove folder:
-import pdb; pdb.set_trace()
+# TODO use subprocess for get result of operation
 command = 'rm -r %s' % os.path.join(path, str(history)) # Last folder
 print '[INFO] Remove command: %s' % command
 os.system(command)
