@@ -76,7 +76,7 @@ check_file = config.get('operation', 'check')
 check_file = os.path.join(from_folder, check_file) # fullname for check file 
 
 result = os.path.join(log_folder, 'rsync.log')
-script_mask = 'rsync -avh \'%s\' \'%s\' --log-file=%s'
+script_mask = 'rsync -avh \'%s/\' \'%s\' --log-file=%s'
 
 # Remove rsync result file:    
 clean_result_file(result)
@@ -116,7 +116,7 @@ if folders:
         result_tmp = tempfile.mktemp() # for log file
         script_multi = script_mask % (
             os.path.join(from_folder, f),
-            to_folder,
+            os.path.join(to_folder, f),
             result_tmp,
             )
         print '[INFO] Multi rsync operations: %s' % script_multi
