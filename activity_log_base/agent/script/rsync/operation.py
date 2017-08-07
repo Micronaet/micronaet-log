@@ -113,6 +113,7 @@ if not os.path.isfile(check_file):
 print '[INFO] Start rsync operations, folders: %s' % folders
 if folders:
     for f in folders:
+        import pdb; pdb.set_trace()
         result_tmp = tempfile.mktemp() # for log file
         script_multi = script_mask % (
             os.path.join(from_folder, f),
@@ -128,6 +129,7 @@ if folders:
             result
             ))
 else: # no folders all
+    import pdb; pdb.set_trace()
     script = script_mask % (
         from_folder,
         to_folder,
@@ -135,6 +137,11 @@ else: # no folders all
         )
     print '[INFO] Rsync operations: %s' % script
     os.system(script)
+
+print '[INFO] Umount linked resource: %s' % umount_command
+os.system(umount_command)
+if os.path.isfile(check_file):
+    log_f['warning'].write('Cannot umount linked server\n')
 
 # Remove folder:
 import pdb; pdb.set_trace()
@@ -152,10 +159,6 @@ for h_folder in range(history, 0, -1):
     print '[INFO] History command: %s' % command
     os.system(command)
     
-print '[INFO] Umount linked resource: %s' % umount_command
-os.system(umount_command)
-if os.path.isfile(check_file):
-    log_f['warning'].write('Cannot umount linked server\n')
 
 # -----------------------------------------------------------------------------
 #                              PARSE LOG FILE:
