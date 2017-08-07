@@ -110,7 +110,6 @@ if not os.path.isfile(check_file):
     log_f['error'].write('Cannot mount linked server\n')
     closing_operations(log_f, result) # END HERE
 
-import pdb; pdb.set_trace()
 print '[INFO] Start rsync operations, folders: %s' % folders
 if folders:
     for f in folders:
@@ -137,9 +136,20 @@ else: # no folders all
     print '[INFO] Rsync operations: %s' % script
     os.system(script)
 
+# Remove folder:
+import pdb; pdb.set_trace()
+command = 'rm -r %s' % os.path.join(path, history) # Last folder
+print '[INFO] Remove command: %s' % command
+os.system(command)
+
+# Move folder number:
 print '[INFO] History operations, # folder: [1 - %s]' % history
-for h_folder in range(1, history + 1):
-    pass # TODO move folder hard copy
+for h_folder in range(history, 0, -1):
+    command = 'cp -rl %s %s' % (
+        os.path.join(path, h_folder - 1),
+        os.path.join(path, h_folder),
+    print '[INFO] History command: %s' % command
+    os.system(command)
     
 print '[INFO] Umount linked resource: %s' % umount_command
 os.system(umount_command)
