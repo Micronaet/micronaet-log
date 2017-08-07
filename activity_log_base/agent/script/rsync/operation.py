@@ -102,6 +102,22 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # Operation scripts:
 # -----------------------------------------------------------------------------
+# Remove folder:
+import pdb; pdb.set_trace()
+command = 'rm -r %s' % os.path.join(path, str(history)) # Last folder
+print '[INFO] Remove command: %s' % command
+os.system(command)
+
+# Move folder number:
+print '[INFO] History operations, # folder: [1 - %s]' % history
+for h_folder in range(history, 0, -1):
+    command = 'cp -rl %s %s' % (
+        os.path.join(path, str(h_folder - 1)),
+        os.path.join(path, str(h_folder)),
+        )
+    print '[INFO] History command: %s' % command
+    os.system(command)
+
 print '[INFO] Mount linked resource: %s' % mount_command
 os.system(mount_command)
 
@@ -141,24 +157,7 @@ else: # no folders all
 print '[INFO] Umount linked resource: %s' % umount_command
 os.system(umount_command)
 if os.path.isfile(check_file):
-    log_f['warning'].write('Cannot umount linked server\n')
-
-# Remove folder:
-import pdb; pdb.set_trace()
-command = 'rm -r %s' % os.path.join(path, str(history)) # Last folder
-print '[INFO] Remove command: %s' % command
-os.system(command)
-
-# Move folder number:
-print '[INFO] History operations, # folder: [1 - %s]' % history
-for h_folder in range(history, 0, -1):
-    command = 'cp -rl %s %s' % (
-        os.path.join(path, str(h_folder - 1)),
-        os.path.join(path, str(h_folder)),
-        )
-    print '[INFO] History command: %s' % command
-    os.system(command)
-    
+    log_f['warning'].write('Cannot umount linked server\n')    
 
 # -----------------------------------------------------------------------------
 #                              PARSE LOG FILE:
