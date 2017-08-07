@@ -148,6 +148,7 @@ for h_folder in range(history, 0, -1):
     command = 'cp -rl %s %s' % (
         os.path.join(path, h_folder - 1),
         os.path.join(path, h_folder),
+        )
     print '[INFO] History command: %s' % command
     os.system(command)
     
