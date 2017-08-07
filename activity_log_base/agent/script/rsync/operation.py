@@ -110,12 +110,21 @@ os.system(command)
 
 # Move folder number:
 print '[INFO] History operations, # folder: [1 - %s]' % history
-for h_folder in range(history, 0, -1):
-    command = 'cp -rl %s %s' % (
+for h_folder in range(history, 1, -1):
+    command = 'mv %s %s' % (
         os.path.join(path, str(h_folder - 1)),
         os.path.join(path, str(h_folder)),
         )
-    print '[INFO] History command: %s' % command
+    print '[INFO] Move history command: %s' % command
+    os.system(command)
+
+# Hard link copy:    
+if history >= 1:
+    command = 'cp -lr %s %s' % (
+        os.path.join(path, '0'),
+        os.path.join(path, '1'),
+        )
+    print '[INFO] Hard link copy: %s' % command
     os.system(command)
 
 print '[INFO] Mount linked resource: %s' % mount_command
@@ -129,7 +138,6 @@ if not os.path.isfile(check_file):
 print '[INFO] Start rsync operations, folders: %s' % folders
 if folders:
     for f in folders:
-        import pdb; pdb.set_trace()
         result_tmp = tempfile.mktemp() # for log file
         script_multi = script_mask % (
             os.path.join(from_folder, f),
@@ -145,13 +153,12 @@ if folders:
             result
             ))
 else: # no folders all
-    import pdb; pdb.set_trace()
     script = script_mask % (
         from_folder,
         to_folder,
         result,
         )
-    print '[INFO] Rsync operations: %s' % script
+    print '[INFO] Single rsync operations: %s' % script
     os.system(script)
 
 print '[INFO] Umount linked resource: %s' % umount_command
