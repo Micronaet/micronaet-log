@@ -164,7 +164,7 @@ if os.path.isfile(check_file):
 # -----------------------------------------------------------------------------
 #                              PARSE LOG FILE:
 # -----------------------------------------------------------------------------
-task_ok = False
+task_ok = True
 print '[INFO] 8. Parse rsync result file: %s' % result
 try:
     result_f = open(result, 'r')
@@ -173,9 +173,10 @@ try:
         # Information:
         # ---------------------------------------------------------------------
         row = row.lower()
-        if 'finished backup' in row:
-            # Finish backup VM:
-            pass#log_f['info'].write('%s\n' % row)
+        if ' received ' in row:
+            log_f['info'].write('%s\n' % row)
+        elif ' total size ' in row:
+            log_f['info'].write('%s\n' % row)
             
         # ---------------------------------------------------------------------
         # Warning:
@@ -185,6 +186,7 @@ try:
         # Error: 
         # ---------------------------------------------------------------------
         elif 'error' in row:     
+            task_ok = False
             # Archive info
             log_f['error'].write('%s\n' % row)
 
