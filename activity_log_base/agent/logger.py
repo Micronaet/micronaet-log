@@ -55,10 +55,11 @@ def log_event(log_f, event, mode='info'):
 
 def change_datetime_gmt(timestamp):
     ''' Change datetime removing gap from now and GMT 0
+        passed a datetime object
     '''
     extra_gmt = datetime.now() - datetime.utcnow()
-    ts = datetime.strptime(timestamp, DEFAULT_SERVER_DATETIME_FORMAT) 
-    return (ts - extra_gmt).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+    #ts = datetime.strptime(timestamp, DEFAULT_SERVER_DATETIME_FORMAT) 
+    return (timestamp - extra_gmt).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
 # -----------------------------------------------------------------------------
 #                                PARAMETERS:
