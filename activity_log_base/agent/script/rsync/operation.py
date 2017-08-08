@@ -20,7 +20,6 @@
 ###############################################################################
 import os
 import sys
-import tempfile
 import ConfigParser
 from datetime import datetime
 
@@ -102,20 +101,28 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # Operation scripts:
 # -----------------------------------------------------------------------------
+print '[INFO] 1. Mount linked resource: %s' % mount_command
+os.system(mount_command)
+
+print '[INFO] 2. Check correct mount with file: %s' % check_file
+if not os.path.isfile(check_file):
+    log_f['error'].write('Cannot mount linked server\n')
+    closing_operations(log_f, result) # END HERE
+
 # Remove folder:
 # TODO use subprocess for get result of operation
 command = 'rm -r %s' % os.path.join(path, str(history)) # Last folder
-print '[INFO] Remove command: %s' % command
+print '[INFO] 3. Remove command: %s' % command
 os.system(command)
 
 # Move folder number:
-print '[INFO] History operations, # folder: [1 - %s]' % history
+print '[INFO] 4. History operations, # folder: [1 - %s]' % history
 for h_folder in range(history, 1, -1):
     command = 'mv %s %s' % (
         os.path.join(path, str(h_folder - 1)),
         os.path.join(path, str(h_folder)),
         )
-    print '[INFO] Move history command: %s' % command
+    print '[INFO] 4a. Move history command: %s' % command
     os.system(command)
 
 # Hard link copy:    
@@ -124,45 +131,31 @@ if history >= 1:
         os.path.join(path, '0'),
         os.path.join(path, '1'),
         )
-    print '[INFO] Hard link copy: %s' % command
+    print '[INFO] 5. Hard link copy: %s' % command
     import pdb; pdb.set_trace()
     os.system(command)
 
-print '[INFO] Mount linked resource: %s' % mount_command
-os.system(mount_command)
-
-print '[INFO] Check correct mount with file: %s' % check_file
-if not os.path.isfile(check_file):
-    log_f['error'].write('Cannot mount linked server\n')
-    closing_operations(log_f, result) # END HERE
-
-print '[INFO] Start rsync operations, folders: %s' % folders
+print '[INFO] 6. Start rsync operations, folders: %s' % folders
 if folders:
     for f in folders:
-        result_tmp = tempfile.mktemp() # for log file
         script_multi = script_mask % (
             os.path.join(from_folder, f),
             os.path.join(to_folder, f),
-            result_tmp,
+            result, # always in append mode
             )
-        print '[INFO] Multi rsync operations: %s' % script_multi
+        print '[INFO] 6a. Multi rsync operations: %s' % script_multi
         os.system(script_multi)
-        
-        # Collect tmp file in result file (append mode)
-        os.system('cat %s >> %s' % (
-            result_tmp,
-            result
-            ))
+                
 else: # no folders all
     script = script_mask % (
         from_folder,
         to_folder,
         result,
         )
-    print '[INFO] Single rsync operations: %s' % script
+    print '[INFO] 6b. Single rsync operations: %s' % script
     os.system(script)
 
-print '[INFO] Umount linked resource: %s' % umount_command
+print '[INFO] 7. Umount linked resource: %s' % umount_command
 os.system(umount_command)
 if os.path.isfile(check_file):
     log_f['warning'].write('Cannot umount linked server\n')    
@@ -171,7 +164,7 @@ if os.path.isfile(check_file):
 #                              PARSE LOG FILE:
 # -----------------------------------------------------------------------------
 task_ok = False
-print '[INFO] Parse rsync result file: %s' % result
+print '[INFO] 8. Parse rsync result file: %s' % result
 try:
     result_f = open(result, 'r')
     for row in result_f:
@@ -203,7 +196,7 @@ try:
 except:
     print '[ERROR] No rsync result file: %s' % result
     log_f['error'].write('Error reading result file\n')
-print '[INFO] End parse rsync result file: %s' % result
+print '[INFO] 9. End parse rsync result file: %s' % result
     
 if not task_ok:
     print '[ERROR] Task esit is KO'
