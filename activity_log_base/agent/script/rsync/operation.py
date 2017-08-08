@@ -144,6 +144,7 @@ if folders:
             result, # always in append mode
             )
         print '[INFO] 6a. Multi rsync operations: %s' % script_multi
+        log_f['info'].write('Rsync folder: %s\n' % f)
         os.system(script_multi)
                 
 else: # no folders all
@@ -153,6 +154,7 @@ else: # no folders all
         result,
         )
     print '[INFO] 6b. Single rsync operations: %s' % script
+    log_f['info'].write('Rsync folder all folder')
     os.system(script)
 
 print '[INFO] 7. Umount linked resource: %s' % umount_command
@@ -174,8 +176,9 @@ try:
         row = row.lower()
         # Remove exclude file from log row:
         for term in exclude:
-            exclude_name = '/%s ' % term
-            if exclude_name in row:
+            exclude_name_1 = '/%s ' % term
+            exclude_name_2 = '/%s"' % term
+            if exclude_name_1 in row or exclude_name_2 in row:
                 log_f['warning'].write('Exclude %s in row: %s\n' % (term, row))
                 continue
                 
