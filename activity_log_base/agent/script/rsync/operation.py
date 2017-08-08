@@ -64,7 +64,7 @@ config.read([fullname])
 # Folder:
 path = config.get('operation', 'path') 
 folders = eval(config.get('operation', 'folders'))
-exclude = eval(cogif.get('operation', 'exclude'))
+exclude = eval(congif.get('operation', 'exclude'))
 history = eval(config.get('operation', 'history'))
 from_folder = os.path.join(path, 'mount')
 to_folder = os.path.join(path, '0')
@@ -102,7 +102,6 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # Operation scripts:
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 print '[INFO] 1. Mount linked resource: %s' % mount_command
 os.system(mount_command)
 
@@ -134,7 +133,6 @@ if history >= 1:
         os.path.join(path, '1'),
         )
     print '[INFO] 5. Hard link copy: %s' % command
-    import pdb; pdb.set_trace()
     os.system(command)
 
 print '[INFO] 6. Start rsync operations, folders: %s' % folders
@@ -167,6 +165,7 @@ if os.path.isfile(check_file):
 # -----------------------------------------------------------------------------
 task_ok = True
 print '[INFO] 8. Parse rsync result file: %s' % result
+import pdb; pdb.set_trace()
 try:
     result_f = open(result, 'r')
     for row in result_f:
@@ -174,6 +173,12 @@ try:
         # Information:
         # ---------------------------------------------------------------------
         row = row.lower()
+        # Remove exclude file from log row:
+        for x in exclude:
+            if x in row:
+                continue
+                
+        # Check other data:
         if ' received ' in row:
             log_f['info'].write('%s\n' % row)
         elif ' total size ' in row:
