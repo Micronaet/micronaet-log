@@ -101,6 +101,7 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # Operation scripts:
 # -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
 print '[INFO] 1. Mount linked resource: %s' % mount_command
 os.system(mount_command)
 
