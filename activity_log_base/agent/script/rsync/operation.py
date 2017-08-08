@@ -176,9 +176,7 @@ try:
         row = row.lower()
         # Remove exclude file from log row:
         for term in exclude:
-            exclude_name_1 = '/%s ' % term
-            exclude_name_2 = '/%s"' % term
-            if exclude_name_1 in row or exclude_name_2 in row:
+            if 'error' in row and term in row: # only warning
                 log_f['warning'].write('Exclude %s in row: %s\n' % (term, row))
                 continue
                 
