@@ -18,11 +18,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+# Library:
 import os
 import sys
 import ConfigParser
 import erppeek
 from datetime import datetime
+
+# Constant:
+DEFAULT_SERVER_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S')
 
 # -----------------------------------------------------------------------------
 # Utility:
@@ -48,6 +52,13 @@ def log_event(log_f, event, mode='info'):
         )
     log_f.write(event)
     return True
+
+def change_datetime_gmt(timestamp):
+    ''' Change datetime removing gap from now and GMT 0
+    '''
+    extra_gmt = datetime.now() - datetime.utcnow()
+    ts = datetime.strptime(timestamp, DEFAULT_SERVER_DATETIME_FORMAT) 
+    return (ts - extra_gmt).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
 # -----------------------------------------------------------------------------
 #                                PARAMETERS:
@@ -117,7 +128,7 @@ log_event(log_f, 'Access to URL: %s' % URL)
 data = {
     'code_partner': code_partner,
     'code_activity': code_activity,
-    'start': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 
+    'start': change_datetime_gmt(datetime.now()),
     'end': False, # if False is consider as start event in ODOO
     'origin': origin,
     'log_info': '',
@@ -151,7 +162,7 @@ else:
 # Log end operation:
 # -----------------------------------------------------------------------------
 # End time:
-data['end'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+data['end'] = change_datetime_gmt(datetime.now())
 
 # Log status from file:
 log_text = {}
