@@ -173,13 +173,14 @@ for row in result_f:
     # Information:
     # ---------------------------------------------------------------------
     row = row.lower()
+    
     # Remove exclude file from log row:
     finded = False
     for term in exclude:
         if 'error' in row and term in row: # only warning
             finded = True
             break
-    if find:
+    if finded:
         log_f['warning'].write('Exclude %s in row: %s\n' % (term, row))
         continue
             
