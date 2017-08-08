@@ -154,7 +154,6 @@ else: # no folders all
         result,
         )
     print '[INFO] 6b. Single rsync operations: %s' % script
-    import pdb; pdb.set_trace()
     log_f['info'].write('Rsync folder all folder')
     os.system(script)
 
