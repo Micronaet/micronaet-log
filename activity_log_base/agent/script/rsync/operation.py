@@ -169,7 +169,6 @@ task_ok = True
 print '[INFO] 8. Parse rsync result file: %s' % result
 try:
     result_f = open(result, 'r')
-    import pdb; pdb.set_trace()
     for row in result_f:
         # ---------------------------------------------------------------------
         # Information:
