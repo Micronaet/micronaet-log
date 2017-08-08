@@ -185,9 +185,9 @@ for row in result_f:
         continue
             
     # Check other data:
-    if ' received ' in row:
-        log_f['info'].write('%s\n' % row)
-    elif ' total size ' in row:
+    #if ' received ' in row:
+    #    log_f['info'].write('%s\n' % row)
+    if ' total size ' in row:
         log_f['info'].write('%s\n' % row)
         
     # ---------------------------------------------------------------------
