@@ -176,10 +176,14 @@ try:
         # ---------------------------------------------------------------------
         row = row.lower()
         # Remove exclude file from log row:
+        finded = False
         for term in exclude:
             if 'error' in row and term in row: # only warning
-                log_f['warning'].write('Exclude %s in row: %s\n' % (term, row))
-                continue
+                finded = True
+                break
+        if find:
+            log_f['warning'].write('Exclude %s in row: %s\n' % (term, row))
+            continue
                 
         # Check other data:
         if ' received ' in row:
