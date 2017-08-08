@@ -64,7 +64,7 @@ config.read([fullname])
 # Folder:
 path = config.get('operation', 'path') 
 folders = eval(config.get('operation', 'folders'))
-exclude = eval(congif.get('operation', 'exclude'))
+exclude = eval(config.get('operation', 'exclude'))
 history = eval(config.get('operation', 'history'))
 from_folder = os.path.join(path, 'mount')
 to_folder = os.path.join(path, '0')
