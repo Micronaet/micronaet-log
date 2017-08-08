@@ -167,50 +167,46 @@ if os.path.isfile(check_file):
 # -----------------------------------------------------------------------------
 task_ok = True
 print '[INFO] 8. Parse rsync result file: %s' % result
-try:
-    result_f = open(result, 'r')
-    for row in result_f:
-        # ---------------------------------------------------------------------
-        # Information:
-        # ---------------------------------------------------------------------
-        row = row.lower()
-        # Remove exclude file from log row:
-        finded = False
-        for term in exclude:
-            if 'error' in row and term in row: # only warning
-                finded = True
-                break
-        if find:
-            log_f['warning'].write('Exclude %s in row: %s\n' % (term, row))
-            continue
-                
-        # Check other data:
-        if ' received ' in row:
-            log_f['info'].write('%s\n' % row)
-        elif ' total size ' in row:
-            log_f['info'].write('%s\n' % row)
+result_f = open(result, 'r')
+for row in result_f:
+    # ---------------------------------------------------------------------
+    # Information:
+    # ---------------------------------------------------------------------
+    row = row.lower()
+    # Remove exclude file from log row:
+    finded = False
+    for term in exclude:
+        if 'error' in row and term in row: # only warning
+            finded = True
+            break
+    if find:
+        log_f['warning'].write('Exclude %s in row: %s\n' % (term, row))
+        continue
             
-        # ---------------------------------------------------------------------
-        # Warning:
-        # ---------------------------------------------------------------------
+    # Check other data:
+    if ' received ' in row:
+        log_f['info'].write('%s\n' % row)
+    elif ' total size ' in row:
+        log_f['info'].write('%s\n' % row)
         
-        # ---------------------------------------------------------------------
-        # Error: 
-        # ---------------------------------------------------------------------
-        elif 'error' in row:     
-            task_ok = False
-            # Archive info
-            log_f['error'].write('%s\n' % row)
+    # ---------------------------------------------------------------------
+    # Warning:
+    # ---------------------------------------------------------------------
+    
+    # ---------------------------------------------------------------------
+    # Error: 
+    # ---------------------------------------------------------------------
+    elif 'error' in row:     
+        task_ok = False
+        # Archive info
+        log_f['error'].write('%s\n' % row)
 
-        # ---------------------------------------------------------------------
-        # Check elements:
-        # ---------------------------------------------------------------------
-        #elif 'finished successfully' in row:
-        #    task_ok = True    
-    result_f.close()
-except:
-    print '[ERROR] No rsync result file: %s' % result
-    log_f['error'].write('Error reading result file\n')
+    # ---------------------------------------------------------------------
+    # Check elements:
+    # ---------------------------------------------------------------------
+    #elif 'finished successfully' in row:
+    #    task_ok = True    
+result_f.close()
 print '[INFO] 9. End parse rsync result file: %s' % result
     
 if not task_ok:
