@@ -26,7 +26,7 @@ import erppeek
 from datetime import datetime
 
 # Constant:
-DEFAULT_SERVER_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S')
+DEFAULT_SERVER_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 # -----------------------------------------------------------------------------
 # Utility:
