@@ -140,7 +140,7 @@ class LogActivityEvent(orm.Model):
     _name = 'log.activity.event'
     _description = 'Event'
     _rec_name = 'datetime'
-    _order = 'datetime'
+    _order = 'datetime desc'
     
     def get_duration_hour(self, start, end):
         ''' Diference from 2 date in hours

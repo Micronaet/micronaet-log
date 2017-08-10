@@ -181,7 +181,7 @@ for row in result_f:
             finded = True
             break
     if finded:
-        log_f['warning'].write('Exclude %s in row: %s\n' % (term, row))
+        log_f['info'].write('Exclude %s in row: %s\n' % (term, row))
         continue
             
     # Check other data:
