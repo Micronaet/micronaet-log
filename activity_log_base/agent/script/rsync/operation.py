@@ -183,7 +183,7 @@ for row in result_f:
     if finded:
         log_f['info'].write('Exclude %s in row: %s\n' % (term, row))
         continue
-            
+
     # Check other data:
     #if ' received ' in row:
     #    log_f['info'].write('%s\n' % row)
