@@ -139,6 +139,7 @@ class LogActivity(orm.Model):
             
             Note: only updated the next change of monitored values
         """    
+        import pdb; pdb.set_trace()
         # Put in history cron or config value:    
         self.save_history_mode(cr, uid, ids, vals, context=context)
 
