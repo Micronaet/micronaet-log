@@ -58,14 +58,13 @@ def get_erp_pool(URL, database, username, password):
 def save_server_history(URL, database, username, password, event_record, data):
     ''' Connect to log table in ODOO (normal log object)
     '''
-    import pdb; pdb.set_trace()
     activity_id = event_record.get('activity_id')
     if not activity_id:
-        # Write nothin
+        # Write nothing
         return False
     erp = get_erp(URL, database, username, password)
-    activity = erp.LogActivityHistory
-    activity.write(activity_id, data)
+    activity_pool = erp.LogActivity
+    activity_pool.write(activity_id, data)
     return True
 
 def log_event(log_f, event, mode='info'):
