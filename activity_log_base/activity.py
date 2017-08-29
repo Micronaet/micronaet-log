@@ -88,7 +88,7 @@ class LogActivityHistory(orm.Model):
         'mode': fields.selection([
             ('cron', 'Cron job'),
             ('config', 'Config file'),
-            ], 'Mode')
+            ], 'Mode'),
         'activity_id': fields.many2one(
             'log.activity', 'Activity', 
             required=False),    
