@@ -180,7 +180,7 @@ data = {
     }
 
 if log_start:
-    update_id = erp_pool.log_event(data) # Create start event
+    update_id, event_record = erp_pool.log_event(data) # Create start event
     event_record = log_event(
         log_f, 'Log the start of operation: event ID: %s %s' % (
             update_id,
@@ -236,7 +236,7 @@ if log_start: # Update event:
 else: # Normal creation of start stop event:
     for i in range(1, 5): # For timout problems:
         try:
-            erp_pool.log_event(data)
+            create_id, event_record = erp_pool.log_event(data)
             log_event(log_f, 'Create start / stop event: %s' % (data, ))
             save_server_history(
                 URL, database, username, password, event_record, activity_data)
