@@ -104,6 +104,43 @@ class LogActivity(orm.Model):
     _description = 'Log activity'
     _order = 'name'
     
+    def save_history_mode(self, cr, uid, ids, vals, context=None):
+        ''' History before insert data value in particular fields
+        '''
+        history_pool = self.pool.get('log.activity.history')
+        
+        fields = ['cron', 'config']
+        current_proxy = self.browse(cr, uid, ids, context=context)[0]
+        for field in fields:
+            if field in vals:
+                # If field is different:
+                if vals[field] != current_proxy.__getattribute__(field):
+                    # History operation:
+                    history_pool.create(cr, uid, {
+                        'activity_id': current_proxy.activity_id.id,
+                        'mode': field,
+                        'old': current_proxy.__getattribute__(field)
+                        }, context=context)
+                else: # if same not update:                       
+                    del(vals[mode])
+        return True                        
+    
+    def write(self, cr, uid, ids, vals, context=None):
+        """ Update redord(s) comes in {ids}, with new value comes as {vals}
+            return True on success, False otherwise
+            @param cr: cursor to database
+            @param uid: id of current user
+            @param ids: list of record ids to be update
+            @param vals: dict of new values to be set
+            @param context: context arguments, like lang, time zone
+            
+            @return: True on success, False otherwise
+        """    
+        #Create history if some fields will be updated:
+        self.save_history_mode(self, cr, uid, ids, vals, context=context)
+        return super(LogActivity, self).write(
+            cr, uid, ids, vals, context=context)
+        
     _columns = {
         'is_active': fields.boolean('Is active'),
         'code': fields.char('Code', size=15),
