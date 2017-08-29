@@ -21,6 +21,7 @@
 # Library:
 import os
 import sys
+import subprocess
 import ConfigParser
 import erppeek
 from datetime import datetime
