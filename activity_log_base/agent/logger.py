@@ -185,6 +185,7 @@ if log_start:
             update_id,
             data, 
             ))
+    log_event(log_f, 'Log cron and config file if necessary')
     save_server_history(
         URL, database, username, password, event_record, activity_data)
 
@@ -236,9 +237,10 @@ else: # Normal creation of start stop event:
     for i in range(1, 5): # For timout problems:
         try:
             create_id, event_record = erp_pool.log_event(data)
-            log_event(log_f, 'Create start / stop event: %s' % (data, ))
+            log_event(log_f, 'Log cron and config file if necessary')
             save_server_history(
                 URL, database, username, password, event_record, activity_data)
+            log_event(log_f, 'Create start / stop event: %s' % (data, ))
             break 
         except:
             log_event(log_f, 'Timeout try: %s ' % i)
