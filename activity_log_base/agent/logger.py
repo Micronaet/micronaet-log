@@ -101,7 +101,8 @@ if len(argv) != 2: # No parameters:
 code_activity = argv[1]
 
 # Update GIT module data before all operations
-log_event(log_f, 'Update Git module folder: %s' % git_folder)
+log_update_git = 'Update Git module folder: %s' % git_folder
+log_event(log_f, log_update_git)
 os.system('cd %s; git pull' % git_folder)
 
 # -----------------------------------------------------------------------------
@@ -141,7 +142,7 @@ data = {
     'start': change_datetime_gmt(datetime.now()),
     'end': False, # if False is consider as start event in ODOO
     'origin': origin,
-    'log_info': '',
+    'log_info': '%s\n' % log_update_git,
     'log_warning': '',
     'log_error': '',
     }
@@ -153,7 +154,7 @@ if log_start:
             update_id,
             data, 
             ))
-        
+
 log_event(log_f, 'Closing ERP connection')
 del(erp_pool) # For close connection
     
