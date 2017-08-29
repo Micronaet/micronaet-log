@@ -124,7 +124,7 @@ operation_config.read([fullname])
 
 # Update activity with extra info about status:
 import pdb; pdb.set_trace()
-activity_cron = get_result_command(['crontab', '-e'])
+activity_cron = get_result_command(['crontab', '-l'])
 activity_config = get_result_command(['cat', fullname])
 
 
