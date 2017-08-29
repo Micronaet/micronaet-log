@@ -232,9 +232,11 @@
                                 </page>
                                 <page string="Status">
                                     <group col="4" colspan="4">
-                                        <separator string="Config file:" colspan="4"/>
+                                        <separator string="Config file:" colspan="3"/>
+                                        <button name="open_history_config" string="Config history value" type="object" colspan="1"/>
                                         <field name="config" nolabel="1" colspan="4" />
-                                        <separator string="Cron tab:" colspan="4"/>
+                                        <separator string="Cron tab:" colspan="3"/>
+                                        <button name="open_history_cron" string="Cron history value" type="object" colspan="1"/>
                                         <field name="cron" nolabel="1" colspan="4" />
                                     </group>
                                 </page>

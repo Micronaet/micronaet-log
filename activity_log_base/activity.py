@@ -104,6 +104,40 @@ class LogActivity(orm.Model):
     _description = 'Log activity'
     _order = 'name'
     
+    # -------------------------------------------------------------------------
+    # Button:
+    # -------------------------------------------------------------------------    
+    def open_history_cron(self, cr, uid, ids, mode, context=None):
+        ''' Open cron history
+        '''    
+        return self.open_history(cr, uid, ids, mode='cron', context=context)
+    
+    def open_history_config(self, cr, uid, ids, mode, context=None):
+        ''' Open config history
+        '''    
+        return self.open_history(cr, uid, ids, mode='config', context=context)
+           
+    def open_history(self, cr, uid, ids, mode, context=None):
+        ''' Search config elements for mode type
+        '''
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Activity story %s' % mode),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            #'res_id': 1,
+            'res_model': 'log.activity.history',
+            #'view_id': view_id, # False
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [
+                ('activity', '=', ids[0]),
+                ('mode', '=', mode),
+                ],
+            'context': context,
+            'target': 'current', # 'new'
+            'nodestroy': False,
+            }
+            
     def save_history_mode(self, cr, uid, ids, vals, context=None):
         ''' History before insert data value in particular fields
         '''
