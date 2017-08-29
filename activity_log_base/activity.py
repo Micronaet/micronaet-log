@@ -115,7 +115,7 @@ class LogActivity(orm.Model):
         for field in fields:
             if field in vals:
                 # If field is different:
-                old_value = current_proxy.__getattribute__(field)
+                old_value = current_proxy.__getattr__(field)
                 if vals[field] != old_value:
                     # History operation:
                     history_pool.create(cr, uid, {
