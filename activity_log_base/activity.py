@@ -110,7 +110,7 @@ class LogActivity(orm.Model):
         history_pool = self.pool.get('log.activity.history')
         
         fields = ['cron', 'config']
-        if type(ids) in list, tuple:
+        if type(ids) in (list, tuple):
             ids = ids[0]
         current_proxy = self.browse(cr, uid, ids, context=context)
         for field in fields:
