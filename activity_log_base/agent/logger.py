@@ -100,7 +100,7 @@ if len(argv) != 2: # No parameters:
 # Passed parameter [operation code, also folder name]:
 code_activity = argv[1]
 
-# Update GIT module data before all operations
+# Update GIT module data before all operations (next exection will be updated)
 log_update_git = 'Update Git module folder: %s' % git_folder
 log_event(log_f, log_update_git)
 os.system('cd %s; git pull' % git_folder)

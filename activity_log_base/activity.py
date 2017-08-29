@@ -75,6 +75,27 @@ class LogActivityMedia(orm.Model):
         'is_active': lambda *x: True,
         }    
     
+class LogActivityHistory(orm.Model):
+    """ Model name: Log event history
+    """
+    
+    _name = 'log.activity.history'
+    _description = 'Log activity history'
+    _order = 'mode, datetime'
+    _rec_name = 'mode'
+    
+    _columns = {
+        'mode': fields.selection([
+            ('cron', 'Cron job'),
+            ('config', 'Config file'),
+            ], 'Mode')
+        'activity_id': fields.many2one(
+            'log.activity', 'Activity', 
+            required=False),    
+        'create_date': fields.datetime('History data'),
+        'old': fields.text('Old value'),
+        }
+                    
 class LogActivity(orm.Model):
     """ Model name: Log event
     """
@@ -116,6 +137,10 @@ class LogActivity(orm.Model):
         'script': fields.text('Script'),
         'origin': fields.text(
             'Origin', help='Info of origin server for the activity'),
+        
+        # Info about server:
+        'cron': fields.text('Cron job'),
+        'config': fields.text('Config file'),
         
         'note': fields.text('Note'),
         'state': fields.selection([

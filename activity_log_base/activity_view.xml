@@ -50,6 +50,69 @@
             <field name="domain">[('is_company', '=', True)]</field>
         </record>
             
+        <!--log.activity.history-->
+        <record model="ir.ui.view" id="view_log_activity_history_search">
+            <field name="name">log.activity.history.search</field>
+            <field name="model">log.activity.history</field>
+            <field name="arch" type="xml">
+                <search string="History" version="7.0">        
+                    <field name="mode" />
+                    
+                    <field name="activity_id" filter_domain="[('activity_id','=',self)]"/>
+
+                    <filter name="mode_cron" string="Cron mode" domain="[('mode','=','cron')]"/>
+                    <filter name="mode_config" string="Config mode" domain="[('mode','=','config')]"/>
+
+                    <group expand="0" string="Group By...">
+                        <filter name="group_activity" string="Activity" context="{'group_by': 'activity_id'}"/>
+                        <filter string="Mode" context="{'group_by': 'mode'}" />
+                    </group>                
+                </search>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_log_activity_history_tree">
+            <field name="name">log.activity.history.tree</field>
+            <field name="model">log.activity.history</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <tree string="History">
+                    <field name="activity_id" />
+                    <field name="create_date" />
+                    <field name="mode" />
+                    <field name="old" />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_log_activity_history_form">
+            <field name="name">log.activity.history.form</field>
+            <field name="model">log.activity.history</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="History" version="7.0">
+                    <sheet>
+                        <group colspan="4" col="4">
+                            <field name="mode" readonly="1"/>
+                            <newline/>
+                            <field name="activity_id" readonly="1" />
+                            <field name="create_date" readonly="1" />
+                            <separator string="Old content" colspan="4"/>
+                            <field name="old" nolabel="1" colspan="4" readonly="1"/>
+                        </group>    
+                    </sheet>    
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_log_activity_history">
+            <field name="name">Change activity</field>
+            <field name="res_model">log.activity.history</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_log_activity_history_tree"/>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+        </record>
+        
+        
         <!--log.category-->
         <record model="ir.ui.view" id="view_log_category_form">
             <field name="name">log.category.form</field>
@@ -166,6 +229,14 @@
                                         <separator string="Origin" colspan="4"/>
                                         <field name="origin" nolabel="1" colspan="4" />
                                     </group>                    
+                                </page>
+                                <page string="Status">
+                                    <group col="4" colspan="4">
+                                        <separator string="Config file:" colspan="4"/>
+                                        <field name="config" nolabel="1" colspan="4" />
+                                        <separator string="Cron tab:" colspan="4"/>
+                                        <field name="cron" nolabel="1" colspan="4" />
+                                    </group>
                                 </page>
                                 <page string="Note">
                                     <group col="4" colspan="4">
@@ -337,6 +408,11 @@
                     action="action_log_activity"
                     sequence="10"
                     />
+                    <menuitem 
+                        parent="menu_activity_log" 
+                        id="menu_action_log_activity_history" 
+                        action="action_log_activity_history"/>
+                    
                 <menuitem 
                     parent="menu_log_activity" 
                     id="menu_activity_event_log" 
