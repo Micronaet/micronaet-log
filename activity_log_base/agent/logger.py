@@ -83,6 +83,11 @@ code_partner = master_config.get('XMLRPC', 'partner')
 
 log_activity = master_config.get('log', 'activity')
 
+try:
+    git_folder = master_config.get('git', 'folder')
+except:
+    git_folder = '/backup/git/micronaet-log'    
+
 # Open log file:    
 log_f = open(log_activity, 'a')
 
@@ -94,6 +99,10 @@ if len(argv) != 2: # No parameters:
 
 # Passed parameter [operation code, also folder name]:
 code_activity = argv[1]
+
+# Update GIT module data before all operations
+log_event(log_f, 'Update Git module folder: %s' % git_folder)
+os.system('cd %s; git pull' % git_folder)
 
 # -----------------------------------------------------------------------------
 # OPERATION PARAMETER:
