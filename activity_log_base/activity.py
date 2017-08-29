@@ -110,7 +110,6 @@ class LogActivity(orm.Model):
         history_pool = self.pool.get('log.activity.history')
         
         fields = ['cron', 'config']
-        import pdb; pdb.set_trace()
         current_proxy = self.browse(cr, uid, ids, context=context)[0]
         for field in fields:
             if field in vals:
@@ -119,7 +118,7 @@ class LogActivity(orm.Model):
                 if vals[field] != old_value:
                     # History operation:
                     history_pool.create(cr, uid, {
-                        'activity_id': current_proxy.activity_id.id,
+                        'activity_id': current_proxy.id,
                         'mode': field,
                         'old': old_value,
                         }, context=context)
