@@ -181,7 +181,7 @@ data = {
 
 if log_start:
     update_id, event_record = erp_pool.log_event(data) # Create start event
-    event_record = log_event(
+    log_event(
         log_f, 'Log the start of operation: event ID: %s %s' % (
             update_id,
             data, 
