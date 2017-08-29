@@ -37,7 +37,8 @@ def get_result_command(command):
         cron: cron status of the server
         config: config file status
     '''
-    return subprocess.Popen(command, stdout=subprocess.PIPE).communicate()[0]
+    return os.popen(command).read()
+    #subprocess.Popen(command, stdout=subprocess.PIPE).communicate()[0]
     
 def get_erp(URL, database, username, password):
     ''' Connect to log table in ODOO
@@ -140,8 +141,9 @@ operation_config.read([fullname])
 
 # Log server status parameter:
 activity_data = {
-    'cron': get_result_command(['crontab', '-l']),
-    'config': get_result_command(['cat', fullname]),
+    'server': get_result_command('hostname; ifconfig | grep \'HWaddr\|inet\''),
+    'cron': get_result_command('crontab -l'),
+    'config': get_result_command('cat', fullname),
     }
 
 log_start = eval(operation_config.get('operation', 'log_start'))

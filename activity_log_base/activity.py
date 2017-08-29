@@ -88,6 +88,7 @@ class LogActivityHistory(orm.Model):
         'mode': fields.selection([
             ('cron', 'Cron job'),
             ('config', 'Config file'),
+            ('server', 'Server info'),
             ], 'Mode'),
         'activity_id': fields.many2one(
             'log.activity', 'Activity', 
@@ -116,6 +117,11 @@ class LogActivity(orm.Model):
         ''' Open config history
         '''    
         return self.open_history(cr, uid, ids, mode='config', context=context)
+
+    def open_history_server(self, cr, uid, ids, mode, context=None):
+        ''' Open server history
+        '''    
+        return self.open_history(cr, uid, ids, mode='server', context=context)
            
     def open_history(self, cr, uid, ids, mode, context=None):
         ''' Search config elements for mode type
@@ -143,7 +149,7 @@ class LogActivity(orm.Model):
         '''
         history_pool = self.pool.get('log.activity.history')
         
-        fields = ['cron', 'config']
+        fields = ['cron', 'config', 'server']
         if type(ids) in (list, tuple):
             ids = ids[0]
         current_proxy = self.browse(cr, uid, ids, context=context)
@@ -218,6 +224,7 @@ class LogActivity(orm.Model):
         # Info about server:
         'cron': fields.text('Cron job'),
         'config': fields.text('Config file'),
+        'server': fields.text('Server info'),
         
         'note': fields.text('Note'),
         'state': fields.selection([
