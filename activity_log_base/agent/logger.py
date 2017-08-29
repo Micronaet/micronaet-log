@@ -37,7 +37,7 @@ def get_result_command(command):
         cron: cron status of the server
         config: config file status
     '''
-    return subprocess.Popen(command, stdout=subprocess.PIPE).communicate()
+    return subprocess.Popen(command, stdout=subprocess.PIPE).communicate()[0]
     
 def get_erp(URL, database, username, password):
     ''' Connect to log table in ODOO
