@@ -137,7 +137,7 @@ class LogActivity(orm.Model):
             @return: True on success, False otherwise
         """    
         #Create history if some fields will be updated:
-        self.save_history_mode(self, cr, uid, ids, vals, context=context)
+        self.save_history_mode(cr, uid, ids, vals, context=context)
         return super(LogActivity, self).write(
             cr, uid, ids, vals, context=context)
         
