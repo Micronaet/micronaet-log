@@ -39,16 +39,34 @@ def get_result_command(command):
     '''
     return subprocess.Popen(command, stdout=subprocess.PIPE).communicate()
     
-def get_erp_pool(URL, database, username, password):
+def get_erp(URL, database, username, password):
     ''' Connect to log table in ODOO
     '''
-    erp = erppeek.Client(
+    return erppeek.Client(
         URL,
         db=database,
         user=username,
         password=password,
         )   
+
+def get_erp_pool(URL, database, username, password):
+    ''' Connect to log table in ODOO (normal log object)
+    '''
+    erp = get_erp(URL, database, username, password)
     return erp.LogActivityEvent   
+
+def save_server_history(URL, database, username, password, event_record, data):
+    ''' Connect to log table in ODOO (normal log object)
+    '''
+    import pdb; pdb.set_trace()
+    activity_id = event_record.get('activity_id')
+    if not activity_id:
+        # Write nothin
+        return False
+    erp = get_erp(URL, database, username, password)
+    activity = erp.LogActivityHistory
+    activity.write(activity_id, data)
+    return True
 
 def log_event(log_f, event, mode='info'):
     ''' Log event on file
@@ -121,11 +139,11 @@ scriptname = os.path.join(path, code_activity, 'operation.py')
 operation_config = ConfigParser.ConfigParser()
 operation_config.read([fullname])
 
-# Update activity with extra info about status:
-import pdb; pdb.set_trace()
-activity_cron = get_result_command(['crontab', '-l'])
-activity_config = get_result_command(['cat', fullname])
-
+# Log server status parameter:
+activity_data = {
+    'cron': get_result_command(['crontab', '-l']),
+    'config': get_result_command(['cat', fullname]),
+    }
 
 log_start = eval(operation_config.get('operation', 'log_start'))
 origin = operation_config.get('operation', 'origin')
@@ -163,11 +181,13 @@ data = {
 
 if log_start:
     update_id = erp_pool.log_event(data) # Create start event
-    log_event(
+    event_record = log_event(
         log_f, 'Log the start of operation: event ID: %s %s' % (
             update_id,
             data, 
             ))
+    save_server_history(
+        URL, database, username, password, event_record, activity_data)
 
 log_event(log_f, 'Closing ERP connection')
 del(erp_pool) # For close connection
@@ -218,6 +238,8 @@ else: # Normal creation of start stop event:
         try:
             erp_pool.log_event(data)
             log_event(log_f, 'Create start / stop event: %s' % (data, ))
+            save_server_history(
+                URL, database, username, password, event_record, activity_data)
             break 
         except:
             log_event(log_f, 'Timeout try: %s ' % i)
