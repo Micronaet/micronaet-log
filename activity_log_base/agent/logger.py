@@ -143,7 +143,7 @@ operation_config.read([fullname])
 activity_data = {
     'server': get_result_command('hostname; ifconfig | grep \'HWaddr\|inet\''),
     'cron': get_result_command('crontab -l'),
-    'config': get_result_command('cat', fullname),
+    'config': get_result_command('cat %s' % fullname),
     }
 
 log_start = eval(operation_config.get('operation', 'log_start'))
