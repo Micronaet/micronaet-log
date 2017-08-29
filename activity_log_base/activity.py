@@ -159,7 +159,7 @@ class LogActivity(orm.Model):
                         'old': old_value,
                         }, context=context)
                 else: # if same not update:                       
-                    del(vals[mode])
+                    del(vals[field])
         return True                        
 
     def write(self, cr, uid, ids, vals, context=None):
