@@ -179,6 +179,7 @@ data = {
     }
 
 if log_start:
+    import pdb; pdb.set_trace()
     update_id, event_record = erp_pool.log_event(data) # Create start event
     log_event(
         log_f, 'Log the start of operation: event ID: %s %s' % (
