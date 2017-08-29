@@ -130,7 +130,7 @@ class LogActivity(orm.Model):
             #'view_id': view_id, # False
             'views': [(False, 'tree'), (False, 'form')],
             'domain': [
-                ('activity', '=', ids[0]),
+                ('activity_id', '=', ids[0]),
                 ('mode', '=', mode),
                 ],
             'context': context,
