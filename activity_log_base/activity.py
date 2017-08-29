@@ -110,7 +110,9 @@ class LogActivity(orm.Model):
         history_pool = self.pool.get('log.activity.history')
         
         fields = ['cron', 'config']
-        current_proxy = self.browse(cr, uid, ids, context=context)[0]
+        if type(ids) in list, tuple:
+            ids = ids[0]
+        current_proxy = self.browse(cr, uid, ids, context=context)
         for field in fields:
             if field in vals:
                 # If field is different:
@@ -139,7 +141,6 @@ class LogActivity(orm.Model):
             
             Note: only updated the next change of monitored values
         """    
-        import pdb; pdb.set_trace()
         # Put in history cron or config value:    
         self.save_history_mode(cr, uid, ids, vals, context=context)
 
