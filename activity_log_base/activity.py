@@ -81,7 +81,7 @@ class LogActivityHistory(orm.Model):
     
     _name = 'log.activity.history'
     _description = 'Log activity history'
-    _order = 'mode, datetime'
+    _order = 'mode,create_date'
     _rec_name = 'mode'
     
     _columns = {
