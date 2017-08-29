@@ -125,7 +125,7 @@ class LogActivity(orm.Model):
                 else: # if same not update:                       
                     del(vals[mode])
         return True                        
-    
+
     def write(self, cr, uid, ids, vals, context=None):
         """ Update redord(s) comes in {ids}, with new value comes as {vals}
             return True on success, False otherwise
@@ -136,9 +136,12 @@ class LogActivity(orm.Model):
             @param context: context arguments, like lang, time zone
             
             @return: True on success, False otherwise
+            
+            Note: only updated the next change of monitored values
         """    
-        #Create history if some fields will be updated:
+        # Put in history cron or config value:    
         self.save_history_mode(cr, uid, ids, vals, context=context)
+
         return super(LogActivity, self).write(
             cr, uid, ids, vals, context=context)
         

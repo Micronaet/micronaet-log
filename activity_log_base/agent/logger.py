@@ -31,6 +31,14 @@ DEFAULT_SERVER_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 # -----------------------------------------------------------------------------
 # Utility:
 # -----------------------------------------------------------------------------
+def get_result_command(command):
+    ''' Get info procedure for:
+        cron: cron status of the server
+        config: config file status
+    '''
+    s = subprocess.Popen(command, stdout=subprocess.PIPE)
+    return s.communicate()
+    
 def get_erp_pool(URL, database, username, password):
     ''' Connect to log table in ODOO
     '''
@@ -112,6 +120,12 @@ fullname = os.path.join(path, code_activity, 'operation.cfg')
 scriptname = os.path.join(path, code_activity, 'operation.py')
 operation_config = ConfigParser.ConfigParser()
 operation_config.read([fullname])
+
+# Update activity with extra info about status:
+import pdb; pdb.set_trace()
+activity_cron = get_result_command(['crontab', '-e'])
+activity_config = get_result_command(['cat', fullname])
+
 
 log_start = eval(operation_config.get('operation', 'log_start'))
 origin = operation_config.get('operation', 'origin')
