@@ -359,4 +359,7 @@ else: # Normal creation of start stop event:
         if 'create' not in erp_error:
             erp_error['create'] = []
         erp_error['create'].append(data)
+        
+#Update pickle file:
+set_pickle_data(erp_error)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
