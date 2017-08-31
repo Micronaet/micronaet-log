@@ -364,4 +364,5 @@ else: # Normal creation of start stop event:
         
 #Update pickle file:
 set_pickle_data(erp_error)
+sys.exit()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
