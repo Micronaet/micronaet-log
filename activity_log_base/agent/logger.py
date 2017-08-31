@@ -183,7 +183,6 @@ log_event(log_f, 'Access to URL: %s' % URL)
 # Manage pickle activity:
 # -----------------------------------------------------------------------------
 if code_activity.upper() == 'PICKLE':
-    import pdb; pdb.set_trace()
     log_event(log_f, 'Start update pickle mode')
 
     # Connect to database:
@@ -321,7 +320,6 @@ connection_fail = True
 erp_error = get_pickle_data() # read pickle file
 
 if log_start: # Update event:
-    import pdb; pdb.set_trace()
     for i in range(1, 5): # For timout problems:
         try:
             erp_pool.log_event(data, update_id)
