@@ -21,6 +21,7 @@
 # Library:
 import os
 import sys
+import pickle
 import subprocess
 import ConfigParser
 import erppeek
@@ -30,8 +31,47 @@ from datetime import datetime
 DEFAULT_SERVER_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 # -----------------------------------------------------------------------------
-# Utility:
+#                                      UTILITY:
 # -----------------------------------------------------------------------------
+# PICKLE FUNCTION:
+path, name = os.path.split(os.path.abspath(__file__))
+pickle_path = os.path.join(path, 'pickle')
+os.system('mkdir -p %s' % pickle_path)
+pickle_file = os.path.join(pickle_path, 'remain.pickle')
+
+def get_pickle_data():
+    ''' Save in folder dump the remain data not publisched
+    '''
+    try:
+        return pickle.load(open(pickle_file, 'rb'))
+    except:
+        return {}    
+ 
+def set_pickle_data(data=None):
+    ''' Set data for next write
+    '''
+    # Read previous data:
+    previous = get_pickle_data()
+    
+    # Update
+    if data is nothing:
+        data = {}
+    else:    
+        data.update(previous)
+    
+    # Save updated record:    
+    pickle.dump(
+        data, 
+        open(pickle_file, 'wb') 
+        )
+    return True
+
+def clean_pickle():
+    ''' Reset pickle file
+    '''    
+    return set_pickle_data({})
+
+# STANDARD FUNCTION:
 def get_result_command(command):
     ''' Get info procedure for:
         cron: cron status of the server
@@ -132,6 +172,63 @@ log_event(log_f, log_update_git)
 os.system('cd %s; git pull' % git_folder)
 
 # -----------------------------------------------------------------------------
+# ERPPEEK Client connection:
+# -----------------------------------------------------------------------------
+log_event(log_f, 'Start launcher, log file: %s' % log_activity)
+URL = 'http://%s:%s' % (hostname, port) 
+erp_pool = get_erp_pool(URL, database, username, password)
+log_event(log_f, 'Access to URL: %s' % URL)
+
+# -----------------------------------------------------------------------------
+# Manage pickle activity:
+# -----------------------------------------------------------------------------
+if code_activity.upper() == 'PICKLE':
+    import pdb; pdb.set_trace()
+    log_event(log_f, 'Start update pickle mode')
+
+    # Connect to database:
+    erp_error = get_pickle_data()
+    
+    # -------------------------------------------------------------------------
+    # Write update record:
+    # -------------------------------------------------------------------------
+    # Try to reupdate:
+    remove_item = []
+    for update_id, data in erp_error.get('update', {}).iteritems():
+        try:
+            erp_pool.log_event(data, update_id)
+            log_event(log_f, 'Pickle update DONE: %s' % update_id)
+            remove_item.append(update_id)
+        except:
+            log_event(log_f, 'Pickle update NOT DONE: %s ' % update_id)
+            
+    # Remove updated
+    for item_id in remove_item:
+        del(erp_error['update'][item_id])
+
+    # -------------------------------------------------------------------------
+    # Write create record:
+    # -------------------------------------------------------------------------
+    # Try to reupdate:
+    remain_item = []
+    for data in erp_error.get('create', []):
+        try:
+            erp_pool.log_event(data)
+            log_event(log_f, 'Pickle create DONE: %s' % data)
+        except:
+            log_event(log_f, 'Pickle create NOT DONE: %s ' % data)
+            remain_item.append(data)
+            
+    # Remove updated
+    erp_error['create'] = remain_item
+    
+    # Update pickle file with modifications            
+    set_pickle_data(erp_error)
+    
+    # End operation here!
+    sys.exit()    
+
+# -----------------------------------------------------------------------------
 # OPERATION PARAMETER:
 # -----------------------------------------------------------------------------
 fullname = os.path.join(path, code_activity, 'operation.cfg')
@@ -159,14 +256,6 @@ log = {
     }
 
 # -----------------------------------------------------------------------------
-# ERPPEEK Client connection:
-# -----------------------------------------------------------------------------
-log_event(log_f, 'Start launcher, log file: %s' % log_activity)
-URL = 'http://%s:%s' % (hostname, port) 
-erp_pool = get_erp_pool(URL, database, username, password)
-log_event(log_f, 'Access to URL: %s' % URL)
-
-# -----------------------------------------------------------------------------
 # Log start operation:
 # -----------------------------------------------------------------------------
 data = {
@@ -181,6 +270,8 @@ data = {
     }
 
 if log_start:
+    #connection_fail = True
+    # TODO manage also here error on event?
     update_id, event_record = erp_pool.log_event(data) # Create start event
     log_event(
         log_f, 'Log the start of operation: event ID: %s %s' % (
@@ -226,15 +317,26 @@ for mode in log:
 # Reconnect for timeout problem:
 erp_pool = get_erp_pool(URL, database, username, password)
 log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
+connection_fail = True
+erp_error = get_pickle_data() # read pickle file
+
 if log_start: # Update event:
     for i in range(1, 5): # For timout problems:
         try:
             erp_pool.log_event(data, update_id)
             log_event(log_f, 'Update started event: %s' % update_id)
+            connection_fail = False            
             break 
         except:
             log_event(log_f, 'Timeout try: %s ' % i)
-            continue    
+            continue
+
+    # Log connection data error to write
+    if connection_fail:
+        if 'update' not in erp_error:
+            erp_error['update'] = {}
+        erp_error['update'][update_id] = data
+            
 else: # Normal creation of start stop event:
     for i in range(1, 5): # For timout problems:
         try:
@@ -243,8 +345,15 @@ else: # Normal creation of start stop event:
             save_server_history(
                 URL, database, username, password, event_record, activity_data)
             log_event(log_f, 'Create start / stop event: %s' % (data, ))
+            connection_fail = False
             break 
         except:
             log_event(log_f, 'Timeout try: %s ' % i)
-            continue    
+            continue
+
+    # Log connection data error to write
+    if connection_fail:
+        if 'create' not in erp_error:
+            erp_error['create'] = []
+        erp_error['create'].append(data)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
