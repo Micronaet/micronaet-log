@@ -53,14 +53,9 @@ def get_pickle_data():
 def set_pickle_data(data=None):
     ''' Set data for next write
     '''
-    # Read previous data:
-    previous = get_pickle_data()
-    
     # Update
     if data is None:
         data = {}
-    else:    
-        data.update(previous)
     
     # Save updated record:    
     f = open(pickle_file, 'wb')
