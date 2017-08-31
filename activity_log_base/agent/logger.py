@@ -165,6 +165,9 @@ if len(argv) != 2: # No parameters:
 
 # Passed parameter [operation code, also folder name]:
 code_activity = argv[1]
+if code_activity.endswith('/'):
+    code_activity = code_activity[:-1] # remove trail /
+
 
 # Update GIT module data before all operations (next exection will be updated)
 log_update_git = 'Update Git module folder: %s' % git_folder
