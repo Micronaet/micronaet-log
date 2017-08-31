@@ -69,6 +69,19 @@ history = eval(config.get('operation', 'history'))
 from_folder = os.path.join(path, 'mount')
 to_folder = os.path.join(path, '0')
 
+# Command:
+# TODO log better
+try:
+    pre_command = config.get('command', 'pre')
+    os.system(pre_command)
+except:
+    pass
+try:    
+    post_command = config.get('command', 'post')
+    os.system(post_command)
+except:
+    pass
+
 # -----------------------------------------------------------------------------
 # Remote section:
 # -----------------------------------------------------------------------------
