@@ -338,6 +338,7 @@ if log_start: # Update event:
     if connection_fail:
         if 'update' not in erp_error:
             erp_error['update'] = {}
+        log_event(log_f, 'Pickle update remain')
         erp_error['update'][update_id] = data
             
 else: # Normal creation of start stop event:
@@ -358,6 +359,7 @@ else: # Normal creation of start stop event:
     if connection_fail:
         if 'create' not in erp_error:
             erp_error['create'] = []
+        log_event(log_f, 'Pickle create remain')
         erp_error['create'].append(data)
         
 #Update pickle file:
