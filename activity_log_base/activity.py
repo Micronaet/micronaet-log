@@ -480,12 +480,14 @@ class LogActivityEvent(orm.Model):
             try:
                 res = self.write(cr, uid, update_id, record, context=context)
             except:
+                _logger.error('Error updating event: %s' % update_id)
                 res = False                    
             return (res, record)
         else:
             try:
                 res = self.create(cr, uid, record, context=context)
             except:
+                _logger.error('Error create event')
                 res = False    
             return (res, record)
         
