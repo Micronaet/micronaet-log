@@ -477,15 +477,17 @@ class LogActivityEvent(orm.Model):
             }
             
         if update_id:
-            return (
-                self.write(cr, uid, update_id, record, context=context),
-                record,
-                )
+            try:
+                res = self.write(cr, uid, update_id, record, context=context)
+            except:
+                res = False                    
+            return (res, record)
         else:
-            return (
-                self.create(cr, uid, record, context=context),
-                record,
-                )
+            try:
+                res = self.create(cr, uid, record, context=context)
+            except:
+                res = False    
+            return (res, record)
         
     _columns = {
         'datetime': fields.datetime('Date', required=True),
