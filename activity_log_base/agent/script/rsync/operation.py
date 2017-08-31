@@ -80,6 +80,7 @@ to_folder = os.path.join(path, '0')
         
 # Root mount folder in remote destination:
 remote_umount = False # no umount command to launch
+import pdb; pdb.set_trace()
 try: # Required remote (mounted as root path folder:
     remote_command = os.path.join('operation', 'mount_remote')
     remote_umount = 'umount %s' % path # substitute path folder with remote
