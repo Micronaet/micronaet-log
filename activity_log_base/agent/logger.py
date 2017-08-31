@@ -323,6 +323,7 @@ connection_fail = True
 erp_error = get_pickle_data() # read pickle file
 
 if log_start: # Update event:
+    import pdb; pdb.set_trace()
     for i in range(1, 5): # For timout problems:
         try:
             erp_pool.log_event(data, update_id)
