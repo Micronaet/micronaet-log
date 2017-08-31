@@ -49,7 +49,7 @@ def closing_operations(log_f, result):
     sys.exit()
     
 # -----------------------------------------------------------------------------
-#                                Parameters
+#                                PARAMETERS:
 # -----------------------------------------------------------------------------
 # Extract config file name from current name
 path, name = os.path.split(os.path.abspath(__file__))
@@ -68,6 +68,58 @@ exclude = eval(config.get('operation', 'exclude'))
 history = eval(config.get('operation', 'history'))
 from_folder = os.path.join(path, 'mount')
 to_folder = os.path.join(path, '0')
+
+# -----------------------------------------------------------------------------
+# Remote section:
+# -----------------------------------------------------------------------------
+# Note: Remote folder will be mounted first before all in root path position
+# Will be kept the structure where:
+#     mount origin is on mount folder
+#     backup destination is in 0 folder
+# The remote option will be activate put in the config file mount_remote param.
+        
+# Root mount folder in remote destination:
+remote_umount = False # no umount command to launch
+try: # Required remote (mounted as root path folder:
+    remote_command = os.path.join('operation', 'mount_remote')
+    remote_umount = 'umount %s' % path # substitute path folder with remote
+    
+    # Check file for remote path (mandatory if mount_remote parameter):
+    try:
+        check_remote = config.get('operation', 'check_remote')
+    except:
+        check_remote = False
+        
+    if check_remote: # mandatory if mount_remote
+        print '[INFO] R1. Mount remote root folder: %s' % remote_command
+        os.system(remote_command)
+        
+        import pdb; pdb.set_trace()
+        check_remote = os.path.join(path, check_remote)
+
+        print '[INFO] R2. Check correct mount remote: %s' % check_remote
+        if not os.path.isfile(check_remote):
+            try:
+                print '[INFO] R3. Umount remote NAS: %s' % remote_umount
+                os.system(remote_umount)
+            except:
+                pass    
+            log_f['error'].write('Cannot mount remote NAS\n')
+            closing_operations(log_f, result) # END HERE
+    else:
+        try:
+            print '[INFO] R3. Umount remote NAS: %s' % remote_umount
+            os.system(remote_umount)
+        except:
+            pass    
+        log_f['error'].write(
+            'No check file param in config file, write: check_remote\n')
+        closing_operations(log_f, result) # END HERE
+        
+except: 
+    remote_folder = False # no remote folder
+
+# -----------------------------------------------------------------------------
 
 # Mount parameters:
 mount_command = config.get('operation', 'mount')
@@ -157,10 +209,22 @@ else: # no folders all
     log_f['info'].write('Rsync folder all folder')
     os.system(script)
 
+# -----------------------------------------------------------------------------
+# Server data umount:
+# -----------------------------------------------------------------------------
 print '[INFO] 7. Umount linked resource: %s' % umount_command
 os.system(umount_command)
+
 if os.path.isfile(check_file):
     log_f['warning'].write('Cannot umount linked server\n')    
+
+# -----------------------------------------------------------------------------
+# Remote umount NAS:
+# -----------------------------------------------------------------------------
+if remote_umount:
+    print '[INFO] 7R. Umount remote NAS: %s' % remote_umount
+    os.system(remote_umount)
+    # TODO check if is umounted?
 
 # -----------------------------------------------------------------------------
 #                              PARSE LOG FILE:
