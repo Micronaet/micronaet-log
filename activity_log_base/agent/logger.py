@@ -43,9 +43,12 @@ def get_pickle_data():
     ''' Save in folder dump the remain data not publisched
     '''
     try:
-        return pickle.load(open(pickle_file, 'rb'))
+        f = open(pickle_file, 'rb')
+        res = pickle.load(f)
+        f.close()        
     except:
-        return {}    
+        res = {}   
+    return res    
  
 def set_pickle_data(data=None):
     ''' Set data for next write
@@ -60,10 +63,9 @@ def set_pickle_data(data=None):
         data.update(previous)
     
     # Save updated record:    
-    pickle.dump(
-        data, 
-        open(pickle_file, 'wb') 
-        )
+    f = open(pickle_file, 'wb')
+    pickle.dump(data, f)
+    f.close()
     return True
 
 def clean_pickle():
