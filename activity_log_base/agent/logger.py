@@ -54,7 +54,7 @@ def set_pickle_data(data=None):
     previous = get_pickle_data()
     
     # Update
-    if data is nothing:
+    if data is None:
         data = {}
     else:    
         data.update(previous)
@@ -222,7 +222,7 @@ if code_activity.upper() == 'PICKLE':
             log_event(log_f, 'Pickle create NOT DONE: %s ' % data)
             remain_item.append(data)
             
-    # Remove updated
+    # Remove updated    
     erp_error['create'] = remain_item
     
     # Update pickle file with modifications            
