@@ -403,16 +403,16 @@ class LogActivityEvent(orm.Model):
             # Create new (to compile after on ODOO):
             # Get error category:
             category_ids = category_pool.search(cr, uid, [
-                ('code', '=', code_activity), # use same code (cat.-act.)
+                ('code', '=', 'BAK'), # use same code (cat.-act.)
                 ], context=context)
             if category_ids:
                 category_id = category_ids[0]    
             else:
-                _logger.error('Code category not present (take ERR)!')
+                _logger.error('Code category not present (create BAK)!')
                 category_id = category_pool.create(cr, uid, {
-                    'code': code_activity,
-                    'name': 'Error',
-                    'note': 'Log error activity of the system (admin purpose)'
+                    'code': 'BAK',
+                    'name': 'Backup',
+                    'note': 'Log activity for Backup (automatic creation)'
                     }, context=context)
             
             # Get activity:
