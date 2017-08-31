@@ -186,6 +186,7 @@ log_event(log_f, 'Access to URL: %s' % URL)
 # Manage pickle activity:
 # -----------------------------------------------------------------------------
 if code_activity.upper() == 'PICKLE':
+    import pdb; pdb.set_trace()
     log_event(log_f, 'Start update pickle mode')
 
     # Connect to database:
