@@ -74,11 +74,13 @@ to_folder = os.path.join(path, '0')
 try:
     pre_command = config.get('command', 'pre')
     os.system(pre_command)
+    print '[INFO] Per command %s' % pre_command
 except:
     pass
 try:    
     post_command = config.get('command', 'post')
     os.system(post_command)
+    print '[INFO] Post command %s' % post_command
 except:
     pass
 
