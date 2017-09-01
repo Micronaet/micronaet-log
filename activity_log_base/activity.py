@@ -126,6 +126,7 @@ class LogActivity(orm.Model):
                 if line.startswith('#'):                  
                     continue # is a comment
                 if code in line:
+                    import pdb; pdb.set_trace()
                     line = line.replace('\t', ' ')
                     line_block = line.split()
                     if len(line_block) < 6:
