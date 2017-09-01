@@ -115,7 +115,6 @@ class LogActivity(orm.Model):
         '''
         res = {}
         for activity in self.browse(cr, uid, ids, context=context):        
-            import pdb; pdb.set_trace()
             code = activity.code
             res[activity.id] = [0, 0, 0, 0, 0, 0, 0, 0] # 0 to 7
             cron_file = (activity.cron or '')            
