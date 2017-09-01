@@ -240,7 +240,6 @@ class LogActivity(orm.Model):
         ''' Fields function for calculate 
         '''
         res = {}
-        import pdb; pdb.set_trace()
         daily = self.get_cron_info(cr, uid, ids, context=context)        
         for item_id, item in daily.iteritems:                    
             res[item_id] = _('''
