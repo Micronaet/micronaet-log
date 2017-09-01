@@ -120,7 +120,7 @@ class LogActivity(orm.Model):
             cron_file = (activity.cron or '')            
             if not cron_file:
                 continue
-            import pdb; pdb.set_trace()    
+
             for line in cron_file.split('\n'):
                 line = line.strip()
                 if line.startswith('#'):                  
@@ -250,6 +250,27 @@ class LogActivity(orm.Model):
         daily = self.get_cron_info(cr, uid, ids, context=context)        
         for item_id, item in daily.iteritems():                    
             res[item_id] = _('''
+                <style>
+                    .table_bf {
+                         border:1px 
+                         padding: 3px;
+                         solid black;
+                     }
+                    .table_bf td {
+                         border:1px 
+                         solid black;
+                         padding: 3px;
+                         text-align: center;
+                     }
+                    .table_bf th {
+                         border:1px 
+                         solid black;
+                         padding: 3px;
+                         text-align: center;
+                         background-color: grey;
+                         color: white;
+                     }
+                </style>
                 <table>
                     <tr>
                         <th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th>
