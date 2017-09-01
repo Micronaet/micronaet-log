@@ -149,7 +149,7 @@ class LogActivity(orm.Model):
                         for i in day.split(','):
                             res[activity.id][i] += 1                            
                     elif day in '01234567': # direct day
-                        res[activity.id][day] += 1
+                        res[activity.id][int(day)] += 1
 
             # Sum time for 7 in 0:         
             res[activity.id][0] += res[activity.id][7]
