@@ -2,6 +2,25 @@
 <openerp>
     <data>
         <!--res.partner-->
+        <record model="ir.ui.view" id="view_res_partner_lgo_code_tree">
+            <field name="name">res.partner.tree</field>
+            <field name="model">res.partner</field>
+            <field name="priority" eval="40" />
+            <field name="arch" type="xml">
+                <tree string="Contacts">
+	                <field name="name" />
+	                <field name="function" invisible="1" />
+	                <field name="phone" />
+	                <field name="email" />
+	                <field name="log_code" />
+	                <field name="user_id" invisible="1" />
+	                <field name="is_company" invisible="1" />
+	                <field name="country" invisible="1" />
+	                <field name="country_id" invisible="1" />
+	                <field name="parent_id" invisible="1" />
+                </tree>
+            </field>
+        </record>
         <record model="ir.ui.view" id="view_res_partner_log_form">
             <field name="name">res.partner.form</field>
             <field name="model">res.partner</field>
@@ -45,11 +64,12 @@
             <field name="name">Partner</field>
             <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
+            <field name="view_id" ref="view_res_partner_lgo_code_tree"/>
             <field name="view_mode">tree,form</field>
             <field name="context">{'default_is_company': True, 'form_view_ref': 'activity_log_base.view_res_partner_log_form'}</field>
             <field name="domain">[('is_company', '=', True)]</field>
         </record>
-            
+
         <!--log.activity.history-->
         <record model="ir.ui.view" id="view_log_activity_history_search">
             <field name="name">log.activity.history.search</field>
