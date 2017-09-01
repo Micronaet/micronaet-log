@@ -475,7 +475,7 @@ class LogActivityEvent(orm.Model):
         # If activity don't need log event wil be jumped the notification:
         activity_proxy = activity_pool.browse(
             cr, uid, activity_id, context=context)
-        import pdb; pdb.set_trace()    
+
         # Jump notification in check mode if not error and warning    
         if activity_proxy.log_mode == 'check' and not log_warning and \
                 not log_error:
