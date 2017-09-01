@@ -119,6 +119,7 @@ class LogActivity(orm.Model):
             res[activity.id] = [0, 0, 0, 0, 0, 0, 0, 0] # 0 to 7
             cron_file = (activity.cron or '')
             if not cron_file:
+                continue
             for line in cron_file.split('\n'):
                 line = line.strip()
                 if line.startswith('#'):                  
