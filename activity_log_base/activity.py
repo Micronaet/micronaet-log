@@ -241,7 +241,7 @@ class LogActivity(orm.Model):
         '''
         res = {}
         daily = self.get_cron_info(cr, uid, ids, context=context)        
-        for item_id, item in daily.iteritems:                    
+        for item_id, item in daily.iteritems():                    
             res[item_id] = _('''
                 <table>
                     <tr>
