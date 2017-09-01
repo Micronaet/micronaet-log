@@ -118,7 +118,7 @@ class LogActivity(orm.Model):
             import pdb; pdb.set_trace()
             code = activity.code
             days_total = [0, 0, 0, 0, 0, 0, 0, 0] # 0 to 7
-            for line in activity.cron:
+            for line in (activity.cron or '').split('\n'):
                 line = line.strip()
                 if line.startswith('#'):                  
                     continue # is a comment
