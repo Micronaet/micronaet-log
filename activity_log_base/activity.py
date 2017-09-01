@@ -232,7 +232,7 @@ class LogActivity(orm.Model):
         'log_mode': fields.selection([
             ('all', 'All (info, warning, error always present)'),
             ('check', 'Check (error and warning always, info every X time')
-            ], 'Log mode',
+            ], 'Log mode', required=True,
             ),
         'log_check_every': fields.integer('Log check every', 
             help='When log mode is check raise a message every X times'),
@@ -248,7 +248,7 @@ class LogActivity(orm.Model):
             ('pause', 'Pause'), # Currently not work butt soon yes
             ('timed', 'Out of time'), # Out of date period            
             ], 'State',
-            )
+            ),
         }
     
     _defaults = {
