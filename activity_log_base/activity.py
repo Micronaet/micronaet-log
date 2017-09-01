@@ -255,7 +255,7 @@ class LogActivity(orm.Model):
         # ---------------------------------------------------------------------
         for activity_id, planned in activity_cron.iteritems():            
             i = -1
-            for tot_planned in planned: # check every day:
+            for tot_planned in planned[:-1]: # check every day (last not used):
                 i += 1 # start from 0
                 if activity_id not in activity_check: # so not present
                     create_missed_event(
