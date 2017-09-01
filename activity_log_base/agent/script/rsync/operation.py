@@ -134,7 +134,6 @@ except:
     remote_folder = False # no remote folder
 
 # -----------------------------------------------------------------------------
-
 # Mount parameters:
 mount_command = config.get('operation', 'mount')
 umount_command = 'umount %s' % from_folder
