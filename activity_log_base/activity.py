@@ -259,13 +259,13 @@ class LogActivity(orm.Model):
                     .table_bf td {
                          border:1px 
                          solid black;
-                         padding: 3px;
+                         padding: 10px;
                          text-align: center;
                      }
                     .table_bf th {
                          border:1px 
                          solid black;
-                         padding: 3px;
+                         padding: 10px;
                          text-align: center;
                          background-color: grey;
                          color: white;
