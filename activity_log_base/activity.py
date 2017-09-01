@@ -493,8 +493,14 @@ class LogActivityEvent(orm.Model):
                         datetime.now(), 
                         log_info,
                         )
-                    }, context=context)
+                    }, context=context)                    
                 return (True, {}) # nothing to comunicate
+            else: # Reset and notificate
+                _logger.info('No notification event received, now notificate!')
+                activity_pool.write(cr, uid, activity_id, {
+                    'log_check_count': 0,
+                    'log_check_unwrited': '',
+                    }, context=context)                    
             
         # Normal log procedure:
         if not end:
