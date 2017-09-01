@@ -188,7 +188,7 @@
             <field name="name">log.activity.tree</field>
             <field name="model">log.activity</field>
             <field name="arch" type="xml">
-                <tree string="Activity" version="7.0" colors="blue:monitor==True">  
+                <tree string="Activity" version="7.0" colors="blue:log_mode='check'">  
                     <field name="is_active" invisible="1"/>      
                     <field name="monitor" invisible="1"/>
                     <field name="email_alert" />
@@ -198,6 +198,7 @@
                     <field name="category_id" invisible="context.get('embedded', False)"/>
                     <field name="from_date" />
                     <field name="to_date" />
+                    <field name="log_mode" />
                     <field name="state" />
                 </tree>
             </field>
