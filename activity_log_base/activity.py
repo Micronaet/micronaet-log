@@ -228,7 +228,7 @@ class LogActivity(orm.Model):
         # ---------------------------------------------------------------------
         # Generate DOW period for create elements missed:
         dows = {}
-        while from_date_dt > to_date_dt:
+        while from_date_dt <= to_date_dt:
             dow = get_cron_dow(from_date_dt.weekday())
             dows[dow] = '%s 12:00:00' % from_date_dt.strftime(
                 DEFAULT_SERVER_DATE_FORMAT)
