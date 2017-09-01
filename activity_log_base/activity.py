@@ -154,7 +154,6 @@ class LogActivity(orm.Model):
 
             # Sum time for 7 in 0:         
             res[activity.id][0] += res[activity.id][7]
-            del(res[activity.id][7])
         return res
         
     # -------------------------------------------------------------------------
@@ -279,7 +278,7 @@ class LogActivity(orm.Model):
                     </tr>                    
                     <tr>
                         <td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>
-                        <td>%s</td><td>%s</td>
+                        <td>%s</td><td>%s</td><!--%s-->
                     </tr>
                 </table>    
                 ''') % tuple(item)
