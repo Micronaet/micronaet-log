@@ -276,6 +276,12 @@
                                         <field name="cron" nolabel="1" colspan="4" />
                                     </group>
                                 </page>
+                                <page string="Daily run">
+                                    <group col="4" colspan="4">
+                                        <separator string="Daily program" colspan="4"/>
+                                        <field name="cron_daily_exec" nolabel="1" colspan="4" widget="html"/>
+                                    </group>    
+                                </page>
                                 <page string="Note">
                                     <group col="4" colspan="4">
                                         <separator string="Note" colspan="4"/>

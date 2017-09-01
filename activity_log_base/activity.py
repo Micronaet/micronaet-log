@@ -241,14 +241,20 @@ class LogActivity(orm.Model):
         '''
         res = {}
         import pdb; pdb.set_trace()
-        daily = self.get_cron_info(cr, uid, ids, context=context)
-        for item_id, item in daily.iteritems:
-            res[item_id] = '''
-                <tr>
-                    <td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>
-                    <td>%s</td><td>%s</td>
-                </tr>
-                ''' % item
+        daily = self.get_cron_info(cr, uid, ids, context=context)        
+        for item_id, item in daily.iteritems:                    
+            res[item_id] = _('''
+                <table>
+                    <tr>
+                        <th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th>
+                        <th>Fr</th><th>Sa</th>
+                    </tr>                    
+                    <tr>
+                        <td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>
+                        <td>%s</td><td>%s</td>
+                    </tr>
+                </table>    
+                ''') % item
         return res
         
     _columns = {
