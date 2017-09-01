@@ -668,6 +668,7 @@ class LogActivityEvent(orm.Model):
         'state': fields.selection([
             ('started', 'Started'), # Start (new event)
             ('closed', 'Closed'), # End (closed from activity with end time)
+            ('missed', 'Missed'), # Missed
             ('warning', 'Warning'), # End with warning (scheduled check)
             ('error', 'Error'), # End with error (scheduled check)
             ], 'State', help='State info, not workflow management here'),
