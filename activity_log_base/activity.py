@@ -181,6 +181,7 @@ class LogActivity(orm.Model):
             event_pool = self.pool.get('log.activity.event')
             return event_pool.create(cr, uid, {
                 'start': dows[i],
+                'datetime': dows[i],
                 'activity_id': activity_id,
                 'end': False,
                 'duration': False,
@@ -192,7 +193,6 @@ class LogActivity(orm.Model):
                 }, context=context)
                             
         range_days = 7 # Always check week period
-        import pdb; pdb.set_trace()
         from_date_dt = datetime.now() - timedelta(days=range_days)
         from_date = '%s 00:00:00' % from_date_dt.strftime(
             DEFAULT_SERVER_DATE_FORMAT)
@@ -204,6 +204,7 @@ class LogActivity(orm.Model):
         # ---------------------------------------------------------------------
         # Current activity:
         # ---------------------------------------------------------------------
+        import pdb; pdb.set_trace()
         activity_ids = self.search(cr, uid, [
             ('is_active', '=', True), 
             # TODO  monitor check?
@@ -212,8 +213,8 @@ class LogActivity(orm.Model):
         
         event_pool = self.pool.get('log.activity.event')
         event_ids = event_pool.search(cr, uid, [
-           ('datetime', '>=', from_date),
-           ('datetime', '<=', to_date),
+           ('start', '>=', from_date),
+           ('start', '<=', to_date),
            ], context=context)
         
         # ---------------------------------------------------------------------
