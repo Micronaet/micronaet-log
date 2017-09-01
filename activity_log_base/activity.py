@@ -469,6 +469,34 @@ class LogActivityEvent(orm.Model):
         log_error = data.get('log_error', '')
         duration = self.get_duration_hour(start, end)
 
+        # ---------------------------------------------------------------------
+        # Read activity for get log information
+        # ---------------------------------------------------------------------
+        # If activity don't need log event wil be jumped the notification:
+        activity_proxy = activity_pool.browse(
+            cr, uid, activity_id, context=context)
+            
+        # Jump notification in check mode if not error and warning    
+        if activity_proxy.log_mode == 'check' and not log_warning and \
+                not log_error:
+            # jump in no count info raise:    
+            count_current = activity_proxy.log_check_count + 1
+            count_max =  activity_proxy.log_check_every
+            log_check_unwrited = activity_proxy.log_check_unwrited or ''
+            if count_current < count_max:
+                # Update count and log partial:
+                _logger.info('No notification event received')
+                activity_pool.write(cr, uid, activity_id, {
+                    'log_check_count': count_current,
+                    'log_check_unwrited': '%s%s%s\n' % (
+                        log_check_unwrited,
+                        datetime.now(), 
+                        log_info,
+                        )
+                    }, context=context)
+                return (True, {}) # nothing to comunicate
+            
+        # Normal log procedure:
         if not end:
             state = 'started'
         elif log_error:
