@@ -115,6 +115,7 @@ class LogActivity(orm.Model):
         '''
         res = {}
         for activity in self.browse(cr, uid, ids, context=context):        
+            import pdb; pdb.set_trace()
             code = activity.code
             days_total = [0, 0, 0, 0, 0, 0, 0, 0] # 0 to 7
             for line in activity.cron:
