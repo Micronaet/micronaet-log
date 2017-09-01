@@ -20,6 +20,7 @@
 ###############################################################################
 import os
 import sys
+import pickle
 import ConfigParser
 from datetime import datetime
 
@@ -91,7 +92,7 @@ try:
     os.system(mount_command)
 except:
     log_f['error'].write('Mount error: %s\n' % mount_command)
-    closing_operations(log_f)    
+    closing_operations(log_f)
     
 # 3. Check file for get mount information:
 print '[INFO] B. Check file reveal the mount: %s' % check_file
