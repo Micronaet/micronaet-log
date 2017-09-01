@@ -147,7 +147,7 @@ class LogActivity(orm.Model):
 
             # Sum time for 7 in 0:         
             days_total[0] += days_total[7]
-            res[i] = days_total
+            res[activity.id] = days_total
         return res
         
     # -------------------------------------------------------------------------
