@@ -117,9 +117,10 @@ class LogActivity(orm.Model):
         for activity in self.browse(cr, uid, ids, context=context):        
             code = activity.code
             res[activity.id] = [0, 0, 0, 0, 0, 0, 0, 0] # 0 to 7
-            cron_file = (activity.cron or '')
+            cron_file = (activity.cron or '')            
             if not cron_file:
                 continue
+            import pdb; pdb.set_trace()    
             for line in cron_file.split('\n'):
                 line = line.strip()
                 if line.startswith('#'):                  
