@@ -227,6 +227,21 @@ class LogActivity(orm.Model):
         'server': fields.text('Server info'),
         
         'note': fields.text('Note'),
+        
+        # Log mode:
+        'log_mode': fields.selection([
+            ('all', 'All (info, warning, error always present)'),
+            ('check', 'Check (error and warning always, info every X time')
+            ], 'Log mode',
+            ),
+        'log_check_every': fields.integer('Log check every', 
+            help='When log mode is check raise a message every X times'),
+        'log_check_count': fields.integer('Log check now is', 
+            help='Total message received till now'),
+        'log_check_unwrited': fields.text(
+            'Log check unwrited', 
+            help='When log mode is check write here the event'),    
+
         'state': fields.selection([
             ('unactive', 'Unactive'), # not working
             ('active', 'Active'), # Working
