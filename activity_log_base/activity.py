@@ -106,6 +106,51 @@ class LogActivity(orm.Model):
     _order = 'name'
     
     # -------------------------------------------------------------------------
+    # Utility:
+    # -------------------------------------------------------------------------
+    def get_cron_info(self, cr, uid, ids, context=None):
+        ''' Try to get cron info about activity code scheduled for get 
+            information about running period
+            Used as information but also for check daily backup operations
+        '''
+        res = {}
+        for activity in self.browse(cr, uid, ids, context=context):        
+            code = activity.code
+            days_total = [0, 0, 0, 0, 0, 0, 0, 0] # 0 to 7
+            for line in activity.cron:
+                line = line.strip()
+                if line.startswith('#'):                  
+                    continue # is a comment
+                if code in line:
+                    line = line.replace('\t', ' ')
+                    line_block = line.split()
+                    if len(line_block) < 6:
+                        _logger.error('Cron activity not correct: %s' % line)
+                        continue
+                        
+                    day = line_block[4]
+                    if day == '*': # All day new run
+                        for i in range(0, 7):
+                            days_total[i] += 1
+                    elif day in range (0, 8): # direct day
+                        days_total[day] += 1
+                    elif '-' in day: # range block
+                        range_block = day.split('-')
+                        if len(range_block) != 2:
+                            _logger.error('Range not correct: %s' % day)
+                            continue                           
+                        for i in range(range_block[0], range_block[1] + 1):
+                            days_total[i] += 1
+                    elif ',' in day: # multi days
+                        for i in day.split(','):
+                            days_total[i] += 1                            
+
+            # Sum time for 7 in 0:         
+            days_total[0] += days_total[7]
+            res[i] = days_total
+        return res
+        
+    # -------------------------------------------------------------------------
     # Button:
     # -------------------------------------------------------------------------    
     def open_history_cron(self, cr, uid, ids, mode, context=None):
