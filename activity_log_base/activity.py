@@ -231,6 +231,25 @@ class LogActivity(orm.Model):
 
         return super(LogActivity, self).write(
             cr, uid, ids, vals, context=context)
+
+    # -------------------------------------------------------------------------
+    # Fields function:
+    # -------------------------------------------------------------------------
+    def _get_cron_daily_execution(self, cr, uid, ids, fields, args, 
+            context=None):
+        ''' Fields function for calculate 
+        '''
+        res = {}
+        import pdb; pdb.set_trace()
+        daily = self.get_cron_info(cr, uid, ids, context=context)
+        for item_id, item in daily.iteritems:
+            res[item_id] = '''
+                <tr>
+                    <td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>
+                    <td>%s</td><td>%s</td>
+                </tr>
+                ''' % item
+        return res
         
     _columns = {
         'is_active': fields.boolean('Is active'),
@@ -270,6 +289,11 @@ class LogActivity(orm.Model):
         'cron': fields.text('Cron job'),
         'config': fields.text('Config file'),
         'server': fields.text('Server info'),
+        
+        'cron_daily_exec': fields.function(
+            _get_cron_daily_execution, method=True, 
+            type='text', string='Cron execution', 
+            store=False), 
         
         'note': fields.text('Note'),
         
