@@ -115,10 +115,11 @@ class LogActivity(orm.Model):
         '''
         res = {}
         for activity in self.browse(cr, uid, ids, context=context):        
-            import pdb; pdb.set_trace()
             code = activity.code
-            days_total = [0, 0, 0, 0, 0, 0, 0, 0] # 0 to 7
-            for line in (activity.cron or '').split('\n'):
+            res[activity.id] = [0, 0, 0, 0, 0, 0, 0, 0] # 0 to 7
+            cron_file = (activity.cron or '')
+            if not cron_file:
+            for line in cron_file.split('\n'):
                 line = line.strip()
                 if line.startswith('#'):                  
                     continue # is a comment
@@ -132,24 +133,23 @@ class LogActivity(orm.Model):
                     day = line_block[4]
                     if day == '*': # All day new run
                         for i in range(0, 7):
-                            days_total[i] += 1
+                            res[activity.id][i] += 1
                     elif day in range (0, 8): # direct day
-                        days_total[day] += 1
+                        res[activity.id][day] += 1
                     elif '-' in day: # range block
                         range_block = day.split('-')
                         if len(range_block) != 2:
                             _logger.error('Range not correct: %s' % day)
                             continue                           
                         for i in range(range_block[0], range_block[1] + 1):
-                            days_total[i] += 1
+                            res[activity.id][i] += 1
                     elif ',' in day: # multi days
                         for i in day.split(','):
-                            days_total[i] += 1                            
+                            res[activity.id][i] += 1                            
 
             # Sum time for 7 in 0:         
-            days_total[0] += days_total[7]
-            del(days_total[7])
-            res[activity.id] = days_total
+            res[activity.id][0] += res[activity.id][7]
+            del(res[activity.id][7])
         return res
         
     # -------------------------------------------------------------------------
