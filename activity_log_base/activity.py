@@ -707,6 +707,7 @@ class LogActivityEvent(orm.Model):
                 # Update count and log partial:
                 _logger.info('No notification event received')
                 activity_pool.write(cr, uid, activity_id, {
+                    'log_info': log_info, # used for IP address
                     'log_check_count': count_current,
                     'log_check_unwrited': '%s%s%s\n' % (
                         log_check_unwrited,
