@@ -95,7 +95,7 @@ if from_tag not in web_page or to_tag not in web_page:
     closing_operations(log_f)
 
 ip = web_page.split(from_tag)[-1].split(to_tag)[0]    
-log_f['info'].write('Public IP: %s\n' % ip)
+log_f['info'].write('Public IP: %s<br/>\n' % ip)
 
 # CLosing operations:
 closing_operations(log_f)
