@@ -390,9 +390,11 @@
                     <field name="start" />
                     <field name="end" />
                     <field name="duration" />
-                    <field name="mark_ok" />
+                    <field name="mark_ok" invisible="1"/>
                     <field name="error_comment" />
                     <field name="state" />
+                    <button name="dummy_nothing" string="Marked as OK" type="object" icon="STOCK_YES" />
+                    <button name="dummy_nothing" string="Marked as not OK" type="object" icon="STOCK_NO" />
                 </tree>
             </field>
         </record>

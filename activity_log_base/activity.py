@@ -481,6 +481,11 @@ class LogActivityEvent(orm.Model):
     _rec_name = 'datetime'
     _order = 'datetime desc'
     
+    def dummy_nothing(self, cr, uid, ids, context=None):
+        ''' Dummy button do nothing
+        '''
+        return True
+            
     def get_duration_hour(self, start, end):
         ''' Diference from 2 date in hours
         '''
