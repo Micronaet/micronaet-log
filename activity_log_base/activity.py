@@ -468,6 +468,7 @@ class LogActivity(orm.Model):
     _defaults = {
         # Default value for state:
         'is_active': lambda *x: True,
+        'check_duration': lambda *x: True,
         'log_mode': lambda *x: 'all',
         'state': lambda *x: 'active',
         }
