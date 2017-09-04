@@ -774,10 +774,12 @@ class LogActivityEvent(orm.Model):
         'log_info': fields.text('Log info'),
         'log_warning': fields.text('Log warning'),
         'log_error': fields.text('Log error'),
-        'error_comment': fields.char('Error comment', size=80, readonly=True),
-        
+        'error_comment': fields.char('Error comment', size=180),
+       
         'mark_ok': fields.boolean('Mark as OK',
             help='Scheduled masked as OK or manually with button'), 
+        'mark_ok_comment': fields.text('Mark as OK comment'),
+        
         'state': fields.selection([
             ('started', 'Started'), # Start (new event)
             ('closed', 'Closed'), # End (closed from activity with end time)

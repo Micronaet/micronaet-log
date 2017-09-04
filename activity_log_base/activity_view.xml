@@ -362,6 +362,9 @@
                                         <field name="log_info" nolabel="1" colspan="2" />
                                         <field name="log_warning" nolabel="1" colspan="2" />
                                         <field name="log_error" nolabel="1" colspan="2" />
+
+                                        <separator string="Mask as OK comment" colspan="6"/>                                        
+                                        <field name="mark_ok_comment" nolabel="1" colspan="6" />
                                     </group>
                                 </page>
                                 <page string="Origin">
