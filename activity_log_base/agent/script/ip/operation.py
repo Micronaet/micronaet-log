@@ -56,10 +56,6 @@ os.system('mkdir -p %s' % log_folder)
 config = ConfigParser.ConfigParser()
 config.read([fullname])
 
-# Read from config file:
-path = config.get('operation', 'path') 
-os.system('mkdir -p %s' % path) # Create mount poing if not exist
-
 # -----------------------------------------------------------------------------
 # Log event:
 # -----------------------------------------------------------------------------
