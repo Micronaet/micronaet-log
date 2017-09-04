@@ -721,19 +721,9 @@ class LogActivityEvent(orm.Model):
                     'log_check_unwrited': '',
                     }, context=context)                    
             
-        # Normal log procedure:
-        if not end:
-            state = 'started'
-        elif log_error:
-            state = 'error'
-        elif log_warning:
-            state = 'warning'
-        else:
-            state = 'closed'
-            
         record = {
             #'datetime': now
-            #'mark_ok': False,
+            'mark_ok': False,
             'activity_id': activity_id,
             'start': start,
             'end': end,
@@ -742,8 +732,18 @@ class LogActivityEvent(orm.Model):
             'log_info': log_info,
             'log_warning': log_warning,
             'log_error': log_error,
-            'state': state,
             }
+
+        # Normal log procedure:
+        if not end:
+            record['state'] = 'started'
+        elif log_error:
+            record['state'] = 'error'
+        elif log_warning:
+            record['state'] = 'warning'
+        else:
+            record['state'] = 'closed'
+            record['mark_ok'] = True            
             
         if update_id:
             try:
