@@ -383,7 +383,7 @@
             <field name="name">log.activity.event.tree</field>
             <field name="model">log.activity.event</field>
             <field name="arch" type="xml">
-                <tree string="Event" version="7.0" colors="blue:state=='started';green:state=='correct';brown:state=='error' and mark_ok==True;red:state=='error';orange:state=='warning'">
+                <tree string="Event" version="7.0" colors="black:state=='started' and mark_ok==True;blue:state=='started';green:state=='correct';brown:state=='error' and mark_ok==True;red:state=='error';orange:state=='warning'">
                     <field name="datetime" />
                     <field name="activity_id" />
                     <field name="partner_id" />
