@@ -168,7 +168,7 @@ class LogActivity(orm.Model):
     # -------------------------------------------------------------------------
     # Scheduled events:
     # -------------------------------------------------------------------------
-    def check_event_not_started(self, cr, uid, range_days=7, context=None):
+    def check_event_not_started(self, cr, uid, context=None):
         ''' Check scheduled started from today - period and yestertay
             Check 7 day for defaults
         '''
@@ -207,8 +207,8 @@ class LogActivity(orm.Model):
         if context is None:
             context = {}
             
-        # From start of day (-7)                    
-        from_date_dt = datetime.now() - timedelta(days=range_days)
+        # From start of day (-7)
+        from_date_dt = datetime.now() - timedelta(days=7)
         from_date = '%s 00:00:00' % from_date_dt.strftime(
             DEFAULT_SERVER_DATE_FORMAT)
 
@@ -220,7 +220,6 @@ class LogActivity(orm.Model):
         # ---------------------------------------------------------------------
         # Current activity:
         # ---------------------------------------------------------------------
-        import pdb; pdb.set_trace()
         activity_ids = self.search(cr, uid, [
             ('is_active', '=', True), 
             # TODO  monitor check?
@@ -237,23 +236,22 @@ class LogActivity(orm.Model):
         # Read as cron schedule must be (weekly status list values):
         # ---------------------------------------------------------------------
         # Database for check week activity:
-        context['browse_key'] = True
+        context['browse_keys'] = True
         activity_cron = self.get_cron_info(
             cr, uid, activity_ids, context=context)
-        context['browse_key'] = False
-        import pdb; pdb.set_trace()    
+        context['browse_keys'] = False
 
         # ---------------------------------------------------------------------
         # Check in real world total event for activity in dow:
         # ---------------------------------------------------------------------
         # Generate DOW period for create elements missed:
-        #dows = {}
-        #while from_date_dt <= to_date_dt:
-        #    dow = get_cron_dow(from_date_dt.weekday())
-        #    dows[dow] = '%s 12:00:00' % from_date_dt.strftime(
-        #        DEFAULT_SERVER_DATE_FORMAT)
-        #    from_date_dt += timedelta(days=1)   
-            
+        dows = {}
+        one_day = - timedelta(days=1)
+        current = to_date
+        for i in range(0, 7):
+            dows[current.weekday()] = current
+            current -= one_day
+
         # Generate real database (activity - dow)    
         activity_check = {} # event database system        
         for event in event_pool.browse(cr, uid, event_ids, context=context):
@@ -282,7 +280,7 @@ class LogActivity(orm.Model):
             i = -1
             for tot_planned in planned[:-1]: # check every day (last not used):
                 i += 1 # start from 0
-                if activity not in activity_check: # so not present
+                if activity not in activity_check: # so not present                    
                     create_missed_event(
                         self, cr, uid, dows[i], activity, context=context)
                     continue
