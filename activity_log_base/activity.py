@@ -112,11 +112,21 @@ class LogActivity(orm.Model):
         ''' Try to get cron info about activity code scheduled for get 
             information about running period
             Used as information but also for check daily backup operations
+            parameter: browse_keys for setup key of returned dict
         '''
+        if context is None:
+            context = {}
+        browse_keys = context.get('browse_keys', False)        
+        
         res = {}
         for activity in self.browse(cr, uid, ids, context=context):        
             code = activity.code
-            res[activity.id] = [0, 0, 0, 0, 0, 0, 0, 0] # 0 to 7
+            if browse_keys:
+               key = activity
+            else:
+               key = activity.id
+            res[key] = [0, 0, 0, 0, 0, 0, 0, 0] # 0 to 7
+            
             cron_file = (activity.cron or '')            
             if not cron_file:
                 continue
@@ -135,7 +145,7 @@ class LogActivity(orm.Model):
                     day = line_block[4]
                     if day == '*': # All day new run
                         for i in range(0, 7):
-                            res[activity.id][i] += 1
+                            res[key][i] += 1
                     elif '-' in day: # range block
                         range_block = day.split('-')
                         if len(range_block) != 2:
@@ -144,22 +154,23 @@ class LogActivity(orm.Model):
                         for i in range(
                                 int(range_block[0]), 
                                 int(range_block[1]) + 1):
-                            res[activity.id][i] += 1
+                            res[key][i] += 1
                     elif ',' in day: # multi days
                         for i in day.split(','):
-                            res[activity.id][i] += 1                            
+                            res[key][i] += 1                            
                     elif day in '01234567': # direct day
-                        res[activity.id][int(day)] += 1
+                        res[key][int(day)] += 1
 
             # Sum time for 7 in 0:         
-            res[activity.id][0] += res[activity.id][7]
+            res[key][0] += res[activity.id][7]
         return res
         
     # -------------------------------------------------------------------------
     # Scheduled events:
     # -------------------------------------------------------------------------
-    def check_event_not_started(self, cr, uid, context=None):
+    def check_event_not_started(self, cr, uid, range_days=7, context=None):
         ''' Check scheduled started from today - period and yestertay
+            Check 7 day for defaults
         '''
         # ---------------------------------------------------------------------
         # Utility:
@@ -174,16 +185,17 @@ class LogActivity(orm.Model):
             else:
                 return dow +1        
             
-        def create_missed_event(self, cr, uid, start, activity_id, 
+        def create_missed_event(self, cr, uid, start, activity, 
                 context=context):
             ''' Create a standard event for missed operation:
             '''    
             event_pool = self.pool.get('log.activity.event')
             return event_pool.create(cr, uid, {
-                'start': dows[i],
-                'datetime': dows[i],
-                'activity_id': activity_id,
-                'end': False,
+                'start': start,
+                'datetime': start,                
+                'activity_id': activity.id,
+                'partner_id': activity.partner_id.id,
+                'end': start, # same
                 'duration': False,
                 'origin': _('Automatic system check'),
                 'log_info': '',
@@ -191,12 +203,16 @@ class LogActivity(orm.Model):
                 'log_error': _('Event not reached'),
                 'state': 'missed',            
                 }, context=context)
-                            
-        range_days = 7 # Always check week period
+        
+        if context is None:
+            context = {}
+            
+        # From start of day (-7)                    
         from_date_dt = datetime.now() - timedelta(days=range_days)
         from_date = '%s 00:00:00' % from_date_dt.strftime(
             DEFAULT_SERVER_DATE_FORMAT)
 
+        # To end of previous day (-1)
         to_date_dt = datetime.now() - timedelta(days=1) # yesterday
         to_date = '%s 23:59:59' % to_date_dt.strftime(
             DEFAULT_SERVER_DATE_FORMAT) # Yesterday
@@ -210,7 +226,7 @@ class LogActivity(orm.Model):
             # TODO  monitor check?
             ], context=context)
         # TODO better for start stop period!    
-        
+
         event_pool = self.pool.get('log.activity.event')
         event_ids = event_pool.search(cr, uid, [
            ('start', '>=', from_date),
@@ -218,52 +234,61 @@ class LogActivity(orm.Model):
            ], context=context)
         
         # ---------------------------------------------------------------------
-        # Read as cron schedule must be:
+        # Read as cron schedule must be (weekly status list values):
         # ---------------------------------------------------------------------
+        # Database for check week activity:
+        context['browse_key'] = True
         activity_cron = self.get_cron_info(
             cr, uid, activity_ids, context=context)
-                
+        context['browse_key'] = False
+        import pdb; pdb.set_trace()    
+
         # ---------------------------------------------------------------------
         # Check in real world total event for activity in dow:
         # ---------------------------------------------------------------------
         # Generate DOW period for create elements missed:
-        dows = {}
-        while from_date_dt <= to_date_dt:
-            dow = get_cron_dow(from_date_dt.weekday())
-            dows[dow] = '%s 12:00:00' % from_date_dt.strftime(
-                DEFAULT_SERVER_DATE_FORMAT)
-            from_date_dt += timedelta(days=1)   
+        #dows = {}
+        #while from_date_dt <= to_date_dt:
+        #    dow = get_cron_dow(from_date_dt.weekday())
+        #    dows[dow] = '%s 12:00:00' % from_date_dt.strftime(
+        #        DEFAULT_SERVER_DATE_FORMAT)
+        #    from_date_dt += timedelta(days=1)   
             
         # Generate real database (activity - dow)    
         activity_check = {} # event database system        
         for event in event_pool.browse(cr, uid, event_ids, context=context):
-            activity_id = event.activity_id.id
-            if activity_id not in activity_cron:
-                _logger.error('Activity not monitored, jumped!') # TODO ???
+            activity = event.activity_id
+            if activity not in activity_cron:
+                _logger.error('Activity not monitored, jumped!') # TODO log???
                 continue
                 
-            if activity_id not in activity_check:
+            if activity not in activity_check:
                 # Default week block:
-                activity_check[activity_id] = [0, 0, 0, 0, 0, 0, 0] # Su = 0
+                activity_check[activity] = dict.fromkeys(range(0, 7), 0)
+                
             start = datetime.strptime(
                 event.datetime, DEFAULT_SERVER_DATETIME_FORMAT)
-            dow = get_cron_dow(start.weekday())
-            activity_check[activity_id][dow] += 1
+            dow = start.weekday() + 1
+            if dow == 7: # Sunday = 6 in python 0 in cron (or 7)
+                dow = 0 # 
+            #dow = get_cron_dow(start.weekday())
+            activity_check[activity][dow] += 1
 
         # ---------------------------------------------------------------------
         # Compare data:
-        # ---------------------------------------------------------------------
-        for activity_id, planned in activity_cron.iteritems():            
+        # ---------------------------------------------------------------------  
+        import pdb; pdb.set_trace()      
+        for activity, planned in activity_cron.iteritems():
             i = -1
             for tot_planned in planned[:-1]: # check every day (last not used):
                 i += 1 # start from 0
-                if activity_id not in activity_check: # so not present
+                if activity not in activity_check: # so not present
                     create_missed_event(
-                        self, cr, uid, dows[i], activity_id, context=context)
+                        self, cr, uid, dows[i], activity, context=context)
                     continue
-                if tot_planned > activity_check[activity_id][i]: # missing
+                if tot_planned > activity_check[activity][i]: # missing
                     create_missed_event(
-                        self, cr, uid, dows[i], activity_id, context=context)
+                        self, cr, uid, dows[i], activity, context=context)
                     continue
                 # TODO log extra backup event?    
         return                
