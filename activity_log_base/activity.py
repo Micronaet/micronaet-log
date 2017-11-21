@@ -205,7 +205,6 @@ class LogActivity(orm.Model):
                 'state': 'missed',            
                 }, context=context)
         
-        import pdb; pdb.set_trace()
         _logger.info('Start check missed events')
         if context is None:
             context = {}
@@ -220,8 +219,8 @@ class LogActivity(orm.Model):
             DEFAULT_SERVER_DATE_FORMAT)
 
         # To end of previous day (-1)
-        to_date = now - timedelta(days=1) # yesterday
-        to_date = '%s 23:59:59' % to_date.strftime(
+        to_date_dt = now - timedelta(days=1) # yesterday
+        to_date = '%s 23:59:59' % to_date_dt.strftime(
             DEFAULT_SERVER_DATE_FORMAT) # Yesterday
                 
         # ---------------------------------------------------------------------
@@ -240,6 +239,7 @@ class LogActivity(orm.Model):
         
         # Read as cron schedule for week (key = browse)
         context['browse_keys'] = True
+        import pdb; pdb.set_trace()
         activity_cron = self.get_cron_info(
             cr, uid, activity_ids, context=context)
         context['browse_keys'] = False
@@ -247,7 +247,7 @@ class LogActivity(orm.Model):
         # Create DOW database with this passed week days
         dows = {}
         one_day = - timedelta(days=1)
-        current = to_date
+        current = to_date_dt
         for i in range(0, 7):
             dows[current.weekday()] = current
             current -= one_day
