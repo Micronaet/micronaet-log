@@ -270,7 +270,6 @@ class LogActivity(orm.Model):
         # ---------------------------------------------------------------------
         # Compare data:
         # ---------------------------------------------------------------------  
-        import pdb; pdb.set_trace()      
         for activity, planned in activity_cron.iteritems():
             i = -1
             for tot_planned in planned[:-1]: # check every day (last not used):
