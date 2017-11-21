@@ -157,6 +157,7 @@ class LogActivity(orm.Model):
                             res[key][i] += 1
                     elif ',' in day: # multi days
                         for i in day.split(','):
+                            i = int(i)
                             res[key][i] += 1                            
                     elif day in '01234567': # direct day
                         res[key][int(day)] += 1
