@@ -239,7 +239,6 @@ class LogActivity(orm.Model):
         
         # Read as cron schedule for week (key = browse)
         context['browse_keys'] = True
-        import pdb; pdb.set_trace()
         activity_cron = self.get_cron_info(
             cr, uid, activity_ids, context=context)
         context['browse_keys'] = False
@@ -254,9 +253,10 @@ class LogActivity(orm.Model):
 
         # Generate real database (activity - dow)    
         activity_db = {} # event database system        
+        import pdb; pdb.set_trace()
         for event in event_pool.browse(cr, uid, event_ids, context=context):
             activity = event.activity_id
-            if activity not in activity_db:
+            if activity not in activity_cron:
                 _logger.error('Activity not monitored, jumped!') # TODO log???
                 continue
                 
