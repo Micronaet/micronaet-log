@@ -245,7 +245,7 @@ class LogActivity(orm.Model):
 
         # Create DOW database with this passed week days
         dows = {}
-        one_day = - timedelta(days=1)
+        one_day = timedelta(days=1)
         current = to_date_dt
         for i in range(0, 7):
             dows[current.weekday()] = current
