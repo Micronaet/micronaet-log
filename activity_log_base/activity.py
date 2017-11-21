@@ -253,7 +253,6 @@ class LogActivity(orm.Model):
 
         # Generate real database (activity - dow)    
         activity_db = {} # event database system        
-        import pdb; pdb.set_trace()
         for event in event_pool.browse(cr, uid, event_ids, context=context):
             activity = event.activity_id
             if activity not in activity_cron:
