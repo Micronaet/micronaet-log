@@ -162,7 +162,7 @@ class LogActivity(orm.Model):
                         res[key][int(day)] += 1
 
             # Sum time for 7 in 0:         
-            res[key][0] += res[activity.id][7]
+            res[key][0] += res[key][7]
         return res
         
     # -------------------------------------------------------------------------
