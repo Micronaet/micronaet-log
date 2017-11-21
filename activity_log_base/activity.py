@@ -204,6 +204,8 @@ class LogActivity(orm.Model):
                 'state': 'missed',            
                 }, context=context)
         
+        import pdb; pdb.set_trace()
+        _logger.info('Start check missed events')
         if context is None:
             context = {}
             
@@ -280,6 +282,7 @@ class LogActivity(orm.Model):
                         self, cr, uid, dows[i], activity, context=context)
                     continue
                 # TODO log extra backup event?    
+        _logger.info('End check missed events')
         return True
         
     # -------------------------------------------------------------------------
