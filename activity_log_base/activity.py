@@ -207,14 +207,18 @@ class LogActivity(orm.Model):
         if context is None:
             context = {}
             
+        # Pool used:    
+        event_pool = self.pool.get('log.activity.event')
+        
         # From start of day (-7)
-        from_date_dt = datetime.now() - timedelta(days=7)
-        from_date = '%s 00:00:00' % from_date_dt.strftime(
+        now = datetime.now()
+        from_date = now - timedelta(days=7)
+        from_date = '%s 00:00:00' % from_date.strftime(
             DEFAULT_SERVER_DATE_FORMAT)
 
         # To end of previous day (-1)
-        to_date_dt = datetime.now() - timedelta(days=1) # yesterday
-        to_date = '%s 23:59:59' % to_date_dt.strftime(
+        to_date = now - timedelta(days=1) # yesterday
+        to_date = '%s 23:59:59' % to_date.strftime(
             DEFAULT_SERVER_DATE_FORMAT) # Yesterday
                 
         # ---------------------------------------------------------------------
@@ -226,25 +230,18 @@ class LogActivity(orm.Model):
             ], context=context)
         # TODO better for start stop period!    
 
-        event_pool = self.pool.get('log.activity.event')
         event_ids = event_pool.search(cr, uid, [
            ('start', '>=', from_date),
            ('start', '<=', to_date),
            ], context=context)
         
-        # ---------------------------------------------------------------------
-        # Read as cron schedule must be (weekly status list values):
-        # ---------------------------------------------------------------------
-        # Database for check week activity:
+        # Read as cron schedule for week (key = browse)
         context['browse_keys'] = True
         activity_cron = self.get_cron_info(
             cr, uid, activity_ids, context=context)
         context['browse_keys'] = False
 
-        # ---------------------------------------------------------------------
-        # Check in real world total event for activity in dow:
-        # ---------------------------------------------------------------------
-        # Generate DOW period for create elements missed:
+        # Create DOW database with this passed week days
         dows = {}
         one_day = - timedelta(days=1)
         current = to_date
@@ -253,24 +250,20 @@ class LogActivity(orm.Model):
             current -= one_day
 
         # Generate real database (activity - dow)    
-        activity_check = {} # event database system        
+        activity_db = {} # event database system        
         for event in event_pool.browse(cr, uid, event_ids, context=context):
             activity = event.activity_id
-            if activity not in activity_cron:
+            if activity not in activity_db:
                 _logger.error('Activity not monitored, jumped!') # TODO log???
                 continue
                 
-            if activity not in activity_check:
-                # Default week block:
-                activity_check[activity] = dict.fromkeys(range(0, 7), 0)
+            if activity not in activity_db: # Default week for total recurrency
+                activity_db[activity] = dict.fromkeys(range(0, 7), 0)
                 
             start = datetime.strptime(
                 event.datetime, DEFAULT_SERVER_DATETIME_FORMAT)
-            dow = start.weekday() + 1
-            if dow == 7: # Sunday = 6 in python 0 in cron (or 7)
-                dow = 0 # 
-            #dow = get_cron_dow(start.weekday())
-            activity_check[activity][dow] += 1
+            dow = get_cron_dow(start.weekday())
+            activity_db[activity][dow] += 1
 
         # ---------------------------------------------------------------------
         # Compare data:
@@ -280,16 +273,14 @@ class LogActivity(orm.Model):
             i = -1
             for tot_planned in planned[:-1]: # check every day (last not used):
                 i += 1 # start from 0
-                if activity not in activity_check: # so not present                    
-                    create_missed_event(
-                        self, cr, uid, dows[i], activity, context=context)
-                    continue
-                if tot_planned > activity_check[activity][i]: # missing
+                # not present or less recursion:
+                if activity not in activity_db or \
+                        tot_planned > activity_db[activity][i]: 
                     create_missed_event(
                         self, cr, uid, dows[i], activity, context=context)
                     continue
                 # TODO log extra backup event?    
-        return                
+        return True
         
     # -------------------------------------------------------------------------
     # Button:
