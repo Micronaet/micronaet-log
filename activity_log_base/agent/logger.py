@@ -237,7 +237,8 @@ operation_config.read([fullname])
 
 # Log server status parameter:
 activity_data = {
-    'server': get_result_command('hostname; ip address | grep \'mtu\|inet\''),
+    'server': get_result_command(
+        'hostname; ip address | grep \'mtu\|inet\|link\''),
     'cron': get_result_command('crontab -l'),
     'config': get_result_command('cat %s' % fullname),
     }
