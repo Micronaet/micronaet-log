@@ -234,10 +234,21 @@ class LogActivity(orm.Model):
                 if col in all_xls_day:
                     all_xls_day.remove(col)
                 
-                excel_pool.write_xls_data(WS_name, row, col, 
-                    '[OK %s] [WARN %s] [KO %s]' % tuple(res[activity][day]),
-                    # Decide color format! defaut_format
-                    )
+                total_today = daily_backup[dow]
+                total_ok, total_warn, total_ko = res[activity][day]
+                
+                # Check OK status:
+                if total_today <= total_ok: # GREEN
+                    excel_pool.write_xls_data(WS_name, row, col, 
+                        '[OK %s/%s]' % (total_ok, total_today))
+                elif total_warn > 0: # YELLOW
+                    excel_pool.write_xls_data(WS_name, row, col, 
+                        '[WARN %s/%s]' % (total_warn, total_today))
+                elif total_ko > 0: # RED
+                    excel_pool.write_xls_data(WS_name, row, col, 
+                        '[KO %s/%s]' % (total_warn, total_today))
+                # else TODO format with color and check all status if correct        
+                    
             for col in all_xls_day: # column check if missed:        
                 dow = dow_header[col] # read DOW from header                
                 if daily_backup[dow] > 0: # Backup needed!!!                    
