@@ -155,6 +155,7 @@ class LogActivity(orm.Model):
             for event in event_pool.browse(
                     cr, uid, event_ids, context=context):
                 date = event.start[:10]
+                date_dt = datetime.strptime(date, DEFAULT_SERVER_DATE_FORMAT)
                 if date < start_xls: # save min date:
                     start_xls = date 
                 if date not in res[activity]:
@@ -162,6 +163,7 @@ class LogActivity(orm.Model):
                         0, # Closed
                         0, # Started, Warning
                         0, # Error (Missed)
+                        date_dt.isoweekday(), # 1 = Monday
                         ]
                         
                 if event.state in ('closed', ):
@@ -199,6 +201,8 @@ class LogActivity(orm.Model):
         # Write data:
         row = 0
         for activity in sorted(res):
+            daily_backup = activity.cron_daily_exec
+            
             row += 1
             excel_pool.write_xls_data(WS_name, row, 0, activity.name)
             excel_pool.write_xls_data(
@@ -206,8 +210,11 @@ class LogActivity(orm.Model):
                 
             for day in res[activity]:
                 col = col_pos.get(day, False)
+                dow = res[activity][3]
                 excel_pool.write_xls_data(WS_name, row, col, 
-                    '[OK %s] [WARN %s] [KO %s]' % tuple(res[activity][day]),
+                    '[OK %s] [WARN %s] [KO %s]' % tuple(
+                        res[activity][day]#[:2] # data is only 3 first cell
+                        ),
                     # Decide color format! defaut_format
                     )
 
