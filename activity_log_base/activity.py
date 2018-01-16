@@ -615,7 +615,14 @@ class LogActivityEvent(orm.Model):
         ''' Dummy button do nothing
         '''
         return True
-            
+
+    def mark_ok_button(self, cr, uid, ids, context=None):
+        ''' Mark as OK
+        '''
+        return self.write(cr, uid, ids, {
+            'mark_ok': True,
+            }, context=context)
+
     def get_duration_hour(self, start, end):
         ''' Diference from 2 date in hours
         '''

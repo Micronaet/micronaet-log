@@ -321,7 +321,7 @@
                     <filter name="state_error" string="Error" domain="[('state','=','error')]"/>
 
                     <filter name="state_error" string="Check list" 
-                        domain="[('mark_ok','=',False),('state','in',('missed','warning','error'))]"/>
+                        domain="[('mark_ok','=',False),('state','in',('missed','warning','error'))]"/>                        
 
                     <group expand="0" string="Group By...">
                         <filter name="group_datetime" string="Log period" context="{'group_by': 'datetime'}"/>
@@ -352,6 +352,7 @@
                             <field name="duration" widget="float_time"/>
                             <field name="error_comment" />
                             <field name="mark_ok" />
+                            <button name="mark_ok_button" string="Mark as OK" type="object" icon="gtk-ok" attrs="{'invisible': [('mark_ok','=',True)]}"/>
                             
                             <notebook colspan="4">
                                 <page string="Log">
