@@ -155,7 +155,7 @@ class LogActivity(orm.Model):
             for event in event_pool.browse(
                     cr, uid, event_ids, context=context):
                 date = event.start[:10]
-                date_dt = datetime.strptime(date, DEFAULT_SERVER_DATE_FORMAT)
+
                 if date < start_xls: # save min date:
                     start_xls = date 
                 if date not in res[activity]:
@@ -163,7 +163,6 @@ class LogActivity(orm.Model):
                         0, # Closed
                         0, # Started, Warning
                         0, # Error (Missed)
-                        date_dt.isoweekday(), # 1 = Monday
                         ]
                         
                 if event.state in ('closed', ):
@@ -178,10 +177,12 @@ class LogActivity(orm.Model):
             start_xls[:10], DEFAULT_SERVER_DATE_FORMAT)
         end_xls_dt = datetime.strptime(
             end_xls[:10], DEFAULT_SERVER_DATE_FORMAT)
-        header = [u'Attività', u'Cliente', ]        
+        header = [u'Attività', u'Cliente', ] 
+        dow_header = ['', '', ]
         while start_xls_dt <= end_xls_dt:
             header.append(start_xls_dt.strftime(DEFAULT_SERVER_DATE_FORMAT))
-            start_xls_dt += timedelta(days=1)
+            dow_header.append(start_xls_dt.isoweekday())
+            start_xls_dt += timedelta(days=1)            
         
         # Create mapping database for position:    
         col_pos = {}
@@ -197,26 +198,37 @@ class LogActivity(orm.Model):
 
         # Write header:    
         excel_pool.write_xls_line(WS_name, 0, header)
+        excel_pool.write_xls_line(WS_name, 1, dow_header)
 
         # Write data:
-        row = 0
+        row = 1
         for activity in sorted(res):
-            daily_backup = activity.cron_daily_exec
             
+            # Week list for backup total scheduled (from cron)
+            activity_id = activity.id
+            daily_backup = self.get_cron_info(
+                cr, uid, [activity_id], context=context)[activity_id]
+                
             row += 1
             excel_pool.write_xls_data(WS_name, row, 0, activity.name)
             excel_pool.write_xls_data(
                 WS_name, row, 1, activity.partner_id.name)
-                
+            
+            all_xls_day = range(2, len(header)) # check missed days    
             for day in res[activity]:
                 col = col_pos.get(day, False)
-                dow = res[activity][day][3]
+                dow = dow_header[col] # read DOW from header
+                if col in all_xls_day:
+                    all_xls_day.remove(col)
+                
                 excel_pool.write_xls_data(WS_name, row, col, 
-                    '[OK %s] [WARN %s] [KO %s] dow: %s' % tuple(
-                        res[activity][day]#[:2] # data is only 3 first cell
-                        ),
+                    '[OK %s] [WARN %s] [KO %s]' % tuple(res[activity][day]),
                     # Decide color format! defaut_format
                     )
+            for col in all_xls_day: # column check if missed:        
+                dow = dow_header[col] # read DOW from header                
+                if daily_backup[dow] > 0: # Backup needed!!!                    
+                    excel_pool.write_xls_data(WS_name, row, col, 'SALTATO')
 
         # Return XLSX file generated
         return excel_pool.return_attachment(cr, uid, 
@@ -495,7 +507,7 @@ class LogActivity(orm.Model):
         '''
         res = {}
 
-        daily = self.get_cron_info(cr, uid, ids, context=context)        
+        daily = self.get_cron_info(cr, uid, ids, context=context)  
         for item_id, item in daily.iteritems():                    
             res[item_id] = _('''
                 <style>
