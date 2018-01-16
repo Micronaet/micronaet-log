@@ -212,7 +212,7 @@ class LogActivity(orm.Model):
                 col = col_pos.get(day, False)
                 dow = res[activity][day][3]
                 excel_pool.write_xls_data(WS_name, row, col, 
-                    '[OK %s] [WARN %s] [KO %s]' % tuple(
+                    '[OK %s] [WARN %s] [KO %s] dow: %s' % tuple(
                         res[activity][day]#[:2] # data is only 3 first cell
                         ),
                     # Decide color format! defaut_format
