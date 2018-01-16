@@ -176,7 +176,7 @@ class LogActivity(orm.Model):
             start_xls[:10], DEFAULT_SERVER_DATE_FORMAT)
         end_xls_dt = datetime.strptime(
             end_xls[:10], DEFAULT_SERVER_DATE_FORMAT)
-        header = [u'Attività']        
+        header = [u'Attività', u'Cliente', ]        
         while start_xls_dt <= end_xls_dt:
             header.append(start_xls_dt.strftime(DEFAULT_SERVER_DATE_FORMAT))
             start_xls_dt += timedelta(days=1)
@@ -201,6 +201,8 @@ class LogActivity(orm.Model):
         for activity in sorted(res):
             row += 1
             excel_pool.write_xls_data(WS_name, row, 0, activity.name)
+            excel_pool.write_xls_data(
+                WS_name, row, 1, activity.partner_id.name)
                 
             for day in res[activity]:
                 col = col_pos.get(day, False)
