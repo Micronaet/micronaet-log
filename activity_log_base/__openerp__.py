@@ -35,6 +35,7 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
+        'excel_export', # For reporting
         ],
     'init_xml': [],
     'demo': [],

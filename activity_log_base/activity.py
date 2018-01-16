@@ -106,6 +106,116 @@ class LogActivity(orm.Model):
     _order = 'name'
     
     # -------------------------------------------------------------------------
+    # REPORT XLSX:
+    # -------------------------------------------------------------------------
+    def extract_xlsx_scheduled_status(self, cr, uid, ids, context=None):
+        ''' Generate report for current activity, scheduled from date to check
+            Usually generate report from check_from parameter to now, 
+            if from_date and to_date context is present select this period
+        '''
+        # Pool used:
+        event_pool = self.pool.get('log.activity.event') 
+        excel_pool = self.pool.get('excel.writer')
+        
+        # ---------------------------------------------------------------------
+        # Parameter and setup:
+        # ---------------------------------------------------------------------
+        # TODO
+        if context is None:
+            context = {}
+        context_from_date = context.get('from_date', False)    
+        context_to_date = context.get('to_date', False)    
+
+        res = {}
+        now = datetime.now()
+        now_60 = now - timedelta(days=60)
+        to_date = '%s 23:59:59' % now.strftime(DEFAULT_SERVER_DATE_FORMAT)
+        min_date = '%s 00:00:00' % now_60.strftime(DEFAULT_SERVER_DATE_FORMAT)
+        
+        # Excel reference range:
+        start_xls = to_date
+        end_xls = to_date
+
+        # ---------------------------------------------------------------------
+        # Collect data:
+        # ---------------------------------------------------------------------
+        # Scheduled info data:
+        for activity in self.browse(cr, uid, ids, context=context):
+            if activity.check_from:
+                from_date = '%s 00:00:00' % activity.check_from
+            else:    
+                from_date = min_date # lower limit 60 gg.
+            event_ids = event_pool.search(cr, uid, [
+                ('activity_id', '>=', activity.id),                
+                # Start Period:
+                ('start', '>=', from_date),
+                ('start', '<=', to_date),
+                ], context=context)
+            res[activity] = {}
+            for event in event_pool.browse(
+                    cr, uid, event_ids, context=context):
+                date = event.start[:10]
+                if date < start_xls: # save min date:
+                    start_xls = date 
+                if date in res[activity]:
+                    res[activity][date] = [
+                        0, # Closed
+                        0, # Started, Warning
+                        0, # Error (Missed)
+                        ]
+                        
+                if event.state in ('closed', ):
+                    res[activity][date][0] += 1
+                elif event.state in ('started', 'warning'):
+                    res[activity][date][1] += 1
+                else: # 'error', missed'
+                    res[activity][date][2] += 1
+        
+        # Header data:
+        start_xls_dt = datetime.strptime(
+            start_xls[:10], DEFAULT_SERVER_DATE_FORMAT)
+        end_xls_dt = datetime.strptime(
+            end_xls[:10], DEFAULT_SERVER_DATE_FORMAT)
+        header = [u'Attività']        
+        while start_xls_dt <= end_xls_dt:
+            header.append(start_xls_dt.strftime(DEFAULT_SERVER_DATE_FORMAT))
+            start_xls_dt += timedelta(days=1)
+        
+        # Create mapping database for position:    
+        col_pos = {}
+        for pos, value in enumerate(header):
+            col_pos[value] = pos
+        
+        # ---------------------------------------------------------------------
+        # EXCEL:
+        # ---------------------------------------------------------------------
+        # Create worksheet:
+        WS_name = u'Schedulazioni'
+        excel_pool.create_worksheet(WS_name)
+
+        # Write header:    
+        excel_pool.write_xls_line(WS_name, 0, header)
+
+        # Write data:
+        row = 0
+        for activity in sorted(res):
+            row += 1
+            excel_pool.write_xls_data(WS_name, row, 0, activity.name)
+                
+            for day in res[activity]:
+                col = col_pos.get(day, False)
+                excel_pool.write_xls_data(WS_name, row, col, 
+                    '[OK %s] [WARN %s] [KO %s]' % tuple(res[activity][day]),
+                    # Decide color format! defaut_format
+                    )
+
+        # Return XLSX file generated
+        return excel_pool.return_attachment(cr, uid, 
+            'Schedulazioni %s' % to_date, 
+            'scheduler_check_%s.xlsx' % to_date,
+            context=context)
+        
+    # -------------------------------------------------------------------------
     # Utility:
     # -------------------------------------------------------------------------
     def get_cron_info(self, cr, uid, ids, context=None):
@@ -418,10 +528,13 @@ class LogActivity(orm.Model):
         'monitor': fields.boolean(
             'Monitor', help='Monitored event are represented in dashboard'),
         'name': fields.char('Event', size=64, required=True),
+        
         'from_date': fields.date(
             'From date', 
             help='For period event, time was the current start time'),
         'to_date': fields.date('To date', help='End period for timed event'),
+        'check_from': fields.date('Check from', 
+            help='Check log presence from this date, used for mark as read'),
         'duration': fields.float(
             'Duration', digits=(16, 3), help='Normal duration of operation'),
         'check_duration':fields.boolean(
