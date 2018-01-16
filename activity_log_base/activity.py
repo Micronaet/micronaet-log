@@ -213,6 +213,7 @@ class LogActivity(orm.Model):
         return excel_pool.return_attachment(cr, uid, 
             'Schedulazioni %s' % to_date, 
             'scheduler_check_%s.xlsx' % to_date,
+            version='7.0',
             context=context)
         
     # -------------------------------------------------------------------------
