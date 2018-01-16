@@ -179,9 +179,22 @@ class LogActivity(orm.Model):
             end_xls[:10], DEFAULT_SERVER_DATE_FORMAT)
         header = [u'Attività', u'Cliente', ] 
         dow_header = ['', '', ]
+        dow_header_text = ['', '', ]
+        iso_text = {
+            0: 'Dom', # not needed
+            1: 'Lun',
+            2: 'Mar',
+            3: 'Mer',
+            4: 'Gio',
+            5: 'Ven',
+            6: 'Sab',
+            7: 'Dom',
+            }
         while start_xls_dt <= end_xls_dt:
             header.append(start_xls_dt.strftime(DEFAULT_SERVER_DATE_FORMAT))
             dow_header.append(start_xls_dt.isoweekday())
+            dow_header_text.append(
+                iso_text.get(start_xls_dt.isoweekday(), '?'))
             start_xls_dt += timedelta(days=1)            
         
         # Create mapping database for position:    
@@ -198,7 +211,7 @@ class LogActivity(orm.Model):
 
         # Write header:    
         excel_pool.write_xls_line(WS_name, 0, header)
-        excel_pool.write_xls_line(WS_name, 1, dow_header)
+        excel_pool.write_xls_line(WS_name, 1, dow_header_text)
 
         # Write data:
         row = 1
