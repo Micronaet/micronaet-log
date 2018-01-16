@@ -157,7 +157,7 @@ class LogActivity(orm.Model):
                 date = event.start[:10]
                 if date < start_xls: # save min date:
                     start_xls = date 
-                if date in res[activity]:
+                if date not in res[activity]:
                     res[activity][date] = [
                         0, # Closed
                         0, # Started, Warning
