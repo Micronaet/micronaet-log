@@ -146,7 +146,7 @@ class LogActivity(orm.Model):
             else:    
                 from_date = min_date # lower limit 60 gg.
             event_ids = event_pool.search(cr, uid, [
-                ('activity_id', '>=', activity.id),                
+                ('activity_id', '=', activity.id),                
                 # Start Period:
                 ('start', '>=', from_date),
                 ('start', '<=', to_date),
