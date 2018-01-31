@@ -577,6 +577,7 @@ class LogActivity(orm.Model):
             res[item.id] = '<p>'
             if not item.log_check_unwrited:
                 res[item.id] = False
+                continue
                 
             for row in item.log_check_unwrited.split('\n'):
                 res_ids = row.split('|')
