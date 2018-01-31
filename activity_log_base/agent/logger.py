@@ -151,6 +151,11 @@ try:
 except:
     git_folder = '/backup/git/micronaet-log'    
 
+#try:
+#    git_refresh = master_config.get('git', 'refresh')
+#except:
+#    git_refresh = True # default
+
 # Open log file:    
 log_f = open(log_activity, 'a')
 
@@ -167,9 +172,12 @@ if code_activity.endswith('/'):
 
 
 # Update GIT module data before all operations (next exection will be updated)
+#if git_refresh:
 log_update_git = 'Update Git module folder: %s' % git_folder
 log_event(log_f, log_update_git)
 os.system('cd %s; git pull' % git_folder)
+#else:    
+#    log_update_git = 'Git not update, folder: %s' % git_folder
 
 # -----------------------------------------------------------------------------
 # ERPPEEK Client connection:
