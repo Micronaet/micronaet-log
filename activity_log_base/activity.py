@@ -893,7 +893,7 @@ class LogActivityEvent(orm.Model):
                 activity_pool.write(cr, uid, activity_id, {
                     'log_info': log_info, # used for IP address
                     'log_check_count': count_current,
-                    'log_check_unwrited': '<p>%s</p><p><b>%s</b>%s</p>\n' % (
+                    'log_check_unwrited': '%s%s%s\n' % (
                         log_check_unwrited,
                         datetime.now(), 
                         log_info,
