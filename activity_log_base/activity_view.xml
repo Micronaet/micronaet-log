@@ -243,7 +243,7 @@
                                         <field name="log_check_every" attrs="{'invisible': [('log_mode','!=','check')]}"/>
                                         <field name="log_check_count" attrs="{'invisible': [('log_mode','!=','check')]}"/>
                                         <separator string="Unwrited event:" colspan="4" attrs="{'invisible': [('log_mode','!=','check')]}"/>
-                                        <field name="log_check_unwrited" attrs="{'invisible': [('log_mode','!=','check')]}" nolabel="1" colspan="4" readonly="1" widget="html"/>
+                                        <field name="log_check_unwrited_html" attrs="{'invisible': [('log_mode','!=','check')]}" nolabel="1" colspan="4" readonly="1" widget="html"/>
                                     </group>                    
                                 </page>
                                 <page string="Notification">

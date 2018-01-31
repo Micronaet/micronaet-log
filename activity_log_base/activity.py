@@ -569,6 +569,20 @@ class LogActivity(orm.Model):
                 ''') % tuple(item)
         return res
         
+    def _log_in_html_format(self, cr, uid, ids, fields, args, context=None):
+        ''' Fields function for calculate 
+        '''
+        res = {}
+        for item in self.browse(cr, uid, ids, context=context):
+            res[item.id] = '<p>
+            for row in item.log_check_unwrited.split('\n'):
+                res_ids = row.split('|')
+                try:
+                    res[item.id] = '<b>%s: </b> <i>%s</i> %s<br/>' % res_ids
+                except:
+                    res[item.id] = '%s<br/>' % row 
+        return row        
+                          
     _columns = {
         'is_active': fields.boolean('Is active'),
         'code': fields.char('Code', size=15),
@@ -631,7 +645,10 @@ class LogActivity(orm.Model):
         'log_check_unwrited': fields.text(
             'Log check unwrited', 
             help='When log mode is check write here the event'),    
-
+        'log_check_unwrited_html': fields.function(
+            _log_in_html_format, method=True, 
+            type='text', string='Log in HTML format', store=False), 
+                        
         'state': fields.selection([
             ('unactive', 'Unactive'), # not working
             ('active', 'Active'), # Working
@@ -885,18 +902,17 @@ class LogActivityEvent(orm.Model):
             # jump in no count info raise:    
             count_current = activity_proxy.log_check_count + 1
             count_max =  activity_proxy.log_check_every
-            log_check_unwrited = (
-                activity_proxy.log_check_unwrited or '').replace('\n', '<br/>')
+            log_check_unwrited = activity_proxy.log_check_unwrited or ''
             if count_current < count_max:
                 # Update count and log partial:
                 _logger.info('No notification event received')
                 activity_pool.write(cr, uid, activity_id, {
                     'log_info': log_info, # used for IP address
                     'log_check_count': count_current,
-                    'log_check_unwrited': '%s%s%s\n' % (
-                        log_check_unwrited,
+                    'log_check_unwrited': '%s|%s|%s\n' % (
                         datetime.now(), 
                         log_info,
+                        log_check_unwrited,
                         )
                     }, context=context)                    
                 return (True, {}) # nothing to comunicate
