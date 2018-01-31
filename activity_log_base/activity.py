@@ -581,7 +581,7 @@ class LogActivity(orm.Model):
                     res[item.id] = '<b>%s: </b> <i>%s</i> %s<br/>' % res_ids
                 except:
                     res[item.id] = '%s<br/>' % row 
-        return row        
+        return res        
                           
     _columns = {
         'is_active': fields.boolean('Is active'),
