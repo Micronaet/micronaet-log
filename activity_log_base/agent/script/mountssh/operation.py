@@ -54,7 +54,7 @@ config.read([fullname])
 hostname = config.get('operation', 'hostname') # Host access
 check = config.get('operation', 'check') # File to check
 esit = config.get('operation', 'esit') # Result in command return (start)
-mask = config.get('operation', 'mask')
+mask = config.get('operation', 'mask').replace('|', '\n') # pipe means return
 check_command = mask % (hostname, check)
 
 # Read from config file:
@@ -83,7 +83,6 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # Check mount procedure:
 # -----------------------------------------------------------------------------
-print check_command
 import pdb; pdb.set_trace()
 res = os.popen(check_command).read()
 if res.startswith(esit):
