@@ -208,6 +208,7 @@ class LogActivity(orm.Model):
         # Create worksheet:
         WS_name = u'Schedulazioni'
         excel_pool.create_worksheet(WS_name)
+        excel_pool.set_format()
 
         # Write header:    
         excel_pool.write_xls_line(WS_name, 0, header)
@@ -884,14 +885,15 @@ class LogActivityEvent(orm.Model):
             # jump in no count info raise:    
             count_current = activity_proxy.log_check_count + 1
             count_max =  activity_proxy.log_check_every
-            log_check_unwrited = activity_proxy.log_check_unwrited or ''
+            log_check_unwrited = (
+                activity_proxy.log_check_unwrited or '').replace('\n', '<br/>')
             if count_current < count_max:
                 # Update count and log partial:
                 _logger.info('No notification event received')
                 activity_pool.write(cr, uid, activity_id, {
                     'log_info': log_info, # used for IP address
                     'log_check_count': count_current,
-                    'log_check_unwrited': '%s%s%s\n' % (
+                    'log_check_unwrited': '<p>%s</p><p><b>%s</b>%s</p>\n' % (
                         log_check_unwrited,
                         datetime.now(), 
                         log_info,
