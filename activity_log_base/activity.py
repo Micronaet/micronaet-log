@@ -574,13 +574,14 @@ class LogActivity(orm.Model):
         '''
         res = {}
         for item in self.browse(cr, uid, ids, context=context):
-            res[item.id] = '<p>
+            res[item.id] = '<p>'
             for row in item.log_check_unwrited.split('\n'):
                 res_ids = row.split('|')
                 try:
-                    res[item.id] = '<b>%s: </b> <i>%s</i> %s<br/>' % res_ids
+                    res[item.id] += '<b>%s: </b> <i>%s</i> %s<br/>' % res_ids
                 except:
-                    res[item.id] = '%s<br/>' % row 
+                    res[item.id] += '%s<br/>' % row 
+            res[item.id] += '</p>'
         return res        
                           
     _columns = {
