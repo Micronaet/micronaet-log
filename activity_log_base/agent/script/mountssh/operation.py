@@ -39,7 +39,6 @@ def closing_operations(log_f):
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 # Extract config file name from current name
 path, name = os.path.split(os.path.abspath(__file__))
 fullname = os.path.join(path, 'operation.cfg')
@@ -84,6 +83,8 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # Check mount procedure:
 # -----------------------------------------------------------------------------
+print check_command
+import pdb; pdb.set_trace()
 res = os.popen(check_command).read()
 if res.startswith(esit):
     log_f['info'].write('Correttamente montato\n')
