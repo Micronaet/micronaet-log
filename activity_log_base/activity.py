@@ -594,7 +594,7 @@ class LogActivity(orm.Model):
         res = {}
         query = '''
             SELECT event.activity_id, max(event.end) 
-            FROM log_activity_event e 
+            FROM log_activity_event event 
             GROUP BY activity_id 
             HAVING activity_id in (%s);
             '''
