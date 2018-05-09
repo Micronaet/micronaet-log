@@ -685,7 +685,7 @@ class LogActivity(orm.Model):
             store=False), 
         'last_event_2_days': fields.function(
             _last_event_date, method=True, 
-            type='datetime', string='Last event', multi=True,
+            type='boolean', string='Last event', multi=True,
             store=False), 
                         
         'state': fields.selection([
