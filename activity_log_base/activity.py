@@ -588,6 +588,21 @@ class LogActivity(orm.Model):
             res[item.id] += '</p>'
         return res        
                           
+    def _last_event_date(self, cr, uid, ids, fields, args, context=None):
+        ''' Get last activity event:
+        '''
+        res = {}
+        query = '''
+            SELECT event.activity_id, max(event.end) 
+            FROM log_activity_event e 
+            GROUP BY activity_id 
+            HAVING activity_id in (%s);
+            '''
+        cr.execute(query, ids)
+        for record in cr.fetchall():
+            res[record[id]] = record[date]
+        return res
+        
     _columns = {
         'is_active': fields.boolean('Is active'),
         'code': fields.char('Code', size=15),
@@ -653,6 +668,10 @@ class LogActivity(orm.Model):
         'log_check_unwrited_html': fields.function(
             _log_in_html_format, method=True, 
             type='text', string='Log in HTML format', store=False), 
+        'last_event': fields.function(
+            _last_event_date, method=True, 
+            type='datetime', string='Last event', 
+            store=False), 
                         
         'state': fields.selection([
             ('unactive', 'Unactive'), # not working

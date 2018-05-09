@@ -394,6 +394,7 @@
                     <field name="duration" />
                     <field name="mark_ok" invisible="1"/>
                     <field name="error_comment" />
+                    <field name="last_event" />
                     <field name="state" />
                     <button name="dummy_nothing" string="Marked as OK" type="object" icon="STOCK_YES" attrs="{'invisible': [('mark_ok','!=',True)]}"/>
                     <button name="dummy_nothing" string="Marked as not OK" type="object" icon="STOCK_NO" attrs="{'invisible': [('mark_ok','!=',False)]}" />
