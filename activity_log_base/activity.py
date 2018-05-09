@@ -591,7 +591,7 @@ class LogActivity(orm.Model):
     def _last_event_date(self, cr, uid, ids, fields, args, context=None):
         ''' Get last activity event:
         '''
-        res = {}
+        res = dict.fromkeys(ids, False)
         query = '''
             SELECT event.activity_id, max(event.end) 
             FROM log_activity_event event 
@@ -600,9 +600,8 @@ class LogActivity(orm.Model):
             ''' % (', '.join([str(item) for item in ids]))
         _logger.info('Query launched: %s' % query)    
         cr.execute(query)
-        import pdb; pdb.set_trace()
-        for record in cr.fetchall():
-            res[record[id]] = record[date]
+        for activity_id, end in cr.fetchall():
+            res[activity_id] = end
         return res
         
     _columns = {
