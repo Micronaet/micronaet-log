@@ -591,17 +591,27 @@ class LogActivity(orm.Model):
     def _last_event_date(self, cr, uid, ids, fields, args, context=None):
         ''' Get last activity event:
         '''
-        res = dict.fromkeys(ids, False)
+        res = {}
+        for item in ids:
+            res[item] = {
+                'last_event': False,
+                'last_event_2_days': True,
+                }
+
         query = '''
             SELECT event.activity_id, max(event.end) 
             FROM log_activity_event event 
             GROUP BY event.activity_id 
             HAVING event.activity_id in (%s);
             ''' % (', '.join([str(item) for item in ids]))
-        _logger.info('Query launched: %s' % query)    
+        _logger.info('Query launched: %s' % query)
+
         cr.execute(query)
+        today = datetime.now() - timedelta(days = 1)
+        today = today.strftime(DEFAULT_SERVER_DATE_FORMAT)
         for activity_id, end in cr.fetchall():
-            res[activity_id] = end
+            res[activity_id]['last_event'] = end
+            res[activity_id]['last_event_2_days'] = (end and end < today)
         return res
         
     _columns = {
@@ -671,7 +681,11 @@ class LogActivity(orm.Model):
             type='text', string='Log in HTML format', store=False), 
         'last_event': fields.function(
             _last_event_date, method=True, 
-            type='datetime', string='Last event', 
+            type='datetime', string='Last event', multi=True, 
+            store=False), 
+        'last_event_2_days': fields.function(
+            _last_event_date, method=True, 
+            type='datetime', string='Last event', multi=True,
             store=False), 
                         
         'state': fields.selection([

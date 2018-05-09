@@ -200,6 +200,7 @@
                     <field name="to_date" />
                     <field name="log_mode" />
                     <field name="last_event" />
+                    <field name="last_event_2_days" />
                     <field name="state" />
                     <button name="extract_xlsx_scheduled_status" string="Get schedule activity" type="object" icon="gtk-print" />
                 </tree>
