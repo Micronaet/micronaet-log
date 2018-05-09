@@ -592,6 +592,7 @@ class LogActivity(orm.Model):
         ''' Get last activity event:
         '''
         res = {}
+        import pdb; pdb.set_trace()
         query = '''
             SELECT event.activity_id, max(event.end) 
             FROM log_activity_event event 
