@@ -600,6 +600,7 @@ class LogActivity(orm.Model):
             ''' % (', '.join([str(item) for item in ids]))
         _logger.info('Query launched: %s' % query)    
         cr.execute(query)
+        import pdb; pdb.set_trace()
         for record in cr.fetchall():
             res[record[id]] = record[date]
         return res
