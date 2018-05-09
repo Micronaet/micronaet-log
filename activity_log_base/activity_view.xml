@@ -199,6 +199,7 @@
                     <field name="from_date" />
                     <field name="to_date" />
                     <field name="log_mode" />
+                    <field name="last_event" />
                     <field name="state" />
                     <button name="extract_xlsx_scheduled_status" string="Get schedule activity" type="object" icon="gtk-print" />
                 </tree>
@@ -394,7 +395,6 @@
                     <field name="duration" />
                     <field name="mark_ok" invisible="1"/>
                     <field name="error_comment" />
-                    <field name="last_event" />
                     <field name="state" />
                     <button name="dummy_nothing" string="Marked as OK" type="object" icon="STOCK_YES" attrs="{'invisible': [('mark_ok','!=',True)]}"/>
                     <button name="dummy_nothing" string="Marked as not OK" type="object" icon="STOCK_NO" attrs="{'invisible': [('mark_ok','!=',False)]}" />
