@@ -595,10 +595,11 @@ class LogActivity(orm.Model):
         query = '''
             SELECT event.activity_id, max(event.end) 
             FROM log_activity_event event 
-            GROUP BY activity_id 
-            HAVING activity_id in (%s);
-            '''
-        cr.execute(query, ids)
+            GROUP BY event.activity_id 
+            HAVING event.activity_id in (%s);
+            ''' % (','.join(ids))
+        _logger.info('Query launched:' % query)    
+        cr.execute(query)
         for record in cr.fetchall():
             res[record[id]] = record[date]
         return res
