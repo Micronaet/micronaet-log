@@ -592,13 +592,12 @@ class LogActivity(orm.Model):
         ''' Get last activity event:
         '''
         res = {}
-        import pdb; pdb.set_trace()
         query = '''
             SELECT event.activity_id, max(event.end) 
             FROM log_activity_event event 
             GROUP BY event.activity_id 
             HAVING event.activity_id in (%s);
-            ''' % (','.join(ids))
+            ''' % (', '.join([str(item) for item in ids]))
         _logger.info('Query launched:' % query)    
         cr.execute(query)
         for record in cr.fetchall():
