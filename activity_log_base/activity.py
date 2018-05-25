@@ -652,7 +652,8 @@ class LogActivity(orm.Model):
             'Origin', help='Info of origin server for the activity'),
         
         # Info about server:
-        'cron': fields.text('Cron job'),
+        'uptime': fields.text('Uptime job'),
+        'cron': fields.char('Cron job', size=100),
         'config': fields.text('Config file'),
         'server': fields.text('Server info'),
         

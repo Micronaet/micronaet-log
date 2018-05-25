@@ -249,6 +249,7 @@ activity_data = {
         'hostname; ip address | grep \'mtu\|inet\|link\''),
     'cron': get_result_command('crontab -l'),
     'config': get_result_command('cat %s' % fullname),
+    'uptime': get_result_command('uptime'),
     }
 
 log_start = eval(operation_config.get('operation', 'log_start'))
