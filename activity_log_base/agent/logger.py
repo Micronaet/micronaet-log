@@ -244,7 +244,6 @@ operation_config = ConfigParser.ConfigParser()
 operation_config.read([fullname])
 
 # Log server status parameter:
-import pdb; pdb.set_trace()
 activity_data = {
     'server': get_result_command(
         'hostname; ip address | grep \'mtu\|inet\|link\''),
