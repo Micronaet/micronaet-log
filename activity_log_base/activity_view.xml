@@ -270,7 +270,8 @@
                                         <button name="open_history_server" string="Server history value" type="object" colspan="1"/>
                                         <field name="server" nolabel="1" colspan="4" />
 
-                                        <field name="uptime" />
+                                        <separator string="Server Uptime:" colspan="3"/>
+                                        <field name="uptime" nolabel="1"/>
                                         <newline/>
                                         
                                         <separator string="Config file:" colspan="3"/>
