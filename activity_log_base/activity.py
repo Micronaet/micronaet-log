@@ -595,7 +595,7 @@ class LogActivity(orm.Model):
         for item in ids:
             res[item] = {
                 'last_event': False,
-                'last_event_2_days': True,
+                'last_event_days': False,
                 }
 
         query = '''
@@ -607,13 +607,34 @@ class LogActivity(orm.Model):
         _logger.info('Query launched: %s' % query)
 
         cr.execute(query)
-        today = datetime.now() - timedelta(days = 1)
-        today = today.strftime(DEFAULT_SERVER_DATE_FORMAT)
+        today_dt = datetime.now()
+
         for activity_id, end in cr.fetchall():
+            try:
+                end_dt = datetime.strptime(end, DEFAULT_SERVER_DATETIME_FORMAT)
+                delta = today_dt - end_dt
+                hours = delta.days #+ delta.seconds / 86400.0
+            except:
+                end = False
+                hours = 0.0
+                  
             res[activity_id]['last_event'] = end
-            res[activity_id]['last_event_2_days'] = (end and end < today)
+            res[activity_id]['last_event_days'] = hours
         return res
         
+    def schedule_update_all(self, cr, uid, context=None):
+        ''' Update event scheduling update of field store
+        '''
+        activity_ids = self.search(cr, uid, [], context=context)
+        return self.write(cr, uid, activity_ids, {
+            'update_event_status': True,
+            }, context=context)
+
+    def _get_fiels_update_this(self, cr, iud, ids, context=None):
+        ''' Store function update passed ID
+        '''
+        return ids
+    
     _columns = {
         'is_active': fields.boolean('Is active'),
         'code': fields.char('Code', size=15),
@@ -680,15 +701,21 @@ class LogActivity(orm.Model):
         'log_check_unwrited_html': fields.function(
             _log_in_html_format, method=True, 
             type='text', string='Log in HTML format', store=False), 
+        'update_event_status':fields.boolean('Update event command'),
         'last_event': fields.function(
             _last_event_date, method=True, 
             type='datetime', string='Last event', multi=True, 
-            store=False), 
-        'last_event_2_days': fields.function(
+            store={
+                'log.activity':
+                    (_get_fiels_update_this, ('update_event_status', ), 10),
+                }), 
+        'last_event_days': fields.function(
             _last_event_date, method=True, 
-            type='boolean', string='Old', multi=True,
-            store=False), 
-                        
+            type='integer', string='Days', multi=True,
+            store={
+                'log.activity':
+                    (_get_fiels_update_this, ('update_event_status', ), 10),
+                 }),       
         'state': fields.selection([
             ('unactive', 'Unactive'), # not working
             ('active', 'Active'), # Working
