@@ -626,6 +626,7 @@ class LogActivity(orm.Model):
         ''' Update event scheduling update of field store
         '''
         activity_ids = self.search(cr, uid, [], context=context)
+        _logger.warning('Update %s activity event last' % len(activity_ids))
         self.write(cr, uid, activity_ids, {
             'update_event_status': False,
             }, context=context)
