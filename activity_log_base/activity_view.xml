@@ -199,8 +199,8 @@
                     <filter name="is_active_on" string="Active" domain="[('is_active','=',True)]"/>
                     <filter name="is_active_off" string="Not active" domain="[('is_active','=',False)]"/>
                     
-                    <filter name="end_date_7" string="End date 7" domain="[('last_event_days','&lt;=',7)]"/>
-                    <filter name="end_date_over" string="End date over" domain="['|',('last_event_days','=',0),('last_event_days','&gt;=',7)]"/>
+                    <filter name="end_date_7" string="End date 7" domain="[('last_event_days','&gt;=',0),('last_event_days','&lt;=',7)]"/>
+                    <filter name="end_date_over" string="End date over" domain="['|',('last_event_days','=',-1),('last_event_days','&gt;=',7)]"/>
                     
                     <group expand="0" string="Group By...">
                         <filter name="group_partner" string="Partner" context="{'group_by': 'partner_id'}"/>

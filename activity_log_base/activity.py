@@ -595,7 +595,7 @@ class LogActivity(orm.Model):
         for item in ids:
             res[item] = {
                 'last_event': False,
-                'last_event_days': False,
+                'last_event_days': -1,
                 }
 
         query = '''
@@ -613,19 +613,22 @@ class LogActivity(orm.Model):
             try:
                 end_dt = datetime.strptime(end, DEFAULT_SERVER_DATETIME_FORMAT)
                 delta = today_dt - end_dt
-                hours = delta.days #+ delta.seconds / 86400.0
+                days = delta.days #+ delta.seconds / 86400.0
             except:
                 end = False
-                hours = 0.0
+                days = -1
                   
             res[activity_id]['last_event'] = end
-            res[activity_id]['last_event_days'] = hours
+            res[activity_id]['last_event_days'] = days
         return res
         
     def schedule_update_all(self, cr, uid, context=None):
         ''' Update event scheduling update of field store
         '''
         activity_ids = self.search(cr, uid, [], context=context)
+        self.write(cr, uid, activity_ids, {
+            'update_event_status': False,
+            }, context=context)
         return self.write(cr, uid, activity_ids, {
             'update_event_status': True,
             }, context=context)
