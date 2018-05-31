@@ -198,6 +198,10 @@
 
                     <filter name="is_active_on" string="Active" domain="[('is_active','=',True)]"/>
                     <filter name="is_active_off" string="Not active" domain="[('is_active','=',False)]"/>
+                    
+                    <filter name="end_date_7" string="End date 7" domain="[('last_event_days','&lt;=',7)]"/>
+                    <filter name="end_date_over" string="End date over" domain="['|',('last_event_days','=',0),('last_event_days','&gt;=',7)]"/>
+                    
                     <group expand="0" string="Group By...">
                         <filter name="group_partner" string="Partner" context="{'group_by': 'partner_id'}"/>
                         <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
@@ -335,6 +339,15 @@
             <field name="context">{}</field>
             <field name="domain">[]</field>
         </record>
+        <record model="ir.actions.act_window" id="action_log_activity_over7">
+            <field name="name">Activity over 7</field>
+            <field name="res_model">log.activity</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_log_activity_tree"/>
+            <field name="context">{'search_default_end_date_over': True}</field>
+            <field name="domain">[]</field>
+        </record>        
         
         <!--log.activity.event-->
         <record model="ir.ui.view" id="view_log_activity_event_search">
@@ -501,10 +514,17 @@
                     action="action_log_activity"
                     sequence="10"
                     />
+                    
                     <menuitem 
                         parent="menu_activity_log" 
                         id="menu_action_log_activity_history" 
                         action="action_log_activity_history"/>
+                <menuitem 
+                    parent="menu_log_activity" 
+                    id="menu_activity_log_over7" 
+                    action="action_log_activity_over7"
+                    sequence="10"
+                    />
                     
                 <menuitem 
                     parent="menu_log_activity" 
