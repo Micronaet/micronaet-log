@@ -627,9 +627,11 @@ class LogActivity(orm.Model):
         '''
         activity_ids = self.search(cr, uid, [], context=context)
         _logger.warning('Update %s activity event last' % len(activity_ids))
+        
         self.write(cr, uid, activity_ids, {
             'update_event_status': False,
             }, context=context)
+        
         return self.write(cr, uid, activity_ids, {
             'update_event_status': True,
             }, context=context)
@@ -637,6 +639,7 @@ class LogActivity(orm.Model):
     def _get_fiels_update_this(self, cr, iud, ids, context=None):
         ''' Store function update passed ID
         '''
+        _logger.warning('Update %s date event' % len(ids))        
         return ids
     
     _columns = {
