@@ -39,6 +39,7 @@ def closing_operations(log_f):
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
 # Extract config file name from current name
 path, name = os.path.split(os.path.abspath(__file__))
 fullname = os.path.join(path, 'operation.cfg')
