@@ -92,11 +92,11 @@ for mode in log:
 #                                Access Ilo
 # -----------------------------------------------------------------------------
 ilo = hpilo.Ilo(
-    hostname=hostname, 
-    login=username, 
-    password=password,
-    timeout=timeout,
-    port=port,
+    hostname=ilo_hostname, 
+    login=ilo_username, 
+    password=ilo_password,
+    timeout=ilo_timeout,
+    port=ilo_port,
     #protocol=None,
     #delayed=False, 
     #ssl_version=None
