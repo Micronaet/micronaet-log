@@ -52,7 +52,6 @@ config.read([fullname])
 
 # Read from config file:
 origin = config.get('operation', 'origin') # XXX not used
-error = config.get('operation', 'error')
 
 # Ilo Parameter:
 ilo_hostname = config.get('ilo', 'hostname')
