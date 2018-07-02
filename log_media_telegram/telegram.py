@@ -149,22 +149,18 @@ class LogActivity(orm.Model):
         # Launch Telegram event if needed:
         # ---------------------------------------------------------------------
         activity = self.browse(cr, uid, activity_id, context=context)
+        bar_list = '-' * 50
 
         if event_id:
             event_pool = self.pool.get('log.activity.event')
             event_proxy = event_pool.browse(cr, uid, event_id, context=context)
-            event_text = _('''
-                ---------------------------------------------------------------
-                Activity %s: [%s] %s (%s)
-                
-                Start: %s
-                End: %s
-                
-                Info: %s                
-                Warning: %s
-                Error: %s
-                ---------------------------------------------------------------
-                ''' % (
+            event_state = event_proxy.state
+            event_text = _(
+                '%s\n%s\nActivity %s: [%s] %s (%s)\n\n'
+                'Start: %s\nEnd: %s'
+                'Info: %s\nWarning: %s\nError: %s\n%s' % (
+                    bar_list,
+                    event_state.upper(),
                     activity.category_id.name,
                     activity.code,
                     activity.name,
@@ -176,21 +172,20 @@ class LogActivity(orm.Model):
                     event_proxy.log_info or '',
                     event_proxy.log_warning or '',
                     event_proxy.log_error or '',
+                    bar_list,
                     ))
-            event_state = event_proxy.state
         else: # Not present:
-            event_text = _('''
-                ---------------------------------------------------------------
-                Activity %s: [%s] %s (%s)
-                Event not present (or not created)
-                ---------------------------------------------------------------
-                ''') % (
+            event_state = 'error'
+            event_text = _(
+                '%s\nActivity %s: [%s] %s (%s)\n'
+                'Event not present (or not created)\n%s') % (
+                    bar_list,
                     activity.category_id.name,
                     activity.code,
                     activity.name,
                     activity.partner_id.name,
+                    bar_list,
                     )
-            event_state = 'error'
             
         for telegram in activity.telegram_ids:
             if event_state not in ('error', 'warning') and telegram.log_info:
