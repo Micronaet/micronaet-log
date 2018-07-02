@@ -1,4 +1,5 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 access_telegram_bot_user,telegram.bot,model_telegram_bot,base.group_user,1,1,1,1
 access_telegram_group_user,telegram.group,model_telegram_group,base.group_user,1,1,1,1
+access_telegram_bot_log_user,telegram.bot.log,model_telegram_bot_log,base.group_user,1,1,1,1
 
