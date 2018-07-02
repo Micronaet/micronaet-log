@@ -174,9 +174,9 @@ class LogActivity(orm.Model):
                     event_proxy.start,
                     event_proxy.end,
                     
-                    event_proxy.log_info or '',
-                    event_proxy.log_warning or '',
-                    event_proxy.log_error or '',
+                    (event_proxy.log_info or '').strip(),
+                    (event_proxy.log_warning or '').strip(),
+                    (event_proxy.log_error or '').strip(),
                     bar_list,
                     ))
         else: # Not present:
