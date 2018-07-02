@@ -49,6 +49,20 @@ class TelegramBot(orm.Model):
     _rec_name = 'name'
     _order = 'name'
     
+    def get_message_url(self, cr, uid, ids, context=None):
+        ''' Open URL for API message list
+        '''
+        url = 'https://api.telegram.org/bot%s/getUpdates'
+        current_proxy = self.browse(cr, uid, ids, context=context)[0]
+        url = url % current_proxy.token
+        return {
+            'name': 'Telegram messages',
+            'res_model': 'ir.actions.act_url',
+            'type': 'ir.actions.act_url',
+            'target': 'current',
+            'url': url
+            } 
+    
     _columns = {
         'name': fields.char('Description', size=80, required=True),
         'bot': fields.char('BOT Name', size=64, required=True),

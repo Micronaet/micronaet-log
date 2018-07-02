@@ -11,6 +11,7 @@
                     <field name="bot" />
                     <field name="token" />
                     <field name="group_ids" widget="many2many_tags" />
+                    <button name="get_message_url" string="Get message" type="object" />
                 </tree>
             </field>
         </record>
