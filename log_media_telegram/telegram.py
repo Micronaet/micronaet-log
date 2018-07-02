@@ -177,9 +177,10 @@ class LogActivity(orm.Model):
         else: # Not present:
             event_state = 'error'
             event_text = _(
-                '%s\nActivity %s: [%s] %s (%s)\n'
+                '%s\n%s\nActivity %s: [%s] %s (%s)\n'
                 'Event not present (or not created)\n%s') % (
                     bar_list,
+                    event_state.upperr()
                     activity.category_id.name,
                     activity.code,
                     activity.name,
