@@ -106,14 +106,16 @@ class LogActivity(orm.Model):
     _order = 'name'
     
     # -------------------------------------------------------------------------
-    # Override event:
+    # Overridable event:
     # -------------------------------------------------------------------------
-    def raise_extra_media_comunication(self, cr, uid, ids, context=None):
+    def raise_extra_media_comunication(self, cr, uid, activity_id, event_id, 
+            context=None):
         ''' Override procedure for raise extra event like: 
             Mail, SMS, Telegram Message, Whatsapp message etc.
             All override procedure will be introduced by a new module
         '''
         # Do Nothing
+        _logger.warning('Log media event comunication')
         return True
     # -------------------------------------------------------------------------
     # REPORT XLSX:
@@ -1032,27 +1034,34 @@ class LogActivityEvent(orm.Model):
         else:
             record['state'] = 'closed'
             record['mark_ok'] = True            
-            
+
         # ---------------------------------------------------------------------    
-        # Manage Extra Media comunication message:    
+        # Update or create event
         # ---------------------------------------------------------------------    
-        activity_pool.raise_extra_media_comunication(cr, uid, [activity_id], 
-            context=context)
-            
+        event_id = False
         if update_id:
             try:
                 res = self.write(cr, uid, update_id, record, context=context)
+                event_id = update_id                
             except:
                 _logger.error('Error updating event: %s' % update_id)
                 res = False                    
-            return (res, record)
         else:
             try:
-                res = self.create(cr, uid, record, context=context)
+                event_id = self.create(cr, uid, record, context=context)
+                res = event_id
             except:
                 _logger.error('Error create event')
                 res = False    
-            return (res, record)
+                
+        # ---------------------------------------------------------------------    
+        # Manage Extra Media comunication message:    
+        # ---------------------------------------------------------------------    
+        activity_pool.raise_extra_media_comunication(cr, uid, activity_id, 
+            event_id, context=context)
+
+        # Common part:        
+        return (res, record)
         
     _columns = {
         'datetime': fields.datetime('Date', required=True),

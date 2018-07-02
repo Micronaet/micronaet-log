@@ -108,6 +108,27 @@ class LogActivity(orm.Model):
     """
     
     _inherit = 'log.activity'
+
+    # -------------------------------------------------------------------------
+    # Override event:
+    # -------------------------------------------------------------------------
+    def raise_extra_media_comunication(self, cr, uid, activity_id, event_id, 
+            context=None):
+        ''' Override procedure for raise extra event like: 
+            Mail, SMS, Telegram Message, Whatsapp message etc.
+            All override procedure will be introduced by a new module
+        '''
+        # ---------------------------------------------------------------------    
+        # Raise overrided list of event:
+        # ---------------------------------------------------------------------    
+        res = super(LogActivity, self).raise_extra_media_comunication(
+            cr, uid, ids, context==context)
+        
+        # ---------------------------------------------------------------------    
+        # Launch Telegram event if needed:
+        # ---------------------------------------------------------------------    
+        return res
+    
     
     _columns = {
         'telegram_ids': fields.one2many(
