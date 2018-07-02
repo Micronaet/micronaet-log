@@ -91,7 +91,7 @@
         </record>
         <record model="ir.actions.act_window" id="action_telegram_bot_log">
             <field name="name">Telegram alarm</field>
-            <field name="res_model">telegram.bom.log</field>
+            <field name="res_model">telegram.bot.log</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_telegram_bot_log_tree"/>
