@@ -184,7 +184,7 @@ class LogActivity(orm.Model):
                 Activity %s: [%s] %s (%s)
                 Event not present (or not created)
                 ---------------------------------------------------------------
-                ''' % (
+                ''') % (
                     activity.category_id.name,
                     activity.code,
                     activity.name,
