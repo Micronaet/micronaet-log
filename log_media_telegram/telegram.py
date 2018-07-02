@@ -161,14 +161,14 @@ class LogActivity(orm.Model):
             else:
                 event_state = 'info'
                     
-            event_text = _(
+            event_mask = _(
                 '%s\n%s\n%s\n%s\nActivity %s: [%s] %s (%s)\n\n'
                 'Start: %s\nEnd: %s\n'
                 'Info: %s\nWarning: %s\nError: %s\n%s' % (
                     bar_list,
                     event_state.upper(),
                     bar_list,
-                    telegram.message or '',
+                    '%s',#telegram.message or '',
                     activity.category_id.name,
                     activity.code,
                     activity.name,
@@ -184,13 +184,13 @@ class LogActivity(orm.Model):
                     ))
         else: # Not present:
             event_state = 'error'
-            event_text = _(
+            event_mask = _(
                 '%s\n%s\n%s\n%s\nActivity %s: [%s] %s (%s)\n'
                 'Event not present (or not created)\n%s') % (
                     bar_list,
                     event_state.upperr(),
                     bar_list,
-                    telegram.message or '',
+                    '%s',#telegram.message or '',
                     activity.category_id.name,
                     activity.code,
                     activity.name,
@@ -199,6 +199,7 @@ class LogActivity(orm.Model):
                     )
             
         for telegram in activity.telegram_ids:
+            event_text = event_mask % (telegram.message or '')
             if event_state == 'info' and telegram.log_info:
                 # Info log:
                 log_event(telegram, event_text)
