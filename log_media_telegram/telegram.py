@@ -154,13 +154,18 @@ class LogActivity(orm.Model):
         if event_id:
             event_pool = self.pool.get('log.activity.event')
             event_proxy = event_pool.browse(cr, uid, event_id, context=context)
-            event_state = event_proxy.state
+            if event_proxy.state in ('error', 'warning'):
+                event_state = event_proxy.state
+            else:
+                event_state = 'info'
+                    
             event_text = _(
-                '%s\n%s\nActivity %s: [%s] %s (%s)\n\n'
-                'Start: %s\nEnd: %s'
+                '%s\n%s\n%s\nActivity %s: [%s] %s (%s)\n\n'
+                'Start: %s\nEnd: %s\n'
                 'Info: %s\nWarning: %s\nError: %s\n%s' % (
                     bar_list,
                     event_state.upper(),
+                    bar_list,
                     activity.category_id.name,
                     activity.code,
                     activity.name,
@@ -177,10 +182,11 @@ class LogActivity(orm.Model):
         else: # Not present:
             event_state = 'error'
             event_text = _(
-                '%s\n%s\nActivity %s: [%s] %s (%s)\n'
+                '%s\n%s\n%s\nActivity %s: [%s] %s (%s)\n'
                 'Event not present (or not created)\n%s') % (
                     bar_list,
                     event_state.upperr(),
+                    bar_list,
                     activity.category_id.name,
                     activity.code,
                     activity.name,
@@ -189,7 +195,7 @@ class LogActivity(orm.Model):
                     )
             
         for telegram in activity.telegram_ids:
-            if event_state not in ('error', 'warning') and telegram.log_info:
+            if event_state == 'info' and telegram.log_info:
                 # Info log:
                 log_event(telegram, event_text)
             elif event_state == 'warning' and telegram.log_warning:
