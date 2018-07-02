@@ -98,6 +98,8 @@ class TelegramBotLog(orm.Model):
         'log_info': fields.boolean('Log info'),
         'log_warning': fields.boolean('Log warning'),
         'log_error': fields.boolean('Log error'),
+        'message': fields.char('Message', size=80, 
+            help='Extra message used append to Event'),
         }
         
     _defaults = {
@@ -160,12 +162,13 @@ class LogActivity(orm.Model):
                 event_state = 'info'
                     
             event_text = _(
-                '%s\n%s\n%s\nActivity %s: [%s] %s (%s)\n\n'
+                '%s\n%s\n%s\n%s\nActivity %s: [%s] %s (%s)\n\n'
                 'Start: %s\nEnd: %s\n'
                 'Info: %s\nWarning: %s\nError: %s\n%s' % (
                     bar_list,
                     event_state.upper(),
                     bar_list,
+                    telegram.message or '',
                     activity.category_id.name,
                     activity.code,
                     activity.name,
@@ -182,11 +185,12 @@ class LogActivity(orm.Model):
         else: # Not present:
             event_state = 'error'
             event_text = _(
-                '%s\n%s\n%s\nActivity %s: [%s] %s (%s)\n'
+                '%s\n%s\n%s\n%s\nActivity %s: [%s] %s (%s)\n'
                 'Event not present (or not created)\n%s') % (
                     bar_list,
                     event_state.upperr(),
                     bar_list,
+                    telegram.message or '',
                     activity.category_id.name,
                     activity.code,
                     activity.name,

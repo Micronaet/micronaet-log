@@ -87,6 +87,8 @@
                             <field name="log_info" />
                             <field name="log_warning" />
                             <field name="log_error" />
+                            
+                            <field name="message" />
                         </tree>
                     </field>
                 </xpath>
