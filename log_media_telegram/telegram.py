@@ -143,7 +143,7 @@ class LogActivity(orm.Model):
         # Raise overrided list of event:
         # ---------------------------------------------------------------------    
         res = super(LogActivity, self).raise_extra_media_comunication(
-            cr, uid, ids, context==context)
+            cr, uid, activity_id, event_id, context==context)
         
         # ---------------------------------------------------------------------    
         # Launch Telegram event if needed:
