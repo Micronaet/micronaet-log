@@ -162,13 +162,12 @@ class LogActivity(orm.Model):
                 event_state = 'info'
                     
             event_mask = _(
-                '%s\n%s\n%s\n%s\nActivity %s: [%s] %s (%s)\n\n'
+                '%s\n%s\n%s\n%%s\nActivity %s: [%s] %s (%s)\n\n'
                 'Start: %s\nEnd: %s\n'
                 'Info: %s\nWarning: %s\nError: %s\n%s' % (
                     bar_list,
                     event_state.upper(),
                     bar_list,
-                    '%s',#telegram.message or '',
                     activity.category_id.name,
                     activity.code,
                     activity.name,
@@ -185,12 +184,11 @@ class LogActivity(orm.Model):
         else: # Not present:
             event_state = 'error'
             event_mask = _(
-                '%s\n%s\n%s\n%s\nActivity %s: [%s] %s (%s)\n'
+                '%s\n%s\n%s\n%%s\nActivity %s: [%s] %s (%s)\n'
                 'Event not present (or not created)\n%s') % (
                     bar_list,
                     event_state.upperr(),
                     bar_list,
-                    '%s',#telegram.message or '',
                     activity.category_id.name,
                     activity.code,
                     activity.name,
