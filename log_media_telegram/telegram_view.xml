@@ -79,7 +79,7 @@
                 <tree string="Telegram BOT list" editable="bottom">        
                     <field name="activity_id" readonly="1"/>
                     <field name="telegram_id" />
-                    <field name="group_id" />
+                    <field name="group_id" /><!--domain="[('bot_id', '=', telegram_id)]" -->
                     
                     <field name="log_info" />
                     <field name="log_warning" />
