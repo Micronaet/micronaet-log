@@ -193,6 +193,7 @@ class LogActivity(orm.Model):
             event_state = 'error'
             
         for telegram in activity.telegram_ids:
+            import pdb; pdb.set_trace()
             if event_state not in ('error', 'warning') and telegram.log_info:
                 # Info log:
                 log_event(telegram, event_text)
