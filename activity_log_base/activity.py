@@ -106,6 +106,16 @@ class LogActivity(orm.Model):
     _order = 'name'
     
     # -------------------------------------------------------------------------
+    # Override event:
+    # -------------------------------------------------------------------------
+    def raise_extra_media_comunication(self, cr, uid, ids, context=None):
+        ''' Override procedure for raise extra event like: 
+            Mail, SMS, Telegram Message, Whatsapp message etc.
+            All override procedure will be introduced by a new module
+        '''
+        # Do Nothing
+        return True
+    # -------------------------------------------------------------------------
     # REPORT XLSX:
     # -------------------------------------------------------------------------
     def extract_xlsx_scheduled_status(self, cr, uid, ids, context=None):
@@ -1010,7 +1020,9 @@ class LogActivityEvent(orm.Model):
             'log_error': log_error,
             }
 
+        # ---------------------------------------------------------------------    
         # Normal log procedure:
+        # ---------------------------------------------------------------------    
         if not end:
             record['state'] = 'started'
         elif log_error:
@@ -1020,6 +1032,12 @@ class LogActivityEvent(orm.Model):
         else:
             record['state'] = 'closed'
             record['mark_ok'] = True            
+            
+        # ---------------------------------------------------------------------    
+        # Manage Extra Media comunication message:    
+        # ---------------------------------------------------------------------    
+        activity_pool.raise_extra_media_comunication(cr, uid, [activity_id], 
+            context=context)
             
         if update_id:
             try:

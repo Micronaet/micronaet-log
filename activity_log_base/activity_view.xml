@@ -278,10 +278,10 @@
                                 </page>
                                 <page string="Notification">
                                     <group col="4" colspan="4">
-                                        <field name="email_alert" />
+                                        <!--<field name="email_alert" />
                                         <newline/>
                                         <field name="email_error" attrs="{'invisible': [('email_alert','=',False)]}"/>
-                                        <field name="email_warning" attrs="{'invisible': [('email_alert','=',False)]}" />
+                                        <field name="email_warning" attrs="{'invisible': [('email_alert','=',False)]}" />-->
                                     </group>                    
                                 </page>
                                 <page string="Detail">

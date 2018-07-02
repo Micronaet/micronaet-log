@@ -34,8 +34,8 @@
     'init_xml': [],
     'demo': [],
     'data': [
-        #'security/ir.model.access.csv',    
-        #'_view.xml',
+        'security/ir.model.access.csv',    
+        'telegram_view.xml',
         ],
     'active': False,
     'installable': True,
