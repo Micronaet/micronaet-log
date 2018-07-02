@@ -108,13 +108,13 @@ degree = temperature['01-Inlet Ambient']['currentreading'][0]
 
 # Check temperature range for error:
 if degree >= error: 
-    log_f['error'].write('<br/>ERRORE Rilevato %s°C >= %s°C\n' % (
+    log_f['error'].write('<br/>ERRORE Rilevato %sC >= %sC\n' % (
             degree, error))
 elif degree >= warning: 
-    log_f['warning'].write('<br/>WARNING Rilevato %s°C >= %s°C\n' % (
+    log_f['warning'].write('<br/>WARNING Rilevato %sC >= %sC\n' % (
             degree, warning))
 else:
-    log_f['info'].write('<br/>INFO Rilevato %s°C < %s°C\n' % (
+    log_f['info'].write('<br/>INFO Rilevato %sC < %sC\n' % (
         degree, warning))
 
 # -----------------------------------------------------------------------------
