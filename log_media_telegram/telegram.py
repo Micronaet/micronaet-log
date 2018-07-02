@@ -21,6 +21,7 @@ import os
 import sys
 import logging
 import openerp
+import telepot
 import openerp.netsvc as netsvc
 import openerp.addons.decimal_precision as dp
 from openerp.osv import fields, osv, expression, orm
@@ -119,6 +120,26 @@ class LogActivity(orm.Model):
             All override procedure will be introduced by a new module
         '''
         # ---------------------------------------------------------------------    
+        # Utility:
+        # ---------------------------------------------------------------------    
+        def log_event(telegram, event_text):
+            ''' Utility for log event on telegram using bot and group ID
+            '''
+            # -----------------------------------------------------------------
+            # Telegram setup:
+            # -----------------------------------------------------------------
+            telegram_token = telegram.telegram_id.token
+            telegram_group = telegram.group_id.code
+
+            # -----------------------------------------------------------------
+            # Comunicate Telegram message:
+            # -----------------------------------------------------------------
+            bot = telepot.Bot(telegram_token)
+            bot.getMe()
+            bot.sendMessage(telegram_group, event_text)
+            return True
+
+        # ---------------------------------------------------------------------    
         # Raise overrided list of event:
         # ---------------------------------------------------------------------    
         res = super(LogActivity, self).raise_extra_media_comunication(
@@ -126,7 +147,61 @@ class LogActivity(orm.Model):
         
         # ---------------------------------------------------------------------    
         # Launch Telegram event if needed:
-        # ---------------------------------------------------------------------    
+        # ---------------------------------------------------------------------
+        activity = self.browse(cr, uid, activity_id, context=context)
+
+        if event_id:
+            event_pool = self.pool.get('log.activity.event')
+            event_proxy = event_pool.browse(cr, uid, event_id, context=context)
+            event_text = _('''
+                ---------------------------------------------------------------
+                Activity %s: [%s] %s (%s)
+                
+                Start: %s
+                End: %s
+                
+                Info: %s                
+                Warning: %s
+                Error: %s
+                ---------------------------------------------------------------
+                ''' % (
+                    activity.category_id.name,
+                    activity.code,
+                    activity.name,
+                    activity.partner_id.name,
+                    
+                    event_proxy.start,
+                    event_proxy.end,
+                    
+                    event_proxy.log_info or '',
+                    event_proxy.log_warning or '',
+                    event_proxy.log_error or '',
+                    ))
+            event_state = event_proxy.state
+        else: # Not present:
+            event_text = _('''
+                ---------------------------------------------------------------
+                Activity %s: [%s] %s (%s)
+                Event not present (or not created)
+                ---------------------------------------------------------------
+                ''' % (
+                    activity.category_id.name,
+                    activity.code,
+                    activity.name,
+                    activity.partner_id.name,
+                    )
+            event_state = 'error'
+            
+        for telegram in activity.telegram_ids:
+            if event_state not in ('error', 'warning') and telegram.log_info:
+                # Info log:
+                log_event(telegram, event_text)
+            elif event_state == 'warning' and telegram.log_warning:
+                # Warning log:
+                log_event(telegram, event_text)
+            elif event_state == 'error' and telegram.log_error:
+                # Error log:
+                log_event(telegram, event_text)
         return res
     
     
