@@ -216,7 +216,7 @@
             <field name="name">log.activity.tree</field>
             <field name="model">log.activity</field>
             <field name="arch" type="xml">
-                <tree string="Activity" version="7.0" colors="blue:log_mode=='check'">  
+                <tree string="Activity" version="7.0" colors="blue:log_mode=='check';red:last_event==False">  
                     <field name="is_active" invisible="1"/>      
                     <field name="monitor" invisible="1"/>
                     <field name="email_alert" />
