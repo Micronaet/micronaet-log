@@ -1041,7 +1041,8 @@ class LogActivityEvent(models.Model):
         if update_id:
             try:
                 # TODO check if correct!
-                res = self.write(update_id, record)
+                res = self.brows(update_id).write(record)
+                #res = self.write(update_id, record)
                 event_id = update_id  
             except:
                 _logger.error('Error updating event: %s' % update_id)
@@ -1049,7 +1050,7 @@ class LogActivityEvent(models.Model):
         else:
             try:
                 event_id = self.create(record)
-                res = event_id
+                res = event_id.id
             except:
                 _logger.error('Error create event')
                 res = False    
