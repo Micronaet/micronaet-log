@@ -268,7 +268,7 @@ class LogActivity(models.Model):
     # -------------------------------------------------------------------------
     @api.model
     def get_cron_info(self, ids):
-       ''' Try to get cron info about activity code scheduled for get 
+        ''' Try to get cron info about activity code scheduled for get 
             information about running period
             Used as information but also for check daily backup operations
             parameter: browse_keys for setup key of returned dict
