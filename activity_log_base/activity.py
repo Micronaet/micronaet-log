@@ -95,9 +95,8 @@ class LogActivity(models.Model):
     # -------------------------------------------------------------------------
     # Overridable event:
     # -------------------------------------------------------------------------
-    """
-    def raise_extra_media_comunication(self, cr, uid, activity_id, event_id, 
-            context=None):
+    @api.model
+    def raise_extra_media_comunication(self, activity_id, event_id):
         ''' Override procedure for raise extra event like: 
             Mail, SMS, Telegram Message, Whatsapp message etc.
             All override procedure will be introduced by a new module
@@ -105,6 +104,8 @@ class LogActivity(models.Model):
         # Do Nothing
         _logger.warning('Log media event comunication')
         return True
+
+    """
     # -------------------------------------------------------------------------
     # REPORT XLSX:
     # -------------------------------------------------------------------------
@@ -265,18 +266,17 @@ class LogActivity(models.Model):
     # -------------------------------------------------------------------------
     # Utility:
     # -------------------------------------------------------------------------
-    """#def get_cron_info(self, cr, uid, ids, context=None):
+    @api.model
+    def get_cron_info(self, ids):
        ''' Try to get cron info about activity code scheduled for get 
             information about running period
             Used as information but also for check daily backup operations
             parameter: browse_keys for setup key of returned dict
         '''
-        if context is None:
-            context = {}
-        browse_keys = context.get('browse_keys', False)        
+        browse_keys = self.env.context.get('browse_keys', False)        
         
         res = {}
-        for activity in self.browse(cr, uid, ids, context=context):        
+        for activity in self.browse(ids):
             code = activity.code
             if browse_keys:
                key = activity
@@ -321,12 +321,12 @@ class LogActivity(models.Model):
 
             # Sum time for 7 in 0:         
             res[key][0] += res[key][7]
-        return res"""
-        
+        return res
+    """   
     # -------------------------------------------------------------------------
     # Scheduled events:
     # -------------------------------------------------------------------------
-    """def check_event_not_started(self, cr, uid, context=None):
+    def check_event_not_started(self, cr, uid, context=None):
         ''' Check scheduled started from today - period and yestertay
             Check 7 day for defaults
         '''
@@ -521,7 +521,8 @@ class LogActivity(models.Model):
         self.save_history_mode(cr, uid, ids, vals, context=context)
 
         return super(LogActivity, self).write(
-            cr, uid, ids, vals, context=context)"""
+            cr, uid, ids, vals, context=context)
+        """
 
     # -------------------------------------------------------------------------
     # Fields function:
@@ -749,11 +750,13 @@ class LogActivityEvent(models.Model):
     _rec_name = 'datetime'
     _order = 'datetime desc'
     
-    """def dummy_nothing(self, cr, uid, ids, context=None):
+    @api.multi
+    def dummy_nothing(self, ):
         ''' Dummy button do nothing
         '''
         return True
 
+    """
     def mark_ok_button(self, cr, uid, ids, context=None):
         ''' Mark as OK
         '''
@@ -852,7 +855,8 @@ class LogActivityEvent(models.Model):
     # -------------------------------------------------------------------------
     # XMLRPC Procedure:
     # -------------------------------------------------------------------------
-    """def log_event(self, cr, uid, data, update_id=False, context=None):
+    @api.model
+    def log_event(self, cr, uid, data, update_id=False, context=None):
         ''' ERPEEK procedure called for create event from remote scripts
             data dict contain:
                 code_partner: Key field for reach partner, inserad use copmany
@@ -870,9 +874,9 @@ class LogActivityEvent(models.Model):
             ))
 
         # Pool used:
-        category_pool = self.pool.get('log.category')
-        activity_pool = self.pool.get('log.activity')
-        partner_pool = self.pool.get('res.partner')
+        category_pool = self.env['log.category']
+        activity_pool = self.env['log.activity']
+        partner_pool = self.env['res.partner']
         
         # Read key field:
         code_partner = data.get('code_partner', False) # default company
@@ -883,15 +887,15 @@ class LogActivityEvent(models.Model):
         # ---------------------------------------------------------------------
         # partner_id    
         if code_partner:
-            partner_ids = partner_pool.search(cr, uid, [
+            partner_ids = partner_pool.search([
                 ('log_code', '=', code_partner),
-                ], context=context)
+                ])
             if partner_ids:
-                partner_id = partner_ids[0]    
+                partner_id = partner_ids[0].id
             else:
                 _logger.error('Code partner not present %s (take company)!' % (
                     code_partner))
-                partner_id = 1 # Use default     
+                partner_id = 1 # Use default   
         else: 
             _logger.error('Code partner present (take company)!')
             partner_id = 1 # Use detault company address
@@ -901,32 +905,32 @@ class LogActivityEvent(models.Model):
             _logger.error('Code activity not present (take ERR)!')
             code_activity = 'ERR'
 
-        activity_ids = activity_pool.search(cr, uid, [
+        activity_ids = activity_pool.search([
             ('partner_id', '=', partner_id),
             ('code', '=', code_activity),
-            ], context=context)
+            ])
             
         if activity_ids:
             # Find:
-            activity_id = activity_ids[0]    
+            activity_id = activity_ids[0].id
         else:
             # Create new (to compile after on ODOO):
             # Get error category:
-            category_ids = category_pool.search(cr, uid, [
+            category_ids = category_pool.search([
                 ('code', '=', 'BAK'), # use same code (cat.-act.)
-                ], context=context)
+                ])
             if category_ids:
-                category_id = category_ids[0]    
+                category_id = category_ids[0].id
             else:
                 _logger.error('Code category not present (create BAK)!')
-                category_id = category_pool.create(cr, uid, {
+                category_id = category_pool.create({
                     'code': 'BAK',
                     'name': 'Backup',
                     'note': 'Log activity for Backup (automatic creation)'
-                    }, context=context)
+                    })
             
             # Get activity:
-            activity_id = activity_pool.create(cr, uid, {
+            activity_id = activity_pool.create({
                 'code': code_activity,
                 'name': 'Error',
                 'partner_id': partner_id,
@@ -947,9 +951,9 @@ class LogActivityEvent(models.Model):
                 #'origin': 
                 #'note': 
                 #'state': 
-                }, context=context)
-            _logger.error('Code activity not present %s create empty!' % (
-                code_activity))
+                })
+            _logger.error(
+                'Code activity not present %s create empty!' % code_activity)
 
         # ---------------------------------------------------------------------
         # Create event:
@@ -967,8 +971,7 @@ class LogActivityEvent(models.Model):
         # Read activity for get log information
         # ---------------------------------------------------------------------
         # If activity don't need log event wil be jumped the notification:
-        activity_proxy = activity_pool.browse(
-            cr, uid, activity_id, context=context)
+        activity_proxy = activity_pool.browse(activity_id)
 
         # Jump notification in check mode if not error and warning    
         if activity_proxy.log_mode == 'check' and not log_warning and \
@@ -980,25 +983,24 @@ class LogActivityEvent(models.Model):
             if count_current < count_max:
                 # Update count and log partial:
                 _logger.info('No notification event received')
-                activity_pool.write(cr, uid, activity_id, {
+                activity_pool.write(activity_id, {
                     'log_info': log_info, # used for IP address
                     'log_check_count': count_current,
                     'log_check_unwrited': '%s|%s|%s\n' % (
-                        datetime.now(), 
+                        fields.Datetime.context_timestamp,
                         log_info,
                         log_check_unwrited,
                         )
-                    }, context=context)                    
+                    })
                 return (True, {}) # nothing to comunicate
             else: # Reset and notificate
                 _logger.info('No notification event received, now notificate!')
-                activity_pool.write(cr, uid, activity_id, {
+                activity_pool.write(activity_id, {
                     'log_check_count': 0,
                     'log_check_unwrited': '',
-                    }, context=context)                    
+                    })
             
         record = {
-            #'datetime': now
             'mark_ok': False,
             'activity_id': activity_id,
             'start': start,
@@ -1015,7 +1017,7 @@ class LogActivityEvent(models.Model):
         # ---------------------------------------------------------------------    
         if not end:
             record['state'] = 'started'
-        elif log_error:line 95, in <
+        elif log_error:        
             record['state'] = 'error'
         elif log_warning:
             record['state'] = 'warning'
@@ -1029,14 +1031,14 @@ class LogActivityEvent(models.Model):
         event_id = False
         if update_id:
             try:
-                res = self.write(cr, uid, update_id, record, context=context)
-                event_id = update_id                
+                res = self.write(update_id, record)
+                event_id = update_id  
             except:
                 _logger.error('Error updating event: %s' % update_id)
                 res = False                    
         else:
             try:
-                event_id = self.create(cr, uid, record, context=context)
+                event_id = self.create(record)
                 res = event_id
             except:
                 _logger.error('Error create event')
@@ -1045,21 +1047,16 @@ class LogActivityEvent(models.Model):
         # ---------------------------------------------------------------------    
         # Manage Extra Media comunication message:    
         # ---------------------------------------------------------------------    
-        activity_pool.raise_extra_media_comunication(cr, uid, activity_id, 
-            event_id, context=context)
+        activity_pool.raise_extra_media_comunication(activity_id, event_id)
 
         # Common part:        
-        return (res, record)"""
+        return (res, record)
         
     # -------------------------------------------------------------------------
     # Columns:
     # -------------------------------------------------------------------------
-    datetime = fields.Datetime('Date', required=True)
-    #TODO default: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    #'datetime': lambda *a: datetime.now().strftime(
-    #    DEFAULT_SERVER_DATETIME_FORMAT),
-    #default=fields.Datetime.now()
-    #fields.Datetime.context_timestamp
+    datetime = fields.Datetime('Date', required=True, 
+        default=fields.Datetime.context_timestamp)    
     activity_id = fields.Many2one('log.activity', 'Activity')
     partner_id = fields.Many2one('res.partner', 'Partner',
         related='activity_id.partner_id', store=True)
