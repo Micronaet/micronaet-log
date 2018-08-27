@@ -19,40 +19,31 @@
 ###############################################################################
 import os
 import sys
+import odoo
 import logging
-import openerp
-import openerp.netsvc as netsvc
-import openerp.addons.decimal_precision as dp
-from openerp.osv import fields, osv, expression, orm
-from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
-from openerp import SUPERUSER_ID#, api
-from openerp import tools
-from openerp.tools.translate import _
-from openerp.tools.float_utils import float_round as round
-from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT, 
-    DEFAULT_SERVER_DATETIME_FORMAT, 
-    DATETIME_FORMATS_MAP, 
-    float_compare)
+from odoo import models, fields, api
+from odoo.tools.translate import _
 
 
 _logger = logging.getLogger(__name__)
 
-class LogCategory(orm.Model):
+
+class LogCategory(models.Model):
     """ Model name: Log Category
     """    
     _name = 'log.category'
     _description = 'Log category'
     _order = 'name'
     
-    _columns = {
-        'is_active': fields.boolean('Is active'),
-        'code': fields.char('Code', size=15),
-        'name': fields.char('Category', size=64, required=True),
-        'note': fields.text('Note'),
-        }
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    name =  fields.Char('Category', size=64, required=True)
+    is_active = fields.Boolean('Is active')
+    code = fields.Char('Code', size=15)
+    note = fields.Text('Note')
 
-class LogActivityMedia(orm.Model):
+class LogActivityMedia(models.Model):
     """ Model name: Log media, manage all method for send log events
         (mail, sms, chat message etc)
         Every media will be add with a module
@@ -63,19 +54,16 @@ class LogActivityMedia(orm.Model):
     _description = 'Log media'
     _order = 'name'
     
-    _columns = {
-        'is_active': fields.boolean('Is active'),
-        'name': fields.char('Media', size=64, required=True),
-        'partner_id': fields.many2one(
-            'res.partner', 'Partner', required=True),
-        'address': fields.char('Address', size=64, 
-            help='Sometimes is the reference of sender (mail, chat ref.)'),
-        }
-    _defaults = {
-        'is_active': lambda *x: True,
-        }    
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    is_active = fields.Boolean('Is active', default=True)
+    name = fields.Char('Media', size=64, required=True)
+    partner_id = fields.Many2one('res.partner', 'Partner', required=True)
+    address = fields.Char('Address', size=64, 
+        help='Sometimes is the reference of sender (mail, chat ref.)')
     
-class LogActivityHistory(orm.Model):
+class LogActivityHistory(models.Model):
     """ Model name: Log event history
     """
     
@@ -84,20 +72,19 @@ class LogActivityHistory(orm.Model):
     _order = 'mode,create_date'
     _rec_name = 'mode'
     
-    _columns = {
-        'mode': fields.selection([
-            ('cron', 'Cron job'),
-            ('config', 'Config file'),
-            ('server', 'Server info'),
-            ], 'Mode'),
-        'activity_id': fields.many2one(
-            'log.activity', 'Activity', 
-            required=False),    
-        'create_date': fields.datetime('History data'),
-        'old': fields.text('Old value'),
-        }
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    mode = fields.Selection([
+        ('cron', 'Cron job'),
+        ('config', 'Config file'),
+        ('server', 'Server info'),
+        ], 'Mode')
+    activity_id = fields.Many2one('log.activity', 'Activity')
+    create_date = fields.Datetime('History data')
+    old = fields.Text('Old value')
                     
-class LogActivity(orm.Model):
+class LogActivity(models.Model):
     """ Model name: Log event
     """
     
@@ -108,6 +95,7 @@ class LogActivity(orm.Model):
     # -------------------------------------------------------------------------
     # Overridable event:
     # -------------------------------------------------------------------------
+    """
     def raise_extra_media_comunication(self, cr, uid, activity_id, event_id, 
             context=None):
         ''' Override procedure for raise extra event like: 
@@ -137,7 +125,7 @@ class LogActivity(orm.Model):
             context = {}
         context_from_date = context.get('from_date', False)    
         context_to_date = context.get('to_date', False)    
-
+    
         res = {}
         now = datetime.now()
         now_60 = now - timedelta(days=60)
@@ -147,7 +135,7 @@ class LogActivity(orm.Model):
         # Excel reference range:
         start_xls = to_date
         end_xls = to_date
-
+    
         # ---------------------------------------------------------------------
         # Collect data:
         # ---------------------------------------------------------------------
@@ -167,7 +155,7 @@ class LogActivity(orm.Model):
             for event in event_pool.browse(
                     cr, uid, event_ids, context=context):
                 date = event.start[:10]
-
+    
                 if date < start_xls: # save min date:
                     start_xls = date 
                 if date not in res[activity]:
@@ -221,11 +209,11 @@ class LogActivity(orm.Model):
         WS_name = u'Schedulazioni'
         excel_pool.create_worksheet(WS_name)
         excel_pool.set_format()
-
+    
         # Write header:    
         excel_pool.write_xls_line(WS_name, 0, header)
         excel_pool.write_xls_line(WS_name, 1, dow_header_text)
-
+    
         # Write data:
         row = 1
         for activity in sorted(res):
@@ -266,19 +254,19 @@ class LogActivity(orm.Model):
                 dow = dow_header[col] # read DOW from header                
                 if daily_backup[dow] > 0: # Backup needed!!!                    
                     excel_pool.write_xls_data(WS_name, row, col, 'SALTATO')
-
+    
         # Return XLSX file generated
         return excel_pool.return_attachment(cr, uid, 
             'Schedulazioni %s' % to_date, 
             'scheduler_check_%s.xlsx' % to_date,
             version='7.0',
-            context=context)
+            context=context)"""
         
     # -------------------------------------------------------------------------
     # Utility:
     # -------------------------------------------------------------------------
-    def get_cron_info(self, cr, uid, ids, context=None):
-        ''' Try to get cron info about activity code scheduled for get 
+    """#def get_cron_info(self, cr, uid, ids, context=None):
+       ''' Try to get cron info about activity code scheduled for get 
             information about running period
             Used as information but also for check daily backup operations
             parameter: browse_keys for setup key of returned dict
@@ -333,12 +321,12 @@ class LogActivity(orm.Model):
 
             # Sum time for 7 in 0:         
             res[key][0] += res[key][7]
-        return res
+        return res"""
         
     # -------------------------------------------------------------------------
     # Scheduled events:
     # -------------------------------------------------------------------------
-    def check_event_not_started(self, cr, uid, context=None):
+    """def check_event_not_started(self, cr, uid, context=None):
         ''' Check scheduled started from today - period and yestertay
             Check 7 day for defaults
         '''
@@ -451,12 +439,12 @@ class LogActivity(orm.Model):
                     continue
                 # TODO log extra backup event?    
         _logger.info('End check missed events')
-        return True
+        return True"""
         
     # -------------------------------------------------------------------------
     # Button:
     # -------------------------------------------------------------------------    
-    def open_history_cron(self, cr, uid, ids, mode, context=None):
+    """def open_history_cron(self, cr, uid, ids, mode, context=None):
         ''' Open cron history
         '''    
         return self.open_history(cr, uid, ids, mode='cron', context=context)
@@ -514,10 +502,10 @@ class LogActivity(orm.Model):
                         }, context=context)
                 else: # if same not update:                       
                     del(vals[field])
-        return True                        
+        return True"""
 
-    def write(self, cr, uid, ids, vals, context=None):
-        """ Update redord(s) comes in {ids}, with new value comes as {vals}
+    """def write(self, cr, uid, ids, vals, context=None):
+        ''' Update redord(s) comes in {ids}, with new value comes as {vals}
             return True on success, False otherwise
             @param cr: cursor to database
             @param uid: id of current user
@@ -528,17 +516,17 @@ class LogActivity(orm.Model):
             @return: True on success, False otherwise
             
             Note: only updated the next change of monitored values
-        """    
+        '''    
         # Put in history cron or config value:    
         self.save_history_mode(cr, uid, ids, vals, context=context)
 
         return super(LogActivity, self).write(
-            cr, uid, ids, vals, context=context)
+            cr, uid, ids, vals, context=context)"""
 
     # -------------------------------------------------------------------------
     # Fields function:
     # -------------------------------------------------------------------------
-    def _get_cron_daily_execution(self, cr, uid, ids, fields, args, 
+    """def _get_cron_daily_execution(self, cr, uid, ids, fields, args, 
             context=None):
         ''' Fields function for calculate 
         '''
@@ -652,107 +640,107 @@ class LogActivity(orm.Model):
         ''' Store function update passed ID
         '''
         _logger.warning('Update %s date event' % len(ids))        
-        return ids
+        return ids"""
     
-    _columns = {
-        'is_active': fields.boolean('Is active'),
-        'code': fields.char('Code', size=15),
-        'monitor': fields.boolean(
-            'Monitor', help='Monitored event are represented in dashboard'),
-        'name': fields.char('Event', size=64, required=True),
-        
-        'from_date': fields.date(
-            'From date', 
-            help='For period event, time was the current start time'),
-        'to_date': fields.date('To date', help='End period for timed event'),
-        'check_from': fields.date('Check from', 
-            help='Check log presence from this date, used for mark as read'),
-        'duration': fields.float(
-            'Duration', digits=(16, 3), help='Normal duration of operation'),
-        'check_duration':fields.boolean(
-            'Check duration', help='Check duration period of operation'),
-        'duration_warning_range': fields.float(
-            'Warning range', digits=(16, 3), 
-            help='-/+ perc. time for raise warning'),
-        'duration_error_range': fields.float(
-            'Error range', digits=(16, 3), 
-            help='-/+ perc. time for raise error'),
-        'auto_duration': fields.boolean(
-            'Autoduration', 
-            help='If checked duration will be update automatically'),
-        'partner_id': fields.many2one(
-            'res.partner', 'Partner', required=True),
-        'category_id': fields.many2one(
-            'log.category', 'Category', required=True),
-        'email_alert': fields.boolean('Email alert'),
-        'email_error': fields.char('Email error', size=180),
-        'email_warning': fields.char('Email warning', size=180),
-        'script': fields.text('Script'),
-        'origin': fields.text(
-            'Origin', help='Info of origin server for the activity'),
-        
-        # Info about server:
-        'uptime': fields.text('Uptime job'),
-        'cron': fields.char('Cron job', size=100),
-        'config': fields.text('Config file'),
-        'server': fields.text('Server info'),
-        
-        'cron_daily_exec': fields.function(
-            _get_cron_daily_execution, method=True, 
-            type='text', string='Cron execution', 
-            store=False), 
-        
-        'note': fields.text('Note'),
-        
-        # Log mode:
-        'log_mode': fields.selection([
-            ('all', 'All (info, warning, error always present)'),
-            ('check', 'Check (error and warning always, info every X time')
-            ], 'Log mode', required=True,
-            ),
-        'log_check_every': fields.integer('Log check every', 
-            help='When log mode is check raise a message every X times'),
-        'log_check_count': fields.integer('Log check now is', 
-            help='Total message received till now'),
-        'log_check_unwrited': fields.text(
-            'Log check unwrited', 
-            help='When log mode is check write here the event'),    
-        'log_check_unwrited_html': fields.function(
-            _log_in_html_format, method=True, 
-            type='text', string='Log in HTML format', store=False), 
-        'update_event_status':fields.boolean('Update event command'),
-        'last_event': fields.function(
-            _last_event_date, method=True, 
-            type='datetime', string='Last event', multi=True, 
-            store={
-                'log.activity':
-                    (_get_fiels_update_this, ('update_event_status', ), 10),
-                }), 
-        'last_event_days': fields.function(
-            _last_event_date, method=True, 
-            type='integer', string='Days', multi=True,
-            store={
-                'log.activity':
-                    (_get_fiels_update_this, ('update_event_status', ), 10),
-                 }),       
-        'state': fields.selection([
-            ('unactive', 'Unactive'), # not working
-            ('active', 'Active'), # Working
-            ('pause', 'Pause'), # Currently not work butt soon yes
-            ('timed', 'Out of time'), # Out of date period            
-            ], 'State',
-            ),
-        }
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    is_active = fields.Boolean('Is active', default=True)
+    code = fields.Char('Code', size=15)
+    monitor = fields.Boolean(
+        'Monitor', help='Monitored event are represented in dashboard')
+    name = fields.Char('Event', size=64, required=True)
     
-    _defaults = {
-        # Default value for state:
-        'is_active': lambda *x: True,
-        'check_duration': lambda *x: True,
-        'log_mode': lambda *x: 'all',
-        'state': lambda *x: 'active',
-        }
+    from_date = fields.Date(
+        'From date', help='For period event, time was the current start time')
+    to_date = fields.Date('To date', help='End period for timed event')
+    check_from = fields.Date('Check from', 
+        help='Check log presence from this date, used for mark as read')
+    duration = fields.Float(
+        'Duration', digits=(16, 3), help='Normal duration of operation')
+    check_duration = fields.Boolean(
+        'Check duration', help='Check duration period of operation',
+        default=True)
+    duration_warning_range = fields.Float(
+        'Warning range', digits=(16, 3), 
+        help='-/+ perc. time for raise warning')
+    duration_error_range = fields.Float(
+        'Error range', digits=(16, 3), 
+        help='-/+ perc. time for raise error')
+    auto_duration = fields.Boolean(
+        'Autoduration', 
+        help='If checked duration will be update automatically')
+    partner_id = fields.Many2one(
+        'res.partner', 'Partner', required=True)
+    category_id = fields.Many2one(
+        'log.category', 'Category', required=True)
+    email_alert = fields.Boolean('Email alert')
+    email_error = fields.Char('Email error', size=180)
+    email_warning = fields.Char('Email warning', size=180)
+    script = fields.Text('Script')
+    origin = fields.Text(
+        'Origin', help='Info of origin server for the activity')
+    
+    # Info about server:
+    uptime = fields.Text('Uptime job')
+    cron = fields.Char('Cron job', size=100)
+    config = fields.Text('Config file')
+    server = fields.Text('Server info')
 
-class LogActivityEvent(orm.Model):
+    note = fields.Text('Note')
+    
+    # TODO convert function: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    #cron_daily_exec = fields.function(
+    #    _get_cron_daily_execution, method=True, 
+    #    type='text', string='Cron execution', 
+    #    store=False),    
+    cron_daily_exec = fields.Text('Cron execution')
+    
+    # Log mode:
+    log_mode = fields.Selection([
+        ('all', 'All (info, warning, error always present)'),
+        ('check', 'Check (error and warning always, info every X time'),
+        ], 'Log mode', required=True, default='all')
+    log_check_every = fields.Integer('Log check every', 
+        help='When log mode is check raise a message every X times')
+    log_check_count = fields.Integer('Log check now is', 
+        help='Total message received till now')
+    log_check_unwrited = fields.Text(
+        'Log check unwrited', 
+        help='When log mode is check write here the event')   
+    # TODO convert function: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    log_check_unwrited_html = fields.Text('Update event command')
+    #log_check_unwrited_html = fields.function(
+    #    _log_in_html_format, method=True, 
+    #    type='text', string='Log in HTML format', store=False), 
+    update_event_status = fields.Boolean('Update event command')
+    # TODO convert function: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    last_event = fields.Datetime(string='Last event')
+    #last_event = fields.function(
+    #    _last_event_date, method=True, 
+    #    type='datetime', string='Last event', multi=True, 
+    #    store={
+    #        'log.activity':
+    #            (_get_fiels_update_this, ('update_event_status', ), 10)
+    #        }), 
+    # TODO convert function: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    last_event_days = fields.Integer(string='Days')
+    #last_event_days = fields.function(
+    #    _last_event_date, method=True, 
+    #    type='integer', string='Days', multi=True,
+    #    store={
+    #        'log.activity':
+    #            (_get_fiels_update_this, ('update_event_status', ), 10)
+    #         }),       
+
+    state = fields.Selection([
+        ('unactive', 'Unactive'), # not working
+        ('active', 'Active'), # Working
+        ('pause', 'Pause'), # Currently not work butt soon yes
+        ('timed', 'Out of time'), # Out of date period            
+        ], 'State', default='active')
+
+class LogActivityEvent(models.Model):
     """ Model name: LogActivityEvent
     """
     
@@ -761,7 +749,7 @@ class LogActivityEvent(orm.Model):
     _rec_name = 'datetime'
     _order = 'datetime desc'
     
-    def dummy_nothing(self, cr, uid, ids, context=None):
+    """def dummy_nothing(self, cr, uid, ids, context=None):
         ''' Dummy button do nothing
         '''
         return True
@@ -784,12 +772,12 @@ class LogActivityEvent(orm.Model):
         end = datetime.strptime(
             end, DEFAULT_SERVER_DATETIME_FORMAT)
         gap = end - start
-        return (gap.days * 24.0) + (gap.seconds / 3660.0)
+        return (gap.days * 24.0) + (gap.seconds / 3660.0)"""
 
     # -------------------------------------------------------------------------
     # Schedule procedure:
     # -------------------------------------------------------------------------
-    def scheduled_log_activity_check_activity_duration(
+    """def scheduled_log_activity_check_activity_duration(
             self, cr, uid, context=None):
         ''' Check activity for mark and validate:
             1. check if started are in duration range (if needed)
@@ -859,12 +847,12 @@ class LogActivityEvent(orm.Model):
                 len(event_ids)))
 
         _logger.info('End check activity duration (error: %s)' % i)
-        return True
+        return True"""
 
     # -------------------------------------------------------------------------
     # XMLRPC Procedure:
     # -------------------------------------------------------------------------
-    def log_event(self, cr, uid, data, update_id=False, context=None):
+    """def log_event(self, cr, uid, data, update_id=False, context=None):
         ''' ERPEEK procedure called for create event from remote scripts
             data dict contain:
                 code_partner: Key field for reach partner, inserad use copmany
@@ -1027,7 +1015,7 @@ class LogActivityEvent(orm.Model):
         # ---------------------------------------------------------------------    
         if not end:
             record['state'] = 'started'
-        elif log_error:
+        elif log_error:line 95, in <
             record['state'] = 'error'
         elif log_warning:
             record['state'] = 'warning'
@@ -1061,81 +1049,86 @@ class LogActivityEvent(orm.Model):
             event_id, context=context)
 
         # Common part:        
-        return (res, record)
+        return (res, record)"""
         
-    _columns = {
-        'datetime': fields.datetime('Date', required=True),
-        'activity_id': fields.many2one(
-            'log.activity', 'Activity'),
-        'partner_id': fields.related(
-            'activity_id', 'partner_id', 
-            type='many2one', relation='res.partner', 
-            string='Partner', store=True),    
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    datetime = fields.Datetime('Date', required=True)
+    #TODO default: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    #'datetime': lambda *a: datetime.now().strftime(
+    #    DEFAULT_SERVER_DATETIME_FORMAT),
+    #default=fields.Datetime.now()
+    #fields.Datetime.context_timestamp
+    activity_id = fields.Many2one('log.activity', 'Activity')
+    partner_id = fields.Many2one('res.partner', 'Partner',
+        related='activity_id.partner_id', store=True)
+    #TODO remove: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    # partner_id = fields.related(
+    #    'activity_id', 'partner_id', 
+    #    type='many2one', relation='res.partner', 
+    #    string='Partner', store=True)
 
-        'start': fields.datetime('Start'),
-        'end': fields.datetime('End'),
-        'duration': fields.float(
-            'Duration', digits=(16, 3), help='Duration of operation'),
-            
-        'origin': fields.text('Origin', help='Server info (log origin)'),
+    start = fields.Datetime('Start')
+    end = fields.Datetime('End')
+    duration = fields.Float(
+        'Duration', digits=(16, 3), help='Duration of operation')
         
-        'log_info': fields.text('Log info'),
-        'log_warning': fields.text('Log warning'),
-        'log_error': fields.text('Log error'),
-        'error_comment': fields.char('Error comment', size=180),
-       
-        'mark_ok': fields.boolean('Mark as OK',
-            help='Scheduled masked as OK or manually with button'), 
-        'mark_ok_comment': fields.text('Mark as OK comment'),
-        
-        'state': fields.selection([
-            ('started', 'Started'), # Start (new event)
-            ('closed', 'Closed'), # End (closed from activity with end time)
-            ('missed', 'Missed'), # Missed
-            ('warning', 'Warning'), # End with warning (scheduled check)
-            ('error', 'Error'), # End with error (scheduled check)
-            ], 'State', help='State info, not workflow management here'),
-        }
+    origin = fields.Text('Origin', help='Server info (log origin)')
     
-    _defaults = {
-        'datetime': lambda *a: datetime.now().strftime(
-            DEFAULT_SERVER_DATETIME_FORMAT),
-        'state': lambda *x: 'started',
-        }
+    log_info = fields.Text('Log info')
+    log_warning = fields.Text('Log warning')
+    log_error = fields.Text('Log error')
+    error_comment = fields.Char('Error comment', size=180)
+   
+    mark_ok = fields.Boolean('Mark as OK',
+        help='Scheduled masked as OK or manually with button')
+    mark_ok_comment = fields.Text('Mark as OK comment')
+    
+    state = fields.Selection([
+        ('started', 'Started'), # Start (new event)
+        ('closed', 'Closed'), # End (closed from activity with end time)
+        ('missed', 'Missed'), # Missed
+        ('warning', 'Warning'), # End with warning (scheduled check)
+        ('error', 'Error'), # End with error (scheduled check)
+        ], 'State', default='started',
+            help='State info, not workflow management here')
 
-class LogCategory(orm.Model):
+class LogCategory(models.Model):
     """ Model name: Log Category
     """    
     _inherit = 'log.category'
 
-    _columns = {
-        'activity_ids': fields.one2many(
-            'log.activity', 'category_id', 'Activity'),
-    }
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    activity_ids = fields.One2many('log.activity', 'category_id', 'Activity')
 
-class ResUser(orm.Model):
+class ResUser(models.Model):
     """ Model name: ResUser
     """    
     _inherit = 'res.users'
     
-    _columns = {
-        'log_partner_id': fields.many2one('res.partner', 'Log partner'),
-    }
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    log_partner_id = fields.Many2one('res.partner', 'Log partner')
 
-class ResPartner(orm.Model):
+class ResPartner(models.Model):
     """ Model name: Res partner
     """    
     _inherit = 'res.partner'
     
-    _columns = {
-        'log_code': fields.char('Partner log code', size=64,
-            help='Partner code for link activity'),
-        'log_users_ids': fields.one2many(
-            'res.users', 'log_partner_id', 'Log user'),
-        'log_activity_ids': fields.one2many(
-            'log.activity', 'partner_id', 'Log activity'),
-        'log_media_ids': fields.one2many(
-            'log.activity.media', 'partner_id', 'Log media'),
-    }
-    
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    log_code = fields.Char('Partner log code', size=64,
+        help='Partner code for link activity')
+    log_users_ids = fields.One2many(
+        'res.users', 'log_partner_id', 'Log user')
+    log_activity_ids = fields.One2many(
+        'log.activity', 'partner_id', 'Log activity')
+    log_media_ids = fields.One2many(
+        'log.activity.media', 'partner_id', 'Log media')
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

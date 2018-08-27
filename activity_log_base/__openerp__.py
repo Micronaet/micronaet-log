@@ -35,17 +35,17 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
-        'excel_export', # For reporting
+        #'excel_export', # For reporting
         ],
     'init_xml': [],
     'demo': [],
     'data': [
         'security/ir.model.access.csv',    
-        'activity_view.xml',
-        'scheduler.xml',
+        #'activity_view.xml',
+        #'scheduler.xml',
         
         # Data:
-        'data/category.xml'
+        #'data/category.xml'
         ],
     'active': False,
     'installable': True,
