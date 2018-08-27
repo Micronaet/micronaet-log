@@ -75,7 +75,7 @@
             <field name="name">log.activity.history.search</field>
             <field name="model">log.activity.history</field>
             <field name="arch" type="xml">
-                <search string="History" version="7.0">        
+                <search string="History">
                     <field name="mode" />
                     
                     <field name="activity_id" filter_domain="[('activity_id','=',self)]"/>
@@ -108,7 +108,7 @@
             <field name="model">log.activity.history</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="History" version="7.0">
+                <form string="History">
                     <sheet>
                         <group colspan="4" col="4">
                             <field name="mode" readonly="1"/>
@@ -138,7 +138,7 @@
             <field name="name">log.category.form</field>
             <field name="model">log.category</field>
             <field name="arch" type="xml">
-                <form string="Category" version="7.0">        
+                <form string="Category">
                     <sheet>
                         <group col="4" colspan="4">
                             <field name="is_active" />
@@ -167,7 +167,7 @@
             <field name="name">log.category.tree</field>
             <field name="model">log.category</field>
             <field name="arch" type="xml">
-                <tree string="Category" version="7.0" colors="grey:is_active==False">        
+                <tree string="Category" colors="grey:is_active==False">        
                     <field name="is_active" />
                     <field name="code" />
                     <field name="name" />
@@ -188,7 +188,7 @@
             <field name="name">log.activity.search</field>
             <field name="model">log.activity</field>
             <field name="arch" type="xml">
-                <search string="Activity" version="7.0">        
+                <search string="Activity">
                     <field name="code" />
                     <field name="name" />
                     <field name="partner_id" filter_domain="[('partner_id','=',self)]"/>
@@ -216,7 +216,7 @@
             <field name="name">log.activity.tree</field>
             <field name="model">log.activity</field>
             <field name="arch" type="xml">
-                <tree string="Activity" version="7.0" colors="blue:log_mode=='check';red:last_event==False">  
+                <tree string="Activity" colors="blue:log_mode=='check';red:last_event==False">  
                     <field name="is_active" invisible="1"/>      
                     <field name="monitor" invisible="1"/>
                     <field name="email_alert" />
@@ -238,7 +238,7 @@
             <field name="name">log.activity.form</field>
             <field name="model">log.activity</field>
             <field name="arch" type="xml">
-                <form string="Activity" version="7.0">        
+                <form string="Activity">
                     <header>
                         <field name="is_active" /><!--TODO button-->
                         <field name="monitor" /><!--TODO button-->
@@ -354,7 +354,7 @@
             <field name="name">log.activity.event.search</field>
             <field name="model">log.activity.event</field>
             <field name="arch" type="xml">
-                <search string="Log search" version="7.0">        
+                <search string="Log search">
                     <field name="activity_id" />
                     <field name="partner_id" filter_domain="[('partner_id','=',self)]"/>
 
@@ -382,7 +382,7 @@
             <field name="name">log.activity.event.form</field>
             <field name="model">log.activity.event</field>
             <field name="arch" type="xml">
-                <form string="Event" version="7.0">        
+                <form string="Event">
                     <header>
                         <field name="state" widget="statusbar" />
                     </header>
@@ -429,7 +429,7 @@
             <field name="name">log.activity.event.tree</field>
             <field name="model">log.activity.event</field>
             <field name="arch" type="xml">
-                <tree string="Event" version="7.0" colors="black:state=='started' and mark_ok==True;blue:state=='started';green:state=='correct';brown:state=='error' and mark_ok==True;red:state=='error';orange:state=='warning'">
+                <tree string="Event" colors="black:state=='started' and mark_ok==True;blue:state=='started';green:state=='correct';brown:state=='error' and mark_ok==True;red:state=='error';orange:state=='warning'">
                     <field name="datetime" />
                     <field name="activity_id" />
                     <field name="partner_id" />
