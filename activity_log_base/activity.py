@@ -221,8 +221,7 @@ class LogActivity(models.Model):
             
             # Week list for backup total scheduled (from cron)
             activity_id = activity.id
-            daily_backup = self.get_cron_info(
-                cr, uid, [activity_id], context=context)[activity_id]
+            daily_backup = self.get_cron_info([activity_id])[activity_id]
                 
             row += 1
             excel_pool.write_xls_data(WS_name, row, 0, activity.name)
@@ -395,9 +394,8 @@ class LogActivity(models.Model):
            ], context=context)
         
         # Read as cron schedule for week (key = browse)
-        context['browse_keys'] = True
-        activity_cron = self.get_cron_info(
-            cr, uid, activity_ids, context=context)
+        context['browse_keys'] = True # TODO change context method
+        activity_cron = self.get_cron_info(activity_ids)
         context['browse_keys'] = False
 
         # Create DOW database with this passed week days
@@ -444,24 +442,34 @@ class LogActivity(models.Model):
     # -------------------------------------------------------------------------
     # Button:
     # -------------------------------------------------------------------------    
-    """def open_history_cron(self, cr, uid, ids, mode, context=None):
+    @api.multi
+    def open_history_cron(self):
         ''' Open cron history
-        '''    
-        return self.open_history(cr, uid, ids, mode='cron', context=context)
+        '''
+        context_extra = self.with_context(history_mode='cron')
+        return context_extra.open_history()
     
-    def open_history_config(self, cr, uid, ids, mode, context=None):
+    @api.multi
+    def open_history_config(self):
         ''' Open config history
-        '''    
-        return self.open_history(cr, uid, ids, mode='config', context=context)
+        '''
+        context_extra = self.with_context(history_mode='config')
+        return context_extra.open_history()
 
-    def open_history_server(self, cr, uid, ids, mode, context=None):
+    @api.multi
+    def open_history_server(self):
         ''' Open server history
         '''    
-        return self.open_history(cr, uid, ids, mode='server', context=context)
-           
-    def open_history(self, cr, uid, ids, mode, context=None):
+        context_extra = self.with_context(history_mode='server')
+        return context_extra.open_history()
+
+    @api.model           
+    def open_history(self):
         ''' Search config elements for mode type
         '''
+        ids = [item.id for item in self]
+        mode = self.env.context.get('history_mode', 'cron')
+        
         return {
             'type': 'ir.actions.act_window',
             'name': _('Activity story %s' % mode),
@@ -479,7 +487,7 @@ class LogActivity(models.Model):
             'target': 'current', # 'new'
             'nodestroy': False,
             }
-            
+    """            
     def save_history_mode(self, cr, uid, ids, vals, context=None):
         ''' History before insert data value in particular fields
         '''
@@ -533,7 +541,7 @@ class LogActivity(models.Model):
         '''
         res = {}
 
-        daily = self.get_cron_info(cr, uid, ids, context=context)  
+        daily = self.get_cron_info(ids)
         for item_id, item in daily.iteritems():                    
             res[item_id] = _('''
                 <style>
@@ -756,14 +764,15 @@ class LogActivityEvent(models.Model):
         '''
         return True
 
-    """
-    def mark_ok_button(self, cr, uid, ids, context=None):
+    @api.multi
+    def mark_ok_button(self):
         ''' Mark as OK
         '''
-        return self.write(cr, uid, ids, {
+        return self.write({
             'mark_ok': True,
-            }, context=context)
+            })
 
+    """
     def get_duration_hour(self, start, end):
         ''' Diference from 2 date in hours
         '''
@@ -856,7 +865,7 @@ class LogActivityEvent(models.Model):
     # XMLRPC Procedure:
     # -------------------------------------------------------------------------
     @api.model
-    def log_event(self, cr, uid, data, update_id=False, context=None):
+    def log_event(self, data, update_id=False, context=None):
         ''' ERPEEK procedure called for create event from remote scripts
             data dict contain:
                 code_partner: Key field for reach partner, inserad use copmany
@@ -1031,6 +1040,7 @@ class LogActivityEvent(models.Model):
         event_id = False
         if update_id:
             try:
+                # TODO check if correct!
                 res = self.write(update_id, record)
                 event_id = update_id  
             except:
@@ -1056,7 +1066,7 @@ class LogActivityEvent(models.Model):
     # Columns:
     # -------------------------------------------------------------------------
     datetime = fields.Datetime('Date', required=True, 
-        default=fields.Datetime.context_timestamp)    
+        default=lambda self: fields.Datetime.now())
     activity_id = fields.Many2one('log.activity', 'Activity')
     partner_id = fields.Many2one('res.partner', 'Partner',
         related='activity_id.partner_id', store=True)
