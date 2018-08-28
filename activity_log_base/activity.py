@@ -477,50 +477,45 @@ class LogActivity(models.Model):
             'target': 'current', # 'new'
             'nodestroy': False,
             }
-    """            
-    def save_history_mode(self, cr, uid, ids, vals, context=None):
+
+    @api.multi
+    def save_history_mode(self, vals):
         ''' History before insert data value in particular fields
         '''
-        history_pool = self.pool.get('log.activity.history')
+        self.ensure_one()        
+        activity = self[0]
         
+        history_pool = self.env['log.activity.history']        
         fields = ['cron', 'config', 'server']
-        if type(ids) in (list, tuple):
-            ids = ids[0]
-        current_proxy = self.browse(cr, uid, ids, context=context)
         for field in fields:
-            if field in vals:
+            if field in vals: # XXX all record to write
                 # If field is different:
-                old_value = current_proxy.__getattr__(field)
+                old_value = activity.__getattr__(field)
                 if vals[field] != old_value:
                     # History operation:
-                    history_pool.create(cr, uid, {
-                        'activity_id': current_proxy.id,
+                    history_pool.create({
+                        'activity_id': activity.id,
                         'mode': field,
                         'old': old_value,
-                        }, context=context)
+                        })
                 else: # if same not update:                       
                     del(vals[field])
-        return True"""
+        return True
 
-    """def write(self, cr, uid, ids, vals, context=None):
+    @api.multi
+    def write(self, vals):
         ''' Update redord(s) comes in {ids}, with new value comes as {vals}
             return True on success, False otherwise
-            @param cr: cursor to database
-            @param uid: id of current user
-            @param ids: list of record ids to be update
             @param vals: dict of new values to be set
-            @param context: context arguments, like lang, time zone
             
             @return: True on success, False otherwise
             
             Note: only updated the next change of monitored values
         '''    
         # Put in history cron or config value:    
-        self.save_history_mode(cr, uid, ids, vals, context=context)
+        self.save_history_mode(vals)
 
-        return super(LogActivity, self).write(
-            cr, uid, ids, vals, context=context)
-        """
+        return super(LogActivity, self).write(vals)
 
     # -------------------------------------------------------------------------
     # Fields function:
