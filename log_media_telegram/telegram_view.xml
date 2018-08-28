@@ -19,7 +19,7 @@
             <field name="name">telegram.bot.tree</field>
             <field name="model">telegram.bot</field>
             <field name="arch" type="xml">
-                <form string="Telegram BOT" version="7.0">
+                <form string="Telegram BOT">
                     <sheet>
                         <field name="name" />
                         <field name="bot" />
@@ -54,7 +54,7 @@
             <field name="name">telegram.group.tree</field>
             <field name="model">telegram.group</field>
             <field name="arch" type="xml">
-                <form string="Telegram group" version="7.0">
+                <form string="Telegram group">
                     <sheet>
                         <field name="code" />
                         <field name="name" />
