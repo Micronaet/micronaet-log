@@ -1,51 +1,54 @@
 <?xml version="1.0" ?>
 <openerp>
-	<data noupdate="1">
-	    <!--Check not closed events:-->
-		<record id="ir_cron_scheduled_log_activity_check_activity_duration_0" model="ir.cron">
-			<field eval="&quot;&quot;&quot;scheduled_log_activity_check_activity_duration&quot;&quot;&quot;" name="function"/>
-			<field eval="&quot;&quot;&quot;minutes&quot;&quot;&quot;" name="interval_type"/>
-			<field name="user_id" ref="base.user_root"/>
-			<field eval="&quot;&quot;&quot;Schedule: check duration period&quot;&quot;&quot;" name="name"/>
-			<field eval="-1" name="numbercall"/>
-			<field eval="&quot;&quot;&quot;2015-05-05 11:15:00&quot;&quot;&quot;" name="nextcall"/>
-			<field eval="5" name="priority"/>
-			<field eval="0" name="doall"/>
-			<field eval="1" name="active"/>
-			<field name="args">()</field>
-			<field eval="10" name="interval_number"/>
-			<field eval="&quot;&quot;&quot;log.activity.event&quot;&quot;&quot;" name="model"/>
-		</record>
+    <data><!--TODO  noupdate="1"-->
+        <!--Check not closed events:-->
+        <record id="ir_cron_scheduled_log_activity_check_activity_duration_0" model="ir.cron">
+            <!--TODO<field eval="&quot;&quot;&quot;scheduled_log_activity_check_activity_duration&quot;&quot;&quot;" name="function"/>-->
+            <field eval="&quot;&quot;&quot;minutes&quot;&quot;&quot;" name="interval_type"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field eval="&quot;&quot;&quot;Schedule: check duration period&quot;&quot;&quot;" name="name"/>
+            <field eval="-1" name="numbercall"/>
+            <field eval="&quot;&quot;&quot;2015-05-05 11:15:00&quot;&quot;&quot;" name="nextcall"/>
+            <field eval="5" name="priority"/>
+            <field eval="0" name="doall"/>
+            <field eval="1" name="active"/>
+            <field eval="10" name="interval_number"/>
+            <field ref="model_log_activity_event" name="model_id"/>            
+            <field name="state">code</field>
+            <!--<field eval="&quot;&quot;&quot; &quot;&quot;&quot;" name="code"/>-->
+        </record>
 
-	    <!--Check missed events:-->
-		<record id="ir_cron_check_event_not_started_0" model="ir.cron">
-			<field eval="&quot;&quot;&quot;check_event_not_started&quot;&quot;&quot;" name="function"/>
-			<field eval="&quot;&quot;&quot;days&quot;&quot;&quot;" name="interval_type"/>
-			<field name="user_id" ref="base.user_root"/>
-			<field eval="&quot;&quot;&quot;Schedule: check missed events (last week)&quot;&quot;&quot;" name="name"/>
-			<field eval="-1" name="numbercall"/>
-			<field eval="&quot;&quot;&quot;2015-05-05 11:15:00&quot;&quot;&quot;" name="nextcall"/>
-			<field eval="5" name="priority"/>
-			<field eval="0" name="doall"/>
-			<field eval="1" name="active"/>
-			<field name="args">()</field>
-			<field eval="1" name="interval_number"/>
-			<field eval="&quot;&quot;&quot;log.activity&quot;&quot;&quot;" name="model"/>
-		</record>		
+        <!--Check missed events:-->
+        <record id="ir_cron_check_event_not_started_0" model="ir.cron">
+            <!--<field eval="&quot;&quot;&quot;check_event_not_started&quot;&quot;&quot;" name="function"/>-->
+            <field eval="&quot;&quot;&quot;days&quot;&quot;&quot;" name="interval_type"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field eval="&quot;&quot;&quot;Schedule: check missed events (last week)&quot;&quot;&quot;" name="name"/>
+            <field eval="-1" name="numbercall"/>
+            <field eval="&quot;&quot;&quot;2015-05-05 11:15:00&quot;&quot;&quot;" name="nextcall"/>
+            <field eval="5" name="priority"/>
+            <field eval="0" name="doall"/>
+            <field eval="1" name="active"/>
+            <field eval="1" name="interval_number"/>
+            <field ref="model_log_activity" name="model_id"/>
+            <field name="state">code</field>
+            <!--<field eval="&quot;&quot;&quot; &quot;&quot;&quot;" name="code"/>-->
+        </record>        
 
-		<record id="ir_cron_schedule_update_all_0" model="ir.cron">
-			<field eval="&quot;&quot;&quot;schedule_update_all&quot;&quot;&quot;" name="function"/>
-			<field eval="&quot;&quot;&quot;hours&quot;&quot;&quot;" name="interval_type"/>
-			<field name="user_id" ref="base.user_root"/>
-			<field eval="&quot;&quot;&quot;Schedule: force update time event&quot;&quot;&quot;" name="name"/>
-			<field eval="-1" name="numbercall"/>
-			<field eval="&quot;&quot;&quot;2015-05-05 12:00:00&quot;&quot;&quot;" name="nextcall"/>
-			<field eval="5" name="priority"/>
-			<field eval="0" name="doall"/>
-			<field eval="1" name="active"/>
-			<field name="args">()</field>
-			<field eval="12" name="interval_number"/>
-			<field eval="&quot;&quot;&quot;log.activity&quot;&quot;&quot;" name="model"/>
-		</record>
-	</data>
+        <record id="ir_cron_schedule_update_all_0" model="ir.cron">
+            <!--<field eval="&quot;&quot;&quot;schedule_update_all&quot;&quot;&quot;" name="function"/>-->
+            <field eval="&quot;&quot;&quot;hours&quot;&quot;&quot;" name="interval_type"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field eval="&quot;&quot;&quot;Schedule: force update time event&quot;&quot;&quot;" name="name"/>
+            <field eval="-1" name="numbercall"/>
+            <field eval="&quot;&quot;&quot;2015-05-05 12:00:00&quot;&quot;&quot;" name="nextcall"/>
+            <field eval="5" name="priority"/>
+            <field eval="0" name="doall"/>
+            <field eval="1" name="active"/>
+            <field eval="12" name="interval_number"/>
+            <field ref="model_log_activity" name="model_id"/>
+            <field name="state">code</field>
+            <!--<field eval="&quot;&quot;&quot; &quot;&quot;&quot;" name="code"/>-->
+        </record>
+    </data>
 </openerp>

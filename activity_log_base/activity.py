@@ -321,6 +321,21 @@ class LogActivity(models.Model):
     # Scheduled events:
     # -------------------------------------------------------------------------
     @api.model
+    def schedule_update_all(self):
+        ''' Update event scheduling update of field store
+        '''
+        activities = self.search([])
+        _logger.warning('Update %s activity event last' % len(activities))
+        
+        # Double update (if some record is not True):
+        activities.write({
+            'update_event_status': False,
+            })        
+        activities.write({
+            'update_event_status': True,
+            })
+
+    @api.model
     def check_event_not_started(self):
         ''' Check scheduled started from today - period and yestertay
             Check 7 day for defaults
@@ -603,27 +618,6 @@ class LogActivity(models.Model):
             item.last_event = res.get(item.id, False)
             item.last_event_days = res.get(item.id, -1)
             
-        
-    """def schedule_update_all(self, cr, uid, context=None):
-        ''' Update event scheduling update of field store
-        '''
-        activity_ids = self.search(cr, uid, [], context=context)
-        _logger.warning('Update %s activity event last' % len(activity_ids))
-        
-        self.write(cr, uid, activity_ids, {
-            'update_event_status': False,
-            }, context=context)
-        
-        return self.write(cr, uid, activity_ids, {
-            'update_event_status': True,
-            }, context=context)
-
-    def _get_fiels_update_this(self, cr, iud, ids, context=None):
-        ''' Store function update passed ID
-        '''
-        _logger.warning('Update %s date event' % len(ids))        
-        return ids"""
-
     @api.multi
     @api.depends('log_check_unwrited')
     def _log_in_html_format(self):
