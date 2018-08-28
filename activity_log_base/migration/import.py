@@ -226,7 +226,7 @@ pool_out = erp['out'].LogActivityEvent
 record_ids = pool_in.search([])
 total = len(record_ids)
 print 'Tot selected %s' % total
-update = False
+update = 'state' # 'all'
 
 i = 0
 for record in pool_in.browse(record_ids):
@@ -267,12 +267,18 @@ for record in pool_in.browse(record_ids):
         'log_error': record.log_error,
         'mark_ok_comment': record.mark_ok_comment,
         'origin': record.origin,
+        'state': record.state,
         }
 
     if item_ids:
         item_id = item_ids[0]
-        if update:
+        if update == 'state': # update only state:
+            pool_out.write(item_id, {
+                'state': record.state, 
+                })
+        elif update == 'all': # update all
             pool_out.write(item_id, data)
+            
         print '%s. Update record: %s / %s' % (i, datetime, total)
     else:   
         item_id = pool_out.create(data).id
