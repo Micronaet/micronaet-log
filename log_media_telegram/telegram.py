@@ -73,11 +73,12 @@ class TelegramGroup(models.Model):
     _rec_name = 'name'
     _order = 'name'
     
-    _columns = {
-        'name': fields.char('Description', size=80, required=True),
-        'code': fields.char('Group ID', size=24, required=True, 
-            help='Group ID, line: -123431251'),
-        }
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    name = fields.Char('Description', size=80, required=True)
+    code = fields.Char('Group ID', size=24, required=True, 
+        help='Group ID, line: -123431251')
 
 class TelegramBot(models.Model):
     """ Model name: TelegramBot
@@ -85,11 +86,13 @@ class TelegramBot(models.Model):
     
     _inherit = 'telegram.bot'
 
-    _columns = {
-        'group_ids': fields.many2many(
-            'telegram.group', 'telegram_bot_group_rel', 
-            'bot_id', 'group_id', 'Groups'),
-        }
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    group_ids = fields.Many2many(
+        comodel_name='telegram.group', 
+        relation='telegram_bot_group_rel', 
+        column1='bot_id', column2='group_id', string='Groups')
 
 class TelegramBotLog(models.Model):
     """ Model name: TelegramBotLog
@@ -99,20 +102,17 @@ class TelegramBotLog(models.Model):
     _description = 'Telegram BOT log'
     _rec_name = 'telegram_id'
     
-    _columns = {
-        'telegram_id': fields.many2one('telegram.bot', 'BOT', required=True),
-        'group_id': fields.many2one('telegram.group', 'Group', required=True),
-        'activity_id': fields.many2one('log.activity', 'Activity'),
-        'log_info': fields.boolean('Log info'),
-        'log_warning': fields.boolean('Log warning'),
-        'log_error': fields.boolean('Log error'),
-        'message': fields.char('Message', size=80, 
-            help='Extra message used append to Event'),
-        }
-        
-    _defaults = {
-        'log_error': lambda *x: True,
-        }
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    telegram_id = fields.Many2one('telegram.bot', 'BOT', required=True)
+    group_id = fields.Many2one('telegram.group', 'Group', required=True)
+    activity_id = fields.Many2one('log.activity', 'Activity')
+    log_info = fields.Boolean('Log info')
+    log_warning = fields.Boolean('Log warning')
+    log_error = fields.Boolean('Log error', default=True)
+    message = fields.Char('Message', size=80, 
+        help='Extra message used append to Event')
 
 class LogActivity(models.Model):
     """ Model name: Log event
@@ -123,8 +123,9 @@ class LogActivity(models.Model):
     # -------------------------------------------------------------------------
     # Override event:
     # -------------------------------------------------------------------------
-    def raise_extra_media_comunication(self, cr, uid, activity_id, event_id, 
-            context=None):
+    @api.model
+    # TODO check original method
+    def raise_extra_media_comunication(self, activity_id, event_id):
         ''' Override procedure for raise extra event like: 
             Mail, SMS, Telegram Message, Whatsapp message etc.
             All override procedure will be introduced by a new module
@@ -153,18 +154,18 @@ class LogActivity(models.Model):
         # Raise overrided list of event:
         # ---------------------------------------------------------------------    
         res = super(LogActivity, self).raise_extra_media_comunication(
-            cr, uid, activity_id, event_id, context==context)
+            activity_id, event_id)
         
         # ---------------------------------------------------------------------    
         # Launch Telegram event if needed:
         # ---------------------------------------------------------------------
-        activity = self.browse(cr, uid, activity_id, context=context)
+        activity = self.browse(activity_id)
         bar_list = '-' * 50
 
         if event_id:
-            event_pool = self.pool.get('log.activity.event')
-            event_proxy = event_pool.browse(cr, uid, event_id, context=context)
-            if event_proxy.state in ('error', 'warning'):
+            event_pool = self.env['log.activity.event']
+            event = event_pool.browse(event_id)
+            if event.state in ('error', 'warning'):
                 event_state = event_proxy.state
             else:
                 event_state = 'info'
@@ -181,12 +182,12 @@ class LogActivity(models.Model):
                     activity.name,
                     activity.partner_id.name,
                     
-                    event_proxy.start,
-                    event_proxy.end,
+                    event.start,
+                    event.end,
                     
-                    (event_proxy.log_info or '').strip(),
-                    (event_proxy.log_warning or '').strip(),
-                    (event_proxy.log_error or '').strip(),
+                    (event.log_info or '').strip(),
+                    (event.log_warning or '').strip(),
+                    (event.log_error or '').strip(),
                     bar_list,
                     ))
         else: # Not present:
@@ -217,9 +218,9 @@ class LogActivity(models.Model):
                 log_event(telegram, event_text)
         return res
     
-    
-    _columns = {
-        'telegram_ids': fields.one2many(
-            'telegram.bot.log', 'activity_id', 'Telegram log'),
-        }
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    telegram_ids = fields.One2many(
+            'telegram.bot.log', 'activity_id', 'Telegram log')
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
