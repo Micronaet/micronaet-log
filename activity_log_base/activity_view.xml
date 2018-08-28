@@ -93,7 +93,6 @@
         <record model="ir.ui.view" id="view_log_activity_history_tree">
             <field name="name">log.activity.history.tree</field>
             <field name="model">log.activity.history</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
                 <tree string="History">
                     <field name="activity_id" />
@@ -106,7 +105,6 @@
         <record model="ir.ui.view" id="view_log_activity_history_form">
             <field name="name">log.activity.history.form</field>
             <field name="model">log.activity.history</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="History">
                     <sheet>
@@ -131,8 +129,7 @@
             <field name="context">{}</field>
             <field name="domain">[]</field>
         </record>
-        
-        
+                
         <!--log.category-->
         <record model="ir.ui.view" id="view_log_category_form">
             <field name="name">log.category.form</field>

@@ -285,7 +285,7 @@ print 'Import activity history'
 event_db = {}
 pool_in = erp['in'].LogActivityHistory
 pool_out = erp['out'].LogActivityHistory
-record_ids = pool_in.search([])
+record_ids = pool_in.search([('activity_id', '!=', False)])
 total = len(record_ids)
 print 'Tot selected %s' % total
 update = False

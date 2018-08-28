@@ -317,11 +317,12 @@ class LogActivity(models.Model):
             # Sum time for 7 in 0:         
             res[key][0] += res[key][7]
         return res
-    """   
+
     # -------------------------------------------------------------------------
     # Scheduled events:
     # -------------------------------------------------------------------------
-    def check_event_not_started(self, cr, uid, context=None):
+    @api.model
+    def check_event_not_started(self):
         ''' Check scheduled started from today - period and yestertay
             Check 7 day for defaults
         '''
@@ -338,12 +339,10 @@ class LogActivity(models.Model):
             else:
                 return dow +1        
             
-        def create_missed_event(self, cr, uid, start, activity, 
-                context=context):
+        def create_missed_event(event_pool, start, activity):
             ''' Create a standard event for missed operation:
             '''    
-            event_pool = self.pool.get('log.activity.event')
-            return event_pool.create(cr, uid, {
+            return event_pool.create({
                 'start': start,
                 'datetime': start,                
                 'activity_id': activity.id,
@@ -355,44 +354,40 @@ class LogActivity(models.Model):
                 'log_warning': '',
                 'log_error': _('Event not reached'),
                 'state': 'missed',            
-                }, context=context)
+                })
         
         _logger.info('Start check missed events')
-        if context is None:
-            context = {}
             
         # Pool used:    
-        event_pool = self.pool.get('log.activity.event')
+        event_pool = self.env['log.activity.event']
         
         # From start of day (-7)
-        now = datetime.now()
+        now = fields.Datetime.now()
         from_date = now - timedelta(days=7)
-        from_date = '%s 00:00:00' % from_date.strftime(
-            DEFAULT_SERVER_DATE_FORMAT)
+        from_date = '%s 00:00:00' % fields.Date.to_string(from_date)
 
         # To end of previous day (-1)
         to_date_dt = now - timedelta(days=1) # yesterday
-        to_date = '%s 23:59:59' % to_date_dt.strftime(
-            DEFAULT_SERVER_DATE_FORMAT) # Yesterday
+        to_date = '%s 23:59:59' % fields.Date.to_string(to_date_dt) # Yesterday
                 
         # ---------------------------------------------------------------------
         # Current activity:
         # ---------------------------------------------------------------------
-        activity_ids = self.search(cr, uid, [
+        activity_ids = self.search([
             ('is_active', '=', True), 
             # TODO  monitor check?
-            ], context=context)
+            ])
         # TODO better for start stop period!    
 
-        event_ids = event_pool.search(cr, uid, [
+        events = event_pool.search([
            ('start', '>=', from_date),
            ('start', '<=', to_date),
-           ], context=context)
+           ])
         
         # Read as cron schedule for week (key = browse)
-        context['browse_keys'] = True # TODO change context method
+        self.env.context['browse_keys'] = True # TODO change context method
         activity_cron = self.get_cron_info(activity_ids)
-        context['browse_keys'] = False
+        self.env.context['browse_keys'] = False
 
         # Create DOW database with this passed week days
         dows = {}
@@ -404,7 +399,7 @@ class LogActivity(models.Model):
 
         # Generate real database (activity - dow)    
         activity_db = {} # event database system        
-        for event in event_pool.browse(cr, uid, event_ids, context=context):
+        for event in events:
             activity = event.activity_id
             if activity not in activity_cron:
                 _logger.error('Activity not monitored, jumped!') # TODO log???
@@ -413,8 +408,7 @@ class LogActivity(models.Model):
             if activity not in activity_db: # Default week for total recurrency
                 activity_db[activity] = dict.fromkeys(range(0, 7), 0)
                 
-            start = datetime.strptime(
-                event.datetime, DEFAULT_SERVER_DATETIME_FORMAT)
+            start = fields.Datetime.from_string(event.datetime)
             dow = get_cron_dow(start.weekday())
             activity_db[activity][dow] += 1
 
@@ -429,11 +423,11 @@ class LogActivity(models.Model):
                 if activity not in activity_db or \
                         tot_planned > activity_db[activity][i]: 
                     create_missed_event(
-                        self, cr, uid, dows[i], activity, context=context)
+                        event_pool, dows[i], activity)
                     continue
                 # TODO log extra backup event?    
         _logger.info('End check missed events')
-        return True"""
+        return True
         
     # -------------------------------------------------------------------------
     # Button:
