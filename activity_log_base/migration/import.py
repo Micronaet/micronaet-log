@@ -189,6 +189,7 @@ for record in pool_in.browse(record_ids):
         'log_check_every': record.log_check_every,
         'log_check_count': record.log_check_count,
         'log_check_unwrited_html': record.log_check_unwrited_html,
+        'log_check_unwrited': record.log_check_unwrited,
 
         'script': record.script,
         'origin': record.origin,

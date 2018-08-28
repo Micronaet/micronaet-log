@@ -217,8 +217,7 @@ class LogActivity(models.Model):
         for activity in sorted(res):
             
             # Week list for backup total scheduled (from cron)
-            activity_id = activity.id
-            daily_backup = self.get_cron_info([activity_id])[activity_id]
+            daily_backup = activity.get_cron_info()
                 
             row += 1
             excel_pool.write_xls_data(WS_name, row, 0, activity.name)
@@ -261,8 +260,8 @@ class LogActivity(models.Model):
     # -------------------------------------------------------------------------
     # Utility:
     # -------------------------------------------------------------------------
-    @api.model
-    def get_cron_info(self, ids):
+    @api.multi
+    def get_cron_info(self):
         ''' Try to get cron info about activity code scheduled for get 
             information about running period
             Used as information but also for check daily backup operations
@@ -271,7 +270,7 @@ class LogActivity(models.Model):
         browse_keys = self.env.context.get('browse_keys', False)        
         
         res = {}
-        for activity in self.browse(ids):
+        for activity in self:
             code = activity.code
             if browse_keys:
                key = activity
@@ -373,7 +372,7 @@ class LogActivity(models.Model):
         # ---------------------------------------------------------------------
         # Current activity:
         # ---------------------------------------------------------------------
-        activity_ids = self.search([
+        activities = self.search([
             ('is_active', '=', True), 
             # TODO  monitor check?
             ])
@@ -385,9 +384,10 @@ class LogActivity(models.Model):
            ])
         
         # Read as cron schedule for week (key = browse)
-        self.env.context['browse_keys'] = True # TODO change context method
-        activity_cron = self.get_cron_info(activity_ids)
-        self.env.context['browse_keys'] = False
+        #self.env.context['browse_keys'] = True # TODO change context method
+        activities_context = activities.with_context('browse_keys'=True)
+        activity_cron = activities_context.get_cron_info()
+        #self.env.context['browse_keys'] = False
 
         # Create DOW database with this passed week days
         dows = {}
@@ -490,7 +490,7 @@ class LogActivity(models.Model):
         for field in fields:
             if field in vals: # XXX all record to write
                 # If field is different:
-                old_value = activity.__getattr__(field)
+                old_value = activity.__getattribute__(field)
                 if vals[field] != old_value:
                     # History operation:
                     history_pool.create({
@@ -520,13 +520,14 @@ class LogActivity(models.Model):
     # -------------------------------------------------------------------------
     # Fields function:
     # -------------------------------------------------------------------------
-    """def _get_cron_daily_execution(self, cr, uid, ids, fields, args, 
-            context=None):
+    @api.multi
+    # Independend from fields
+    @api.depends()    
+    def _get_cron_daily_execution(self):
         ''' Fields function for calculate 
         '''
+        daily = self.get_cron_info()
         res = {}
-
-        daily = self.get_cron_info(ids)
         for item_id, item in daily.iteritems():                    
             res[item_id] = _('''
                 <style>
@@ -561,8 +562,12 @@ class LogActivity(models.Model):
                     </tr>
                 </table>    
                 ''') % tuple(item)
-        return res
+                
+        for activity in self:
+            activity.cron_daily_exec = res.get(activity.id, False)
+
         
+    """
     def _last_event_date(self, cr, uid, ids, fields, args, context=None):
         ''' Get last activity event:
         '''
@@ -636,7 +641,6 @@ class LogActivity(models.Model):
                 except:
                     item.log_check_unwrited_html += '%s<br/>' % row 
             item.log_check_unwrited_html += '</p>'
-        return res        
 
     # -------------------------------------------------------------------------
     # Columns:
@@ -685,12 +689,11 @@ class LogActivity(models.Model):
 
     note = fields.Text('Note')
     
-    # TODO convert function: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    #cron_daily_exec = fields.function(
-    #    _get_cron_daily_execution, method=True, 
-    #    type='text', string='Cron execution', 
-    #    store=False),    
-    cron_daily_exec = fields.Text('Cron execution')
+    cron_daily_exec = fields.Text(
+        string='Cron execution',
+        compute='_get_cron_daily_execution',
+        store=False,
+        )
     
     # Log mode:
     log_mode = fields.Selection([
@@ -709,7 +712,7 @@ class LogActivity(models.Model):
         compute='_log_in_html_format',
         store=False,
         compute_sudo=False,
-        ),
+        )
     
     update_event_status = fields.Boolean('Update event command')
     # TODO convert function: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
