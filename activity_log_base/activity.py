@@ -23,9 +23,7 @@ import odoo
 import logging
 from odoo import models, fields, api
 from odoo.tools.translate import _
-
 from datetime import timedelta # XXX to be removed?
-
 
 _logger = logging.getLogger(__name__)
 
