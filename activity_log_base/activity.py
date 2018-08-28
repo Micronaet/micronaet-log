@@ -563,25 +563,6 @@ class LogActivity(models.Model):
                 ''') % tuple(item)
         return res
         
-    def _log_in_html_format(self, cr, uid, ids, fields, args, context=None):
-        ''' Fields function for calculate 
-        '''
-        res = {}
-        for item in self.browse(cr, uid, ids, context=context):
-            res[item.id] = '<p>'
-            if not item.log_check_unwrited:
-                res[item.id] = False
-                continue
-                
-            for row in item.log_check_unwrited.split('\n'):
-                res_ids = row.split('|')
-                try:
-                    res[item.id] += '<b>%s: </b> <i>%s</i> %s<br/>' % res_ids
-                except:
-                    res[item.id] += '%s<br/>' % row 
-            res[item.id] += '</p>'
-        return res        
-                          
     def _last_event_date(self, cr, uid, ids, fields, args, context=None):
         ''' Get last activity event:
         '''
@@ -635,7 +616,28 @@ class LogActivity(models.Model):
         '''
         _logger.warning('Update %s date event' % len(ids))        
         return ids"""
-    
+
+    @api.multi
+    @api.depends('log_check_unwrited')
+    def _log_in_html_format(self):
+        ''' Fields function for calculate 
+        '''
+        for item in self.filtered('log_check_unwrited'): # only this field
+            item.log_check_unwrited_html = '<p>'
+            if not item.log_check_unwrited:
+                item.log_check_unwrited_html = False
+                continue
+                
+            for row in item.log_check_unwrited.split('\n'):
+                res_ids = row.split('|')
+                try:
+                    item.log_check_unwrited_html += \
+                        '<b>%s: </b> <i>%s</i> %s<br/>' % res_ids
+                except:
+                    item.log_check_unwrited_html += '%s<br/>' % row 
+            item.log_check_unwrited_html += '</p>'
+        return res        
+
     # -------------------------------------------------------------------------
     # Columns:
     # -------------------------------------------------------------------------
@@ -702,11 +704,13 @@ class LogActivity(models.Model):
     log_check_unwrited = fields.Text(
         'Log check unwrited', 
         help='When log mode is check write here the event')   
-    # TODO convert function: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    log_check_unwrited_html = fields.Html('Update event command')
-    #log_check_unwrited_html = fields.function(
-    #    _log_in_html_format, method=True, 
-    #    type='text', string='Log in HTML format', store=False), 
+    log_check_unwrited_html = fields.Html(
+        string='Update event command',
+        compute='_log_in_html_format',
+        store=False,
+        compute_sudo=False,
+        ),
+    
     update_event_status = fields.Boolean('Update event command')
     # TODO convert function: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     last_event = fields.Datetime(string='Last event')
