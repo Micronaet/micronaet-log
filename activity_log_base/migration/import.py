@@ -223,7 +223,8 @@ event_db = {}
 pool_in = erp['in'].LogActivityEvent
 pool_out = erp['out'].LogActivityEvent
 record_ids = pool_in.search([])
-print 'Tot selected %s' % len(record_ids)
+total = len(record_ids)
+print 'Tot selected %s' % total
 
 i = 0
 for record in pool_in.browse(record_ids):
@@ -269,10 +270,10 @@ for record in pool_in.browse(record_ids):
     if item_ids:
         item_id = item_ids[0]
         pool_out.write(item_id, data)
-        print '%s. Update record: %s' % (i, datetime)
+        print '%s. Update record: %s / %s' % (i, datetime, total)
     else:   
         item_id = pool_out.create(data).id
-        print '%s. Create record: %s' % (i, datetime)
+        print '%s. Create record: %s / %s' % (i, datetime, total)
     event_db[record.id] = item_id
 
 # -------
@@ -283,7 +284,8 @@ event_db = {}
 pool_in = erp['in'].LogActivityHistory
 pool_out = erp['out'].LogActivityHistory
 record_ids = pool_in.search([])
-print 'Tot selected %s' % len(record_ids)
+total = len(record_ids)
+print 'Tot selected %s' % total
 
 i = 0
 for record in pool_in.browse(record_ids):
@@ -314,10 +316,10 @@ for record in pool_in.browse(record_ids):
     if item_ids:
         item_id = item_ids[0]
         pool_out.write(item_id, data)
-        print '%s. Update record: %s' % (i, create_date)
+        print '%s. Update record: %s / %s' % (i, create_date, total)
     else:   
         item_id = pool_out.create(data).id
-        print '%s. Create record: %s' % (i, create_date)
+        print '%s. Create record: %s / %s' % (i, create_date, total)
     event_db[record.id] = item_id
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
