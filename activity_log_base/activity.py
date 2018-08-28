@@ -128,7 +128,7 @@ class LogActivity(models.Model):
         context_to_date = self.env.context.get('to_date', False)    
     
         res = {}
-        now = fields.Datetime.now()
+        now = fields.Datetime.from_string(fields.Datetime.now())
         now_60 = now - timedelta(days=60)
         to_date = '%s 23:59:59' % fields.Date.to_string(now)
         min_date = '%s 00:00:00' % fields.Date.to_string(now_60)
@@ -376,7 +376,7 @@ class LogActivity(models.Model):
         event_pool = self.env['log.activity.event']
         
         # From start of day (-7)
-        now = fields.Datetime.now()
+        now = fields.Datetime.from_string(fields.Datetime.now())
         from_date = now - timedelta(days=7)
         from_date = '%s 00:00:00' % fields.Date.to_string(from_date)
 
@@ -498,7 +498,7 @@ class LogActivity(models.Model):
     def save_history_mode(self, vals):
         ''' History before insert data value in particular fields
         '''
-        self.ensure_one()        
+        #self.ensure_one()        
         activity = self[0]
         
         history_pool = self.env['log.activity.history']        
@@ -599,7 +599,7 @@ class LogActivity(models.Model):
         _logger.info('Query launched: %s' % query)
 
         self.env.cr.execute(query)
-        today_dt = fields.Datetime.now()
+        today_dt = fields.Datetime.from_string(fields.Datetime.now())
 
         res = {}
         for activity_id, end in self.env.cr.fetchall():
@@ -609,14 +609,22 @@ class LogActivity(models.Model):
                 days = delta.days #+ delta.seconds / 86400.0
             except:
                 end = False
-                days = -1                  
-            res[activity_id]['last_event'] = end
-            res[activity_id]['last_event_days'] = days
+                days = -1
+            res[activity_id] = {
+                'last_event': end,
+                'last_event_days': days,
+                }
 
         # Prepare self updating of 2 fields:
-        for item in self:
-            item.last_event = res.get(item.id, False)
-            item.last_event_days = res.get(item.id, -1)
+        for activity in self:
+            if activity.id in res:
+                activity.last_event = res[activity.id].get(
+                    'last_event', False)
+                activity.last_event_days = res[activity.id].get(
+                    'last_event_days', -1)
+            else:        
+                activity.last_event = False
+                activity.last_event_days = -1
             
     @api.multi
     @api.depends('log_check_unwrited')
@@ -781,7 +789,7 @@ class LogActivityEvent(models.Model):
             ('activity_id.check_duration', '=', True),
             ('mark_ok', '=', False),
             ])
-        now = fields.Datetime.now()  
+        now = fields.Datetime.from_string(fields.Datetime.now())
 
         i = 0
         for event in events:
@@ -793,13 +801,11 @@ class LogActivityEvent(models.Model):
             # Calculate parameters:
             warning_duration = duration * (100.0 + warning_range) / 100.0 # min
             error_duration = duration * (100.0 + error_range) / 100.0 # min
-            start = fields.Datetime.from_string(
-                event.start, DEFAULT_SERVER_DATETIME_FORMAT)
+            start = fields.Datetime.from_string(event.start)
             if event.state == 'started':
                 stop = now
             else: # closed  
-                stop = fields.Datetime.from_string(
-                    event.end, DEFAULT_SERVER_DATETIME_FORMAT)
+                stop = fields.Datetime.from_string(event.end)
             
             gap = stop - start
             gap_min = (gap.days * 24 * 60) + (gap.seconds / 60)

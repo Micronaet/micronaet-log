@@ -2,8 +2,7 @@
 <openerp>
     <data><!--TODO  noupdate="1"-->
         <!--Check not closed events:-->
-        <record id="ir_cron_scheduled_log_activity_check_activity_duration_0" model="ir.cron">
-            <!--TODO<field eval="&quot;&quot;&quot;scheduled_log_activity_check_activity_duration&quot;&quot;&quot;" name="function"/>-->
+        <record id="ir_cron_scheduled_log_activity_check_activity_duration_1" model="ir.cron">
             <field eval="&quot;&quot;&quot;minutes&quot;&quot;&quot;" name="interval_type"/>
             <field name="user_id" ref="base.user_root"/>
             <field eval="&quot;&quot;&quot;Schedule: check duration period&quot;&quot;&quot;" name="name"/>
@@ -15,12 +14,10 @@
             <field eval="10" name="interval_number"/>
             <field ref="model_log_activity_event" name="model_id"/>            
             <field name="state">code</field>
-            <!--<field eval="&quot;&quot;&quot; &quot;&quot;&quot;" name="code"/>-->
+            <field eval="&quot;&quot;&quot;model.scheduled_log_activity_check_activity_duration()&quot;&quot;&quot;" name="code"/>
         </record>
-
         <!--Check missed events:-->
-        <record id="ir_cron_check_event_not_started_0" model="ir.cron">
-            <!--<field eval="&quot;&quot;&quot;check_event_not_started&quot;&quot;&quot;" name="function"/>-->
+        <record id="ir_cron_check_event_not_started_1" model="ir.cron">
             <field eval="&quot;&quot;&quot;days&quot;&quot;&quot;" name="interval_type"/>
             <field name="user_id" ref="base.user_root"/>
             <field eval="&quot;&quot;&quot;Schedule: check missed events (last week)&quot;&quot;&quot;" name="name"/>
@@ -32,11 +29,10 @@
             <field eval="1" name="interval_number"/>
             <field ref="model_log_activity" name="model_id"/>
             <field name="state">code</field>
-            <!--<field eval="&quot;&quot;&quot; &quot;&quot;&quot;" name="code"/>-->
+            <field eval="&quot;&quot;&quot;model.check_event_not_started()&quot;&quot;&quot;" name="code"/>
         </record>        
 
-        <record id="ir_cron_schedule_update_all_0" model="ir.cron">
-            <!--<field eval="&quot;&quot;&quot;schedule_update_all&quot;&quot;&quot;" name="function"/>-->
+        <record id="ir_cron_schedule_update_all_1" model="ir.cron">
             <field eval="&quot;&quot;&quot;hours&quot;&quot;&quot;" name="interval_type"/>
             <field name="user_id" ref="base.user_root"/>
             <field eval="&quot;&quot;&quot;Schedule: force update time event&quot;&quot;&quot;" name="name"/>
@@ -48,7 +44,7 @@
             <field eval="12" name="interval_number"/>
             <field ref="model_log_activity" name="model_id"/>
             <field name="state">code</field>
-            <!--<field eval="&quot;&quot;&quot; &quot;&quot;&quot;" name="code"/>-->
+            <field eval="&quot;&quot;&quot;model.schedule_update_all()&quot;&quot;&quot;" name="code"/>
         </record>
     </data>
 </openerp>
