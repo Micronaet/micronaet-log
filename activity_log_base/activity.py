@@ -841,7 +841,7 @@ class LogActivityEvent(models.Model):
             })
         _logger.info(
             'Mark ok closed record without check duration, tot.: %s' % (
-                len(event_ids)))
+                len(events)))
 
         _logger.info('End check activity duration (error: %s)' % i)
         return True
