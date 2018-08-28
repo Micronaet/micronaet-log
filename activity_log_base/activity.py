@@ -385,7 +385,7 @@ class LogActivity(models.Model):
         
         # Read as cron schedule for week (key = browse)
         #self.env.context['browse_keys'] = True # TODO change context method
-        activities_context = activities.with_context('browse_keys'=True)
+        activities_context = activities.with_context(browse_keys=True)
         activity_cron = activities_context.get_cron_info()
         #self.env.context['browse_keys'] = False
 
@@ -415,7 +415,8 @@ class LogActivity(models.Model):
         # ---------------------------------------------------------------------
         # Compare data:
         # ---------------------------------------------------------------------  
-        for activity, planned in activity_cron.iteritems():
+        for activity in activity_cron:
+            planned = activity_cron[activity]
             i = -1
             for tot_planned in planned[:-1]: # check every day (last not used):
                 i += 1 # start from 0
@@ -528,7 +529,8 @@ class LogActivity(models.Model):
         '''
         daily = self.get_cron_info()
         res = {}
-        for item_id, item in daily.iteritems():                    
+        for item_id in daily:
+            item = daily[item_id]
             res[item_id] = _('''
                 <style>
                     .table_bf {
@@ -567,42 +569,42 @@ class LogActivity(models.Model):
             activity.cron_daily_exec = res.get(activity.id, False)
 
         
-    """
-    def _last_event_date(self, cr, uid, ids, fields, args, context=None):
+    @api.multi
+    # Use a trigger field to force update:
+    @api.depends('update_event_status')
+    def _last_event_date(self):
         ''' Get last activity event:
         '''
-        res = {}
-        for item in ids:
-            res[item] = {
-                'last_event': False,
-                'last_event_days': -1,
-                }
-
         query = '''
             SELECT event.activity_id, max(event.end) 
             FROM log_activity_event event 
             GROUP BY event.activity_id 
             HAVING event.activity_id in (%s);
-            ''' % (', '.join([str(item) for item in ids]))
+            ''' % (', '.join([str(item.id) for item in self]))
         _logger.info('Query launched: %s' % query)
 
-        cr.execute(query)
-        today_dt = datetime.now()
+        self.env.cr.execute(query)
+        today_dt = fields.Datetime.now()
 
-        for activity_id, end in cr.fetchall():
+        res = {}
+        for activity_id, end in self.env.cr.fetchall():
             try:
-                end_dt = datetime.strptime(end, DEFAULT_SERVER_DATETIME_FORMAT)
+                end_dt = fields.Datetime.from_string(end)
                 delta = today_dt - end_dt
                 days = delta.days #+ delta.seconds / 86400.0
             except:
                 end = False
-                days = -1
-                  
+                days = -1                  
             res[activity_id]['last_event'] = end
             res[activity_id]['last_event_days'] = days
-        return res
+
+        # Prepare self updating of 2 fields:
+        for item in self:
+            item.last_event = res.get(item.id, False)
+            item.last_event_days = res.get(item.id, -1)
+            
         
-    def schedule_update_all(self, cr, uid, context=None):
+    """def schedule_update_all(self, cr, uid, context=None):
         ''' Update event scheduling update of field store
         '''
         activity_ids = self.search(cr, uid, [], context=context)
@@ -683,7 +685,7 @@ class LogActivity(models.Model):
     
     # Info about server:
     uptime = fields.Text('Uptime job')
-    cron = fields.Char('Cron job', size=100)
+    cron = fields.Text('Cron job')
     config = fields.Text('Config file')
     server = fields.Text('Server info')
 
@@ -715,24 +717,14 @@ class LogActivity(models.Model):
         )
     
     update_event_status = fields.Boolean('Update event command')
-    # TODO convert function: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    last_event = fields.Datetime(string='Last event')
-    #last_event = fields.function(
-    #    _last_event_date, method=True, 
-    #    type='datetime', string='Last event', multi=True, 
-    #    store={
-    #        'log.activity':
-    #            (_get_fiels_update_this, ('update_event_status', ), 10)
-    #        }), 
-    # TODO convert function: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    last_event_days = fields.Integer(string='Days')
-    #last_event_days = fields.function(
-    #    _last_event_date, method=True, 
-    #    type='integer', string='Days', multi=True,
-    #    store={
-    #        'log.activity':
-    #            (_get_fiels_update_this, ('update_event_status', ), 10)
-    #         }),       
+    last_event = fields.Datetime(
+        string='Last event',
+        compute='_last_event_date', multi=True, store=True,
+        )
+    last_event_days = fields.Integer(
+        string='Days',
+        compute='_last_event_date', multi=True, store=True,        
+        )
 
     state = fields.Selection([
         ('unactive', 'Unactive'), # not working
