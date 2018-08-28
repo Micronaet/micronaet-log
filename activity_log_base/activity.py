@@ -772,19 +772,20 @@ class LogActivityEvent(models.Model):
             'mark_ok': True,
             })
 
-    """
+    # -------------------------------------------------------------------------
+    # Utility:
+    # -------------------------------------------------------------------------
+    @api.model
     def get_duration_hour(self, start, end):
         ''' Diference from 2 date in hours
         '''
         if not start or not end:
             return 0.0
             
-        start = datetime.strptime(
-            start, DEFAULT_SERVER_DATETIME_FORMAT)
-        end = datetime.strptime(
-            end, DEFAULT_SERVER_DATETIME_FORMAT)
+        start = fields.Datetime.from_string(start)
+        end = fields.Datetime.from_string(end)
         gap = end - start
-        return (gap.days * 24.0) + (gap.seconds / 3660.0)"""
+        return (gap.days * 24.0) + (gap.seconds / 3660.0)
 
     # -------------------------------------------------------------------------
     # Schedule procedure:
