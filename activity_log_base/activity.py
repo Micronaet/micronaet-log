@@ -718,7 +718,7 @@ class LogActivity(models.Model):
         'Log check unwrited', 
         help='When log mode is check write here the event')   
     # TODO convert function: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    log_check_unwrited_html = fields.Text('Update event command')
+    log_check_unwrited_html = fields.Html('Update event command')
     #log_check_unwrited_html = fields.function(
     #    _log_in_html_format, method=True, 
     #    type='text', string='Log in HTML format', store=False), 
