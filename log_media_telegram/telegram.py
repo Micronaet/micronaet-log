@@ -19,28 +19,17 @@
 ###############################################################################
 import os
 import sys
+import odoo
 import logging
-import openerp
 import telepot
-import openerp.netsvc as netsvc
-import openerp.addons.decimal_precision as dp
-from openerp.osv import fields, osv, expression, orm
-from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
-from openerp import SUPERUSER_ID
-from openerp import tools
-from openerp.tools.translate import _
-from openerp.tools.float_utils import float_round as round
-from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT, 
-    DEFAULT_SERVER_DATETIME_FORMAT, 
-    DATETIME_FORMATS_MAP, 
-    float_compare)
+from odoo import models, fields, api
+from datetime import timedelta
+from odoo.tools.translate import _
 
 
 _logger = logging.getLogger(__name__)
 
-
-class TelegramBot(orm.Model):
+class TelegramBot(models.Model):
     """ Model name: TelegramBot
     """
     
@@ -49,28 +38,33 @@ class TelegramBot(orm.Model):
     _rec_name = 'name'
     _order = 'name'
     
-    def get_message_url(self, cr, uid, ids, context=None):
+    # -------------------------------------------------------------------------
+    # Button events:
+    # -------------------------------------------------------------------------
+    @api.multi
+    def get_message_url(self):
         ''' Open URL for API message list
-        '''
+        '''        
         url = 'https://api.telegram.org/bot%s/getUpdates'
-        current_proxy = self.browse(cr, uid, ids, context=context)[0]
-        url = url % current_proxy.token
+        current = self[0]
+        url = url % current.token
         return {
             'name': 'Telegram messages',
             'res_model': 'ir.actions.act_url',
             'type': 'ir.actions.act_url',
             'target': 'current',
             'url': url
-            } 
-    
-    _columns = {
-        'name': fields.char('Description', size=80, required=True),
-        'bot': fields.char('BOT Name', size=64, required=True),
-        'token': fields.char('Token', size=64, required=True, 
-            help='Format like: 495865748:ABFPw_3D1NpLo5xPWdv1vpTZZ8j1pQYo3Xk'),
-        }
+            }
+                
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    name = fields.Char('Description', size=80, required=True)
+    bot = fields.Char('BOT Name', size=64, required=True)
+    token = fields.Char('Token', size=64, required=True, 
+        help='Format like: 495865748:ABFPw_3D1NpLo5xPWdv1vpTZZ8j1pQYo3Xk')
 
-class TelegramGroup(orm.Model):
+class TelegramGroup(models.Model):
     """ Model name: TelegramGroup
     """
     
@@ -85,7 +79,7 @@ class TelegramGroup(orm.Model):
             help='Group ID, line: -123431251'),
         }
 
-class TelegramBot(orm.Model):
+class TelegramBot(models.Model):
     """ Model name: TelegramBot
     """
     
@@ -97,7 +91,7 @@ class TelegramBot(orm.Model):
             'bot_id', 'group_id', 'Groups'),
         }
 
-class TelegramBotLog(orm.Model):
+class TelegramBotLog(models.Model):
     """ Model name: TelegramBotLog
     """
     
@@ -120,7 +114,7 @@ class TelegramBotLog(orm.Model):
         'log_error': lambda *x: True,
         }
 
-class LogActivity(orm.Model):
+class LogActivity(models.Model):
     """ Model name: Log event
     """
     
