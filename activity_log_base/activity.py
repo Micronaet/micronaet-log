@@ -759,7 +759,7 @@ class LogActivityEvent(models.Model):
     _order = 'datetime desc'
     
     @api.multi
-    def dummy_nothing(self, ):
+    def dummy_nothing(self):
         ''' Dummy button do nothing
         '''
         return True
@@ -789,23 +789,23 @@ class LogActivityEvent(models.Model):
     # -------------------------------------------------------------------------
     # Schedule procedure:
     # -------------------------------------------------------------------------
-    """def scheduled_log_activity_check_activity_duration(
-            self, cr, uid, context=None):
+    @api.model
+    def scheduled_log_activity_check_activity_duration(self):
         ''' Check activity for mark and validate:
             1. check if started are in duration range (if needed)
             2. check if closed are in duration range else mark as OK
         '''
         # Read started / closed (check duration activity)
         _logger.info('Start check activity duration')
-        event_ids = self.search(cr, uid, [
+        events = self.search([
             ('state', 'in', ('started', 'closed')),
             ('activity_id.check_duration', '=', True),
             ('mark_ok', '=', False),
-            ], context=context) 
-        now = datetime.now()  
+            ])
+        now = fields.Datetime.now()  
 
         i = 0
-        for event in self.browse(cr, uid, event_ids, context=context):
+        for event in events:
             # Read parameters:
             duration = event.activity_id.duration * 60.0 # min
             warning_range = event.activity_id.duration_warning_range # %
@@ -814,58 +814,58 @@ class LogActivityEvent(models.Model):
             # Calculate parameters:
             warning_duration = duration * (100.0 + warning_range) / 100.0 # min
             error_duration = duration * (100.0 + error_range) / 100.0 # min
-            start = datetime.strptime(
+            start = fields.Datetime.from_string(
                 event.start, DEFAULT_SERVER_DATETIME_FORMAT)
             if event.state == 'started':
                 stop = now
             else: # closed  
-                stop = datetime.strptime(
+                stop = fields.Datetime.from_string(
                     event.end, DEFAULT_SERVER_DATETIME_FORMAT)
             
             gap = stop - start
-            gap_min = (gap.days * 24 * 60) + (gap.seconds / 60) # min
+            gap_min = (gap.days * 24 * 60) + (gap.seconds / 60)
             
             # Check range:
             if gap_min > error_duration:
                 i += 1
-                self.write(cr, uid, event.id, {
+                event.write({
                     'error_comment': _('Over max duration') \
                         if event.state == 'closed' \
                         else _('Started but not closed'),
                     'state': 'error',
-                    }, context=context)
+                    })
             elif event.state == 'closed' and gap_min > warning_duration:
-                self.write(cr, uid, event.id, {
+                self.write({
                     'error_comment': _('Duration in warning period'),
                     'state': 'warning',
-                    }, context=context)
+                    })
             elif event.state == 'closed': # correct range
-                self.write(cr, uid, event.id, {
+                self.write({
                     'mark_ok': True,
-                    }, context=context)
+                    })
         
         # Read closed (no check duration activity)
         _logger.info('Mark ok closed record without check duration')
-        event_ids = self.search(cr, uid, [
+        events = self.search([
             ('state', '=', 'closed'),
             ('activity_id.check_duration', '=', False),
             ('mark_ok', '=', False),
-            ], context=context) 
-        self.write(cr, uid, event_ids, {
+            ]) 
+        events.write({
             'mark_ok': True,
-            }, context=context)
+            })
         _logger.info(
             'Mark ok closed record without check duration, tot.: %s' % (
                 len(event_ids)))
 
         _logger.info('End check activity duration (error: %s)' % i)
-        return True"""
+        return True
 
     # -------------------------------------------------------------------------
     # XMLRPC Procedure:
     # -------------------------------------------------------------------------
     @api.model
-    def log_event(self, data, update_id=False, context=None):
+    def log_event(self, data, update_id=False):
         ''' ERPEEK procedure called for create event from remote scripts
             data dict contain:
                 code_partner: Key field for reach partner, inserad use copmany
@@ -877,10 +877,7 @@ class LogActivityEvent(models.Model):
                 log_warning: warning text
                 log_error: error text
         '''
-        _logger.info('Register data event: [ID %s] %s' % (
-            update_id,
-            data, 
-            ))
+        _logger.info('Register data event: [ID %s] %s' % (update_id, data))
 
         # Pool used:
         category_pool = self.env['log.category']
@@ -914,14 +911,14 @@ class LogActivityEvent(models.Model):
             _logger.error('Code activity not present (take ERR)!')
             code_activity = 'ERR'
 
-        activity_ids = activity_pool.search([
+        activities = activity_pool.search([
             ('partner_id', '=', partner_id),
             ('code', '=', code_activity),
             ])
             
-        if activity_ids:
+        if activities:
             # Find:
-            activity_id = activity_ids[0].id
+            activity = activities[0]
         else:
             # Create new (to compile after on ODOO):
             # Get error category:
@@ -939,7 +936,7 @@ class LogActivityEvent(models.Model):
                     })
             
             # Get activity:
-            activity_id = activity_pool.create({
+            activity = activity_pool.create({
                 'code': code_activity,
                 'name': 'Error',
                 'partner_id': partner_id,
@@ -979,20 +976,17 @@ class LogActivityEvent(models.Model):
         # ---------------------------------------------------------------------
         # Read activity for get log information
         # ---------------------------------------------------------------------
-        # If activity don't need log event wil be jumped the notification:
-        activity_proxy = activity_pool.browse(activity_id)
-
         # Jump notification in check mode if not error and warning    
-        if activity_proxy.log_mode == 'check' and not log_warning and \
+        if activity.log_mode == 'check' and not log_warning and \
                 not log_error:
             # jump in no count info raise:    
-            count_current = activity_proxy.log_check_count + 1
-            count_max =  activity_proxy.log_check_every
-            log_check_unwrited = activity_proxy.log_check_unwrited or ''
+            count_current = activity.log_check_count + 1
+            count_max =  activity.log_check_every
+            log_check_unwrited = activity.log_check_unwrited or ''
             if count_current < count_max:
                 # Update count and log partial:
                 _logger.info('No notification event received')
-                activity_pool.write(activity_id, {
+                activity.write({
                     'log_info': log_info, # used for IP address
                     'log_check_count': count_current,
                     'log_check_unwrited': '%s|%s|%s\n' % (
@@ -1004,7 +998,7 @@ class LogActivityEvent(models.Model):
                 return (True, {}) # nothing to comunicate
             else: # Reset and notificate
                 _logger.info('No notification event received, now notificate!')
-                activity_pool.write(activity_id, {
+                activity.write({
                     'log_check_count': 0,
                     'log_check_unwrited': '',
                     })
@@ -1041,16 +1035,14 @@ class LogActivityEvent(models.Model):
         if update_id:
             try:
                 # TODO check if correct!
-                res = self.brows(update_id).write(record)
-                #res = self.write(update_id, record)
+                res = self.browse(update_id).write(record)
                 event_id = update_id  
             except:
                 _logger.error('Error updating event: %s' % update_id)
                 res = False                    
         else:
             try:
-                event_id = self.create(record)
-                res = event_id.id
+                res = event_id = self.create(record).id
             except:
                 _logger.error('Error create event')
                 res = False    
@@ -1071,19 +1063,14 @@ class LogActivityEvent(models.Model):
     activity_id = fields.Many2one('log.activity', 'Activity')
     partner_id = fields.Many2one('res.partner', 'Partner',
         related='activity_id.partner_id', store=True)
-    #TODO remove: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    # partner_id = fields.related(
-    #    'activity_id', 'partner_id', 
-    #    type='many2one', relation='res.partner', 
-    #    string='Partner', store=True)
 
     start = fields.Datetime('Start')
     end = fields.Datetime('End')
     duration = fields.Float(
         'Duration', digits=(16, 3), help='Duration of operation')
-        
+
     origin = fields.Text('Origin', help='Server info (log origin)')
-    
+
     log_info = fields.Text('Log info')
     log_warning = fields.Text('Log warning')
     log_error = fields.Text('Log error')
