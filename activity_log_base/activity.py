@@ -189,7 +189,7 @@ class LogActivity(models.Model):
             7: 'Dom',
             }
         while start_xls_dt <= end_xls_dt:
-            header.append(fields.Date.to_string(start_xls_dt)
+            header.append(fields.Date.to_string(start_xls_dt))
             dow_header.append(start_xls_dt.isoweekday())
             dow_header_text.append(
                 iso_text.get(start_xls_dt.isoweekday(), '?'))
@@ -473,7 +473,7 @@ class LogActivity(models.Model):
                 ('activity_id', '=', ids[0]),
                 ('mode', '=', mode),
                 ],
-            'context': context,
+            'context': self.env.context,
             'target': 'current', # 'new'
             'nodestroy': False,
             }

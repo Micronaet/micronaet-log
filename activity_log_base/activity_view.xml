@@ -126,8 +126,6 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_log_activity_history_tree_list"/>
-            <field name="context">{}</field>
-            <field name="domain">[]</field>
         </record>
                 
         <!--log.category-->
