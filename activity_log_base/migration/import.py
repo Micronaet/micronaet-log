@@ -225,6 +225,7 @@ pool_out = erp['out'].LogActivityEvent
 record_ids = pool_in.search([])
 total = len(record_ids)
 print 'Tot selected %s' % total
+update = False
 
 i = 0
 for record in pool_in.browse(record_ids):
@@ -269,7 +270,8 @@ for record in pool_in.browse(record_ids):
 
     if item_ids:
         item_id = item_ids[0]
-        pool_out.write(item_id, data)
+        if update:
+            pool_out.write(item_id, data)
         print '%s. Update record: %s / %s' % (i, datetime, total)
     else:   
         item_id = pool_out.create(data).id
@@ -286,7 +288,7 @@ pool_out = erp['out'].LogActivityHistory
 record_ids = pool_in.search([])
 total = len(record_ids)
 print 'Tot selected %s' % total
-
+update = False
 i = 0
 for record in pool_in.browse(record_ids):
     i += 1
@@ -315,7 +317,8 @@ for record in pool_in.browse(record_ids):
 
     if item_ids:
         item_id = item_ids[0]
-        pool_out.write(item_id, data)
+        if update:
+            pool_out.write(item_id, data)
         print '%s. Update record: %s / %s' % (i, create_date, total)
     else:   
         item_id = pool_out.create(data).id

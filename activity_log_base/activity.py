@@ -24,6 +24,8 @@ import logging
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
+from datetime import timedelta # XXX to be removed?
+
 
 _logger = logging.getLogger(__name__)
 
@@ -105,33 +107,31 @@ class LogActivity(models.Model):
         _logger.warning('Log media event comunication')
         return True
 
-    """
     # -------------------------------------------------------------------------
     # REPORT XLSX:
     # -------------------------------------------------------------------------
-    def extract_xlsx_scheduled_status(self, cr, uid, ids, context=None):
+    @api.model
+    def extract_xlsx_scheduled_status(self, ids):
         ''' Generate report for current activity, scheduled from date to check
             Usually generate report from check_from parameter to now, 
             if from_date and to_date context is present select this period
         '''
         # Pool used:
-        event_pool = self.pool.get('log.activity.event') 
-        excel_pool = self.pool.get('excel.writer')
+        event_pool = self.env['log.activity.event']
+        excel_pool = self.env['excel.writer']
         
         # ---------------------------------------------------------------------
         # Parameter and setup:
         # ---------------------------------------------------------------------
         # TODO
-        if context is None:
-            context = {}
-        context_from_date = context.get('from_date', False)    
-        context_to_date = context.get('to_date', False)    
+        context_from_date = self.env.context.get('from_date', False)    
+        context_to_date = self.env.context.get('to_date', False)    
     
         res = {}
-        now = datetime.now()
+        now = fields.Datetime.now()
         now_60 = now - timedelta(days=60)
-        to_date = '%s 23:59:59' % now.strftime(DEFAULT_SERVER_DATE_FORMAT)
-        min_date = '%s 00:00:00' % now_60.strftime(DEFAULT_SERVER_DATE_FORMAT)
+        to_date = '%s 23:59:59' % fields.Date.to_string(now)
+        min_date = '%s 00:00:00' % fields.Date.to_string(now_60)
         
         # Excel reference range:
         start_xls = to_date
@@ -141,20 +141,19 @@ class LogActivity(models.Model):
         # Collect data:
         # ---------------------------------------------------------------------
         # Scheduled info data:
-        for activity in self.browse(cr, uid, ids, context=context):
+        for activity in self.browse(ids):
             if activity.check_from:
                 from_date = '%s 00:00:00' % activity.check_from
             else:    
                 from_date = min_date # lower limit 60 gg.
-            event_ids = event_pool.search(cr, uid, [
+            events = event_pool.search([
                 ('activity_id', '=', activity.id),                
                 # Start Period:
                 ('start', '>=', from_date),
                 ('start', '<=', to_date),
-                ], context=context)
+                ])
             res[activity] = {}
-            for event in event_pool.browse(
-                    cr, uid, event_ids, context=context):
+            for event in events:
                 date = event.start[:10]
     
                 if date < start_xls: # save min date:
@@ -174,10 +173,8 @@ class LogActivity(models.Model):
                     res[activity][date][2] += 1
         
         # Header data:
-        start_xls_dt = datetime.strptime(
-            start_xls[:10], DEFAULT_SERVER_DATE_FORMAT)
-        end_xls_dt = datetime.strptime(
-            end_xls[:10], DEFAULT_SERVER_DATE_FORMAT)
+        start_xls_dt = fields.Date.from_string(start_xls) # XXX date
+        end_xls_dt = fields.Date.from_string(end_xls) # XXX date [:10]
         header = [u'Attività', u'Cliente', ] 
         dow_header = ['', '', ]
         dow_header_text = ['', '', ]
@@ -192,7 +189,7 @@ class LogActivity(models.Model):
             7: 'Dom',
             }
         while start_xls_dt <= end_xls_dt:
-            header.append(start_xls_dt.strftime(DEFAULT_SERVER_DATE_FORMAT))
+            header.append(fields.Date.to_string(start_xls_dt)
             dow_header.append(start_xls_dt.isoweekday())
             dow_header_text.append(
                 iso_text.get(start_xls_dt.isoweekday(), '?'))
@@ -256,11 +253,10 @@ class LogActivity(models.Model):
                     excel_pool.write_xls_data(WS_name, row, col, 'SALTATO')
     
         # Return XLSX file generated
-        return excel_pool.return_attachment(cr, uid, 
+        return excel_pool.return_attachment(
             'Schedulazioni %s' % to_date, 
             'scheduler_check_%s.xlsx' % to_date,
-            version='7.0',
-            context=context)"""
+            )
         
     # -------------------------------------------------------------------------
     # Utility:
@@ -991,7 +987,7 @@ class LogActivityEvent(models.Model):
                     'log_info': log_info, # used for IP address
                     'log_check_count': count_current,
                     'log_check_unwrited': '%s|%s|%s\n' % (
-                        fields.Datetime.context_timestamp,
+                        fields.Datetime.context_timestamp, # XXX
                         log_info,
                         log_check_unwrited,
                         )
