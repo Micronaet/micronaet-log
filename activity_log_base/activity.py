@@ -691,7 +691,7 @@ class LogActivity(models.Model):
 
     note = fields.Text('Note')
     
-    cron_daily_exec = fields.Text(
+    cron_daily_exec = fields.Html(
         string='Cron execution',
         compute='_get_cron_daily_execution',
         store=False,
