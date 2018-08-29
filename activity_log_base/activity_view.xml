@@ -225,7 +225,7 @@
                     <field name="last_event" />
                     <field name="last_event_days" />
                     <field name="state" />
-                    <button name="extract_xlsx_scheduled_status" string="Get schedule activity" type="object" icon="gtk-print" />
+                    <button name="extract_xlsx_scheduled_status" string="Get schedule activity" type="object" icon="fa-print" />
                 </tree>
             </field>
         </record>        
@@ -391,7 +391,7 @@
                             <field name="duration" widget="float_time"/>
                             <field name="error_comment" />
                             <field name="mark_ok" />
-                            <button name="mark_ok_button" string="Mark as OK" type="object" icon="gtk-ok" attrs="{'invisible': [('mark_ok','=',True)]}"/>
+                            <button name="mark_ok_button" string="Mark as OK" type="object" icon="fa-exclamation" attrs="{'invisible': [('mark_ok','=',True)]}"/>
                             
                             <notebook colspan="4">
                                 <page string="Log">
@@ -434,8 +434,8 @@
                     <field name="mark_ok" invisible="1"/>
                     <field name="error_comment" />
                     <field name="state" />
-                    <button name="dummy_nothing" string="Marked as OK" type="object" icon="STOCK_YES" attrs="{'invisible': [('mark_ok','!=',True)]}"/>
-                    <button name="dummy_nothing" string="Marked as not OK" type="object" icon="STOCK_NO" attrs="{'invisible': [('mark_ok','!=',False)]}" />
+                    <button name="dummy_nothing" string="Marked as OK" type="object" icon="fa-exclamation" attrs="{'invisible': [('mark_ok','!=',True)]}"/>
+                    <button name="dummy_nothing" string="Marked as not OK" type="object" icon="fa-rotate-left" attrs="{'invisible': [('mark_ok','!=',False)]}" />
                 </tree>
             </field>
         </record>
