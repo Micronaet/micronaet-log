@@ -1033,7 +1033,7 @@ class LogActivityEvent(models.Model):
         # ---------------------------------------------------------------------    
         # Manage Extra Media comunication message:    
         # ---------------------------------------------------------------------    
-        activity_pool.raise_extra_media_comunication(activity_id, event_id)
+        activity_pool.raise_extra_media_comunication(activity.id, event_id)
 
         # Common part:        
         return (res, record)
