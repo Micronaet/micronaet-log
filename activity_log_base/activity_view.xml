@@ -271,7 +271,7 @@
                                         <field name="log_check_unwrited_html" attrs="{'invisible': [('log_mode','!=','check')]}" nolabel="1" colspan="4" readonly="1" widget="html"/>
                                     </group>                    
                                 </page>
-                                <page string="Notification">
+                                <page string="Notification" name="notification-page">
                                     <group col="4" colspan="4">
                                         <!--<field name="email_alert" />
                                         <newline/>

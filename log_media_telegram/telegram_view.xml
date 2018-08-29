@@ -106,7 +106,7 @@
             <field name="model">log.activity</field>
             <field name="inherit_id" ref="activity_log_base.view_log_activity_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@string='Notification']//group" position="inside">
+                <xpath expr="//page[@name='notification-page']//group" position="inside">
                     <separator string="Telegram notification:" colspan="4"/>
                     <field name="telegram_ids" colspan="4" nolabel="1"> 
                         <tree string="Telegram" editable="bottom">
