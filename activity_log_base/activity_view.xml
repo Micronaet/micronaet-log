@@ -434,9 +434,8 @@
                     <field name="mark_ok" invisible="1"/>
                     <field name="error_comment" />
                     <field name="state" />
-                    <button name="dummy_nothing" string="Marked as OK" type="object" icon="fa-exclamation" attrs="{'invisible': [('mark_ok','=',True)]}"/>
-                    <button name="dummy_nothing" string="Marked as not OK" type="object" icon="fa-rotate-left" attrs="{'invisible': [('mark_ok','=',False)]}" />
-                </tree>
+                    <button name="mark_ok_button" string="Mark as OK" type="object" icon="fa-exclamation" attrs="{'invisible': [('mark_ok','=',True)]}"/>
+               </tree>
             </field>
         </record>
         <record model="ir.actions.act_window" id="action_log_activity_event">
