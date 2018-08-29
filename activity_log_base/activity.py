@@ -625,7 +625,7 @@ class LogActivity(models.Model):
                 activity.last_event_days = -1
             
     @api.multi
-    @api.depends('log_check_unwrited')
+    @api.depends() #'log_check_unwrited'
     def _log_in_html_format(self):
         ''' Fields function for calculate 
         '''
@@ -712,8 +712,8 @@ class LogActivity(models.Model):
     log_check_unwrited_html = fields.Html(
         string='Update event command',
         compute='_log_in_html_format',
-        store=False,
-        compute_sudo=False,
+        #store=False,
+        #compute_sudo=False,
         )
     
     update_event_status = fields.Boolean('Update event command')
