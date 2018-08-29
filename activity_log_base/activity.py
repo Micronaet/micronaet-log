@@ -988,7 +988,7 @@ class LogActivityEvent(models.Model):
             
         record = {
             'mark_ok': False,
-            'activity_id': activity_id,
+            'activity_id': activity.id,
             'start': start,
             'end': end,
             'duration': duration,
