@@ -83,6 +83,7 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # Check mount procedure:
 # -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
 res = os.popen(check_command).read()
 if res.startswith(esit):
     log_f['info'].write('Correttamente montato\n')
