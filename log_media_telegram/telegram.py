@@ -147,7 +147,10 @@ class LogActivity(models.Model):
             # -----------------------------------------------------------------
             bot = telepot.Bot(telegram_token)
             bot.getMe()
-            bot.sendMessage(telegram_group, event_text)
+            try:
+                bot.sendMessage(telegram_group, event_text)
+            except:
+                _logger.error('Error generating telegram Message!')    
             return True
 
         # ---------------------------------------------------------------------    
