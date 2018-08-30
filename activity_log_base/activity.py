@@ -996,6 +996,7 @@ class LogActivityEvent(models.Model):
             'log_info': log_info,
             'log_warning': log_warning,
             'log_error': log_error,
+            'error_comment': False, # Reset if previous comment
             }
 
         # ---------------------------------------------------------------------    
