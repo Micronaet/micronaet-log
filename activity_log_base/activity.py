@@ -1042,7 +1042,7 @@ class LogActivityEvent(models.Model):
     # Columns:
     # -------------------------------------------------------------------------
     datetime = fields.Datetime('Date', required=True, 
-        default=fields.Datetime.now())
+        default=lambda self: fields.Datetime.now())
     activity_id = fields.Many2one('log.activity', 'Activity')
     partner_id = fields.Many2one('res.partner', 'Partner',
         related='activity_id.partner_id', store=True)
