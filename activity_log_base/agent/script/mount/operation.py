@@ -94,6 +94,7 @@ except:
     closing_operations(log_f)
     
 # 3. Check file for get mount information:
+import pdb; pdb.set_trace()
 print '[INFO] B. Check file reveal the mount: %s' % check_file
 if os.path.exists(check_file):
     log_f['info'].write('Correttamente montato\n')
