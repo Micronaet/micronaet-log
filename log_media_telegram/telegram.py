@@ -166,7 +166,7 @@ class LogActivity(models.Model):
             event_pool = self.env['log.activity.event']
             event = event_pool.browse(event_id)
             if event.state in ('error', 'warning'):
-                event_state = event_proxy.state
+                event_state = event.state
             else:
                 event_state = 'info'
                     
