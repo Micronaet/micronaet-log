@@ -787,7 +787,7 @@ class LogActivityEvent(models.Model):
             ('activity_id.check_duration', '=', True),
             ('mark_ok', '=', False),
             ])
-        now = fields.Datetime.from_string(fields.Datetime.now())
+        now_dt = fields.Datetime.from_string(fields.Datetime.now())
 
         i = 0
         for event in events:
@@ -801,7 +801,7 @@ class LogActivityEvent(models.Model):
             error_duration = duration * (100.0 + error_range) / 100.0 # min
             start = fields.Datetime.from_string(event.start)
             if event.state == 'started':
-                stop = now
+                stop = now_dt
             else: # closed  
                 stop = fields.Datetime.from_string(event.end)
             
@@ -973,7 +973,7 @@ class LogActivityEvent(models.Model):
                     'log_info': log_info, # used for IP address
                     'log_check_count': count_current,
                     'log_check_unwrited': '%s|%s|%s\n' % (
-                        fields.Datetime.context_timestamp, # XXX
+                        fields.Datetime.now(),
                         log_info,
                         log_check_unwrited,
                         )
