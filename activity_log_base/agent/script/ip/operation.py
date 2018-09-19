@@ -93,7 +93,7 @@ except:
 print '[INFO] B. Parse results: %s' % get_ip
 
 ip = web_page.split(
-    'Your IP address')[-1].split('</b>')[0].split('<b>').[-1].strip()
+    'Your IP address')[-1].split('</b>')[0].split('<b>')[-1].strip()
 #if from_tag not in web_page or to_tag not in web_page:
 if not ip:
     log_f['error'].write(
