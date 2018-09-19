@@ -80,7 +80,6 @@ for mode in log:
 # -----------------------------------------------------------------------------
 # 2. Mount operation:
 try:
-    import pdb; pdb.set_trace()
     print '[INFO] A. Call get IP page: %s' % get_ip
     web_page = requests.get(get_ip).text    
     # requests.get(get_ip).text
