@@ -45,7 +45,8 @@ path, name = os.path.split(os.path.abspath(__file__))
 fullname = os.path.join(path, 'operation.cfg')
 
 # Get IP parameters:
-get_ip = 'http://www.micronaet.it/ip'
+get_ip = 'https://whatismyip.network/'
+#get_ip = 'http://www.micronaet.it/ip'
 from_tag = '<b>'
 to_tag = '</b>'
 
@@ -81,6 +82,7 @@ for mode in log:
 # 2. Mount operation:
 try:
     print '[INFO] A. Call get IP page: %s' % get_ip
+    import pdb; pdb.set_trace()
     web_page = requests.get(get_ip).text    
     # requests.get(get_ip).text
 except:
