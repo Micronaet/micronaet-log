@@ -140,6 +140,7 @@ umount_command = 'umount %s' % from_folder
 check_file = config.get('operation', 'check')
 check_file = os.path.join(from_folder, check_file) # fullname for check file
 # Extra parameter to add parameter in rsync
+import pdb; pdb.set_trace()
 try:
     pre_rsync = config.get('command', 'rsync_pre')
 except:
