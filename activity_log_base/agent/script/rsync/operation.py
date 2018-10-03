@@ -138,12 +138,22 @@ except:
 mount_command = config.get('operation', 'mount')
 umount_command = 'umount %s' % from_folder
 check_file = config.get('operation', 'check')
-check_file = os.path.join(from_folder, check_file) # fullname for check file 
+check_file = os.path.join(from_folder, check_file) # fullname for check file
+# Extra parameter to add parameter in rsync
+try:
+    pre_rsync = config.get('command', 'rsync_pre')
+except:
+    pre_rsync = '' 
+try:
+    post_rsync = config.get('command', 'rsync_post')
+except:
+    post_rsync = '' 
 
 result = os.path.join(log_folder, 'rsync.log')
-script_mask = 'rsync -avh \'%s/\' \'%s\' --log-file=%s'
+script_mask = \
+    'rsync -avh ' + pre_rsync + ' \'%s/\' \'%s\' --log-file=%s ' +  post_rsync
 
-# Remove rsync result file:    
+# Remove rsync result file:
 clean_result_file(result)
 
 # -----------------------------------------------------------------------------
