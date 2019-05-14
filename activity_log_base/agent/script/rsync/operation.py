@@ -115,9 +115,10 @@ except:
         
 # Root mount folder in remote destination:
 remote_umount = False # no umount command to launch
+import pdb; pdb.set_trace()
 try: # Required remote (mounted as root path folder:
     remote_command = config.get('operation', 'mount_remote')
-    remote_umount = 'umount -l %s' % to_folder # substitute path folder with remote
+    remote_umount = 'umount -l %s' % path # substitute path folder with remote
     
     # Check file for remote path (mandatory if mount_remote parameter):
     try:
@@ -129,7 +130,7 @@ try: # Required remote (mounted as root path folder:
         print '[INFO] R1. Mount remote root folder: %s' % remote_command
         os.system(remote_command)
         
-        check_remote = os.path.join(to_folder, check_remote)
+        check_remote = os.path.join(path, check_remote)
 
         print '[INFO] R2. Check correct mount remote: %s' % check_remote
         if not os.path.isfile(check_remote):
