@@ -97,7 +97,7 @@ except:
 remote_umount = False # no umount command to launch
 try: # Required remote (mounted as root path folder:
     remote_command = config.get('operation', 'mount_remote')
-    remote_umount = 'umount %s' % path # substitute path folder with remote
+    remote_umount = 'umount -l %s' % path # substitute path folder with remote
     
     # Check file for remote path (mandatory if mount_remote parameter):
     try:
@@ -118,7 +118,7 @@ try: # Required remote (mounted as root path folder:
                 os.system(remote_umount)
             except:
                 pass    
-            log_f['error'].write('Cannot mount remote NAS\n')
+            log_f['error'].write('Cannot mount remote NAS (was yet mounted)\n')
             closing_operations(log_f, result) # END HERE
     else:
         try:
@@ -136,7 +136,7 @@ except:
 # -----------------------------------------------------------------------------
 # Mount parameters:
 mount_command = config.get('operation', 'mount')
-umount_command = 'umount %s' % from_folder
+umount_command = 'umount -l %s' % from_folder
 check_file = config.get('operation', 'check')
 check_file = os.path.join(from_folder, check_file) # fullname for check file 
 
