@@ -69,6 +69,8 @@ history = eval(config.get('operation', 'history'))
 from_folder = os.path.join(path, 'mount')
 to_folder = os.path.join(path, '0')
 
+result = os.path.join(log_folder, 'rsync.log')
+
 # Command:
 # TODO log better
 try:
@@ -140,7 +142,6 @@ umount_command = 'umount -l %s' % from_folder
 check_file = config.get('operation', 'check')
 check_file = os.path.join(from_folder, check_file) # fullname for check file 
 
-result = os.path.join(log_folder, 'rsync.log')
 
 # Extra parameter to add parameter in rsync
 try:
