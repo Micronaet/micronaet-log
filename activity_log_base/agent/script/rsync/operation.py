@@ -69,6 +69,8 @@ history = eval(config.get('operation', 'history'))
 from_folder = os.path.join(path, 'mount')
 to_folder = os.path.join(path, '0')
 
+log_f = {}
+
 # Command:
 # TODO log better
 try:
@@ -167,7 +169,6 @@ log = {
     }
 
 # Remove log file and create new:
-log_f = {}
 for mode in log:
     try:
         log_f[mode] = open(log[mode], 'w')
