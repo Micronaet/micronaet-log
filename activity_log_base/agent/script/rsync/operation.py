@@ -26,6 +26,7 @@ from datetime import datetime
 # -----------------------------------------------------------------------------
 #                                Utility:
 # -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
 def clean_result_file(result):
     ''' Clean result file used
     '''
