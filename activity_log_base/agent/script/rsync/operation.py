@@ -99,7 +99,7 @@ except:
 remote_umount = False # no umount command to launch
 try: # Required remote (mounted as root path folder:
     remote_command = config.get('operation', 'mount_remote')
-    remote_umount = 'umount -l %s' % path # substitute path folder with remote
+    remote_umount = 'umount -l %s' % to_folder # substitute path folder with remote
     
     # Check file for remote path (mandatory if mount_remote parameter):
     try:
