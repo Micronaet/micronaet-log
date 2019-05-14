@@ -114,7 +114,6 @@ except:
         
 # Root mount folder in remote destination:
 remote_umount = False # no umount command to launch
-import pdb; pdb.set_trace()
 try: # Required remote (mounted as root path folder:
     remote_command = config.get('operation', 'mount_remote')
     remote_umount = 'umount -l %s' % path # substitute path folder with remote
