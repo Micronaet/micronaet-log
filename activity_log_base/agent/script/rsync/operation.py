@@ -33,7 +33,7 @@ def clean_result_file(result):
         os.remove(result)
         print '[INFO] Remove rsync result file'
     except:
-        print '[ERROR] Cannot remove rsync result file'
+        print '[ERROR] Cannot remove rsync result file %s' % result
        
 def closing_operations(log_f, result):
     ''' Operation that will be done at the end of the script
