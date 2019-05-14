@@ -99,9 +99,9 @@ except:
 result = os.path.join(log_folder, 'rsync.log')
 remote_umount = False # no umount command to launch
 
-try: # Required remote (mounted as root path folder:
+try: # Required remote (mounted as root path folder):
     remote_command = config.get('operation', 'mount_remote')
-    remote_umount = 'umount %s' % path # substitute path folder with remote
+    remote_umount = 'umount -l %s' % path # substitute path folder with remote
     
     # Check file for remote path (mandatory if mount_remote parameter):
     try:
@@ -122,8 +122,9 @@ try: # Required remote (mounted as root path folder:
                 os.system(remote_umount)
             except:
                 pass    
-            log_f['error'].write('Cannot mount remote NAS\n')
-            closing_operations(log_f, result) # END HERE
+            # TODO Needed?    
+            #log_f['error'].write('Cannot umount remote NAS\n')
+            #closing_operations(log_f, result) # END HERE
     else:
         try:
             print '[INFO] R3. Umount remote NAS: %s' % remote_umount
@@ -140,7 +141,7 @@ except:
 # -----------------------------------------------------------------------------
 # Mount parameters:
 mount_command = config.get('operation', 'mount')
-umount_command = 'umount %s' % from_folder
+umount_command = 'umount -l %s' % from_folder
 check_file = config.get('operation', 'check')
 check_file = os.path.join(from_folder, check_file) # fullname for check file
 
