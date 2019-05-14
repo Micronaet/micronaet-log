@@ -26,7 +26,6 @@ from datetime import datetime
 # -----------------------------------------------------------------------------
 #                                Utility:
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 def clean_result_file(result):
     ''' Clean result file used
     '''
@@ -53,9 +52,9 @@ def closing_operations(log_f, result):
 #                                PARAMETERS:
 # -----------------------------------------------------------------------------
 # Extract config file name from current name
-path, name = os.path.split(os.path.abspath(__file__))
-fullname = os.path.join(path, 'operation.cfg')
-log_folder = os.path.join(path, 'log') # log folder path
+script_path, name = os.path.split(os.path.abspath(__file__))
+fullname = os.path.join(script_path, 'operation.cfg')
+log_folder = os.path.join(script_path, 'log') # log folder path
 os.system('mkdir -p %s' % log_folder)
 
 # Config parameter:
@@ -112,7 +111,7 @@ try: # Required remote (mounted as root path folder:
         print '[INFO] R1. Mount remote root folder: %s' % remote_command
         os.system(remote_command)
         
-        check_remote = os.path.join(path, check_remote)
+        check_remote = os.path.join(to_folder, check_remote)
 
         print '[INFO] R2. Check correct mount remote: %s' % check_remote
         if not os.path.isfile(check_remote):
@@ -121,7 +120,7 @@ try: # Required remote (mounted as root path folder:
                 os.system(remote_umount)
             except:
                 pass    
-            log_f['error'].write('Cannot mount remote NAS (was yet mounted)\n')
+            log_f['error'].write('Cannot mount remote NAS\n')
             closing_operations(log_f, result) # END HERE
     else:
         try:
