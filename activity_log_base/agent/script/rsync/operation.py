@@ -94,6 +94,7 @@ except:
 # The remote option will be activate put in the config file mount_remote param.
         
 # Root mount folder in remote destination:
+result = os.path.join(log_folder, 'rsync.log')
 remote_umount = False # no umount command to launch
 try: # Required remote (mounted as root path folder:
     remote_command = config.get('operation', 'mount_remote')
@@ -150,7 +151,6 @@ try:
 except:
     post_rsync = '' 
 
-result = os.path.join(log_folder, 'rsync.log')
 script_mask = \
     'rsync -avh ' + pre_rsync + ' \'%s/\' \'%s\' --log-file=%s ' +  post_rsync
 
