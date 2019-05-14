@@ -123,8 +123,8 @@ try: # Required remote (mounted as root path folder):
             except:
                 pass    
             # TODO Needed?    
-            #log_f['error'].write('Cannot umount remote NAS\n')
-            #closing_operations(log_f, result) # END HERE
+            log_f['error'].write('Cannot umount remote NAS (was yet mount)\n')
+            closing_operations(log_f, result) # END HERE
     else:
         try:
             print '[INFO] R3. Umount remote NAS: %s' % remote_umount
