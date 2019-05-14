@@ -22,7 +22,7 @@ import os
 import sys
 import ConfigParser
 from datetime import datetime
-import pdb; pdb.set_trace()
+
 # -----------------------------------------------------------------------------
 #                                Utility:
 # -----------------------------------------------------------------------------
@@ -70,6 +70,24 @@ from_folder = os.path.join(path, 'mount')
 to_folder = os.path.join(path, '0')
 
 result = os.path.join(log_folder, 'rsync.log')
+
+# -----------------------------------------------------------------------------
+# Log event:
+# -----------------------------------------------------------------------------
+log = {
+    'info': os.path.join(log_folder, 'info.log'),
+    'warning': os.path.join(log_folder, 'warning.log'),
+    'error': os.path.join(log_folder, 'error.log'),
+    }
+
+# Remove log file and create new:
+log_f = {}
+for mode in log:
+    try:
+        log_f[mode] = open(log[mode], 'w')
+        print '[INFO] File log reset: %s' % log[mode]
+    except:
+        print '[WARNING] File log not found: %s' % log[mode]
 
 # Command:
 # TODO log better
@@ -153,30 +171,11 @@ try:
 except:
     post_rsync = '' 
 
-result = os.path.join(log_folder, 'rsync.log')
 script_mask = \
     'rsync -avh ' + pre_rsync + ' \'%s/\' \'%s\' --log-file=%s ' +  post_rsync
 
 # Remove rsync result file:    
 clean_result_file(result)
-
-# -----------------------------------------------------------------------------
-# Log event:
-# -----------------------------------------------------------------------------
-log = {
-    'info': os.path.join(log_folder, 'info.log'),
-    'warning': os.path.join(log_folder, 'warning.log'),
-    'error': os.path.join(log_folder, 'error.log'),
-    }
-
-# Remove log file and create new:
-log_f = {}
-for mode in log:
-    try:
-        log_f[mode] = open(log[mode], 'w')
-        print '[INFO] File log reset: %s' % log[mode]
-    except:
-        print '[WARNING] File log not found: %s' % log[mode]
 
 # -----------------------------------------------------------------------------
 # Operation scripts:
