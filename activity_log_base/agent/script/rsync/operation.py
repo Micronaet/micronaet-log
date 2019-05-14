@@ -68,7 +68,6 @@ exclude = eval(config.get('operation', 'exclude'))
 history = eval(config.get('operation', 'history'))
 from_folder = os.path.join(path, 'mount')
 to_folder = os.path.join(path, '0')
-
 result = os.path.join(log_folder, 'rsync.log')
 
 # -----------------------------------------------------------------------------
@@ -115,8 +114,6 @@ except:
         
 # Root mount folder in remote destination:
 remote_umount = False # no umount command to launch
-import pdb; pdb.set_trace()
-
 try: # Required remote (mounted as root path folder:
     remote_command = config.get('operation', 'mount_remote')
     remote_umount = 'umount -l %s' % path # substitute path folder with remote
