@@ -69,7 +69,24 @@ history = eval(config.get('operation', 'history'))
 from_folder = os.path.join(path, 'mount')
 to_folder = os.path.join(path, '0')
 
+# -----------------------------------------------------------------------------
+# Log event:
+# -----------------------------------------------------------------------------
+log = {
+    'info': os.path.join(log_folder, 'info.log'),
+    'warning': os.path.join(log_folder, 'warning.log'),
+    'error': os.path.join(log_folder, 'error.log'),
+    }
+
+# Remove log file and create new:
 log_f = {}
+for mode in log:
+    try:
+        log_f[mode] = open(log[mode], 'w')
+        print '[INFO] File log reset: %s' % log[mode]
+    except:
+        print '[WARNING] File log not found: %s' % log[mode]
+
 
 # Command:
 # TODO log better
@@ -161,23 +178,6 @@ script_mask = \
 
 # Remove rsync result file:
 clean_result_file(result)
-
-# -----------------------------------------------------------------------------
-# Log event:
-# -----------------------------------------------------------------------------
-log = {
-    'info': os.path.join(log_folder, 'info.log'),
-    'warning': os.path.join(log_folder, 'warning.log'),
-    'error': os.path.join(log_folder, 'error.log'),
-    }
-
-# Remove log file and create new:
-for mode in log:
-    try:
-        log_f[mode] = open(log[mode], 'w')
-        print '[INFO] File log reset: %s' % log[mode]
-    except:
-        print '[WARNING] File log not found: %s' % log[mode]
 
 # -----------------------------------------------------------------------------
 # Operation scripts:
