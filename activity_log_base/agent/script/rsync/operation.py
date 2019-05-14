@@ -56,7 +56,7 @@ path, name = os.path.split(os.path.abspath(__file__))
 fullname = os.path.join(path, 'operation.cfg')
 log_folder = os.path.join(path, 'log') # log folder path
 os.system('mkdir -p %s' % log_folder)
-import pdb; pdb.set_trace()
+
 # Config parameter:
 config = ConfigParser.ConfigParser()
 config.read([fullname])
@@ -98,6 +98,7 @@ except:
 # Root mount folder in remote destination:
 result = os.path.join(log_folder, 'rsync.log')
 remote_umount = False # no umount command to launch
+import pdb; pdb.set_trace()
 try: # Required remote (mounted as root path folder:
     remote_command = config.get('operation', 'mount_remote')
     remote_umount = 'umount %s' % path # substitute path folder with remote
