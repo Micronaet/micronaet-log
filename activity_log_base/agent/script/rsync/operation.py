@@ -56,7 +56,7 @@ path, name = os.path.split(os.path.abspath(__file__))
 fullname = os.path.join(path, 'operation.cfg')
 log_folder = os.path.join(path, 'log') # log folder path
 os.system('mkdir -p %s' % log_folder)
-
+import pdb; pdb.set_trace()
 # Config parameter:
 config = ConfigParser.ConfigParser()
 config.read([fullname])
