@@ -135,16 +135,16 @@ if os.path.isfile(pickle_file):
     # Error log:
     # -------------------------------------------------------------------------
     if removed and 'remove' in log_events:
-        log_f['error'].write('Removed files %s' % total_removed)
+        log_f['error'].write('Removed files present! #%s' % total_removed)
         
     if not removed and 'no_remove' in log_events:
-        log_f['error'].write('Nothing removed files')
+        log_f['error'].write('No remove file error!')
         
     if created and 'create' in log_events:
-        log_f['error'].write('Created files %s' % total_created)
+        log_f['error'].write('New files present! #%s' % total_created)
     
     if not created and 'no_create' in log_events:
-        log_f['error'].write('Nothing created files')
+        log_f['error'].write('No new file error!')
 
 # Write pickle with current (of first time):
 print '[INFO] 4. Save pickle file: %s' % pickle_file
