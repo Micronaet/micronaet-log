@@ -51,11 +51,17 @@ config.read([fullname])
 
 # B. Read from config file:
 origin = config.get('operation', 'origin') # XXX not used
+
+# Folder:
 folder = config.get('file', 'folder')
 extensions = config.get('file', 'extensions')
 with_subfolder = eval(config.get('file', 'subfolder'))
 log_events = eval(config.get('file', 'log'))
 time_range = eval(config.get('file', 'time_range'))
+
+# Mount:
+mount_command = config.get('operation', 'mount')
+umount_command = 'umount -l %s' % folder # Lazy option to force
 
 # -----------------------------------------------------------------------------
 # Log event:
@@ -77,8 +83,16 @@ for mode in log:
         print '[WARNING] File log not found: %s' % log[mode]
 
 # -----------------------------------------------------------------------------
+# Operation scripts:
+# -----------------------------------------------------------------------------
+print '[INFO] 1. Mount linked resource: %s' % mount_command
+os.system(mount_command)
+
+# -----------------------------------------------------------------------------
 #                              Read folder content:
 # -----------------------------------------------------------------------------
+print '[INFO] 2. Check root folder: %s' % folder
+
 current = set()
 for root, folders, files in os.walk(folder):
     for filename in files:
@@ -97,6 +111,8 @@ for root, folders, files in os.walk(folder):
 #                                   Check operation:    
 # -----------------------------------------------------------------------------
 if os.isfile(pickle_file):
+    print '[INFO] 3. Compare with pickle file: %s' % pickle_file
+
     pickle_f = open(pickle_file, 'rb')      
     previous = pickle_f.load(pickle_f)
     pickle_f.close()
@@ -131,9 +147,16 @@ if os.isfile(pickle_file):
         log_f['error'].write('Nothing created files')
 
 # Write pickle with current (of first time):
+print '[INFO] 4. Save pickle file: %s' % pickle_file
 pickle_f = open(pickle_file, 'wb') 
 pickle_f.dump(current_files, pickle_f)
 pickle_f.close() 
+
+# -----------------------------------------------------------------------------
+# Server data umount:
+# -----------------------------------------------------------------------------
+print '[INFO] 5. Umount linked resource: %s' % umount_command
+os.system(umount_command)
     
 # Closing operations:
 closing_operations(log_f)
