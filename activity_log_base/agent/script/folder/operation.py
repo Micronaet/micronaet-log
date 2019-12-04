@@ -111,7 +111,6 @@ for root, folders, files in os.walk(folder):
 #                                   Check operation:    
 # -----------------------------------------------------------------------------
 if os.path.isfile(pickle_file):
-    import pdb; pdb.set_trace()
     print '[INFO] 3. Compare with pickle file: %s' % pickle_file
 
     pickle_f = open(pickle_file, 'rb')      
