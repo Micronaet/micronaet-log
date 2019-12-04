@@ -1,3 +1,5 @@
+MOVED IN v. 11.0
+
 ============
 Folder check
 ============
