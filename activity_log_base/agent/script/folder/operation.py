@@ -37,7 +37,6 @@ def closing_operations(log_f):
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 # A. Extract config file name from current name
 path, name = os.path.split(os.path.abspath(__file__))
 fullname = os.path.join(path, 'operation.cfg')
@@ -94,6 +93,7 @@ os.system(mount_command)
 # -----------------------------------------------------------------------------
 print '[INFO] 2. Check root folder: %s' % folder
 
+import pdb; pdb.set_trace()
 current = set()
 for root, folders, files in os.walk(folder):
     for filename in files:
