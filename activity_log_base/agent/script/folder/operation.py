@@ -115,7 +115,7 @@ if os.path.isfile(pickle_file):
     print '[INFO] 3. Compare with pickle file: %s' % pickle_file
 
     pickle_f = open(pickle_file, 'rb')      
-    previous = pickle_f.load(pickle_f)
+    previous = pickle.load(pickle_f)
     pickle_f.close()
     
     removed = previous - current
