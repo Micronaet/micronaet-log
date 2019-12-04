@@ -111,7 +111,7 @@ import pdb; pdb.set_trace()
 # -----------------------------------------------------------------------------
 #                                   Check operation:    
 # -----------------------------------------------------------------------------
-if os.isfile(pickle_file):
+if os.path.isfile(pickle_file):
     print '[INFO] 3. Compare with pickle file: %s' % pickle_file
 
     pickle_f = open(pickle_file, 'rb')      
