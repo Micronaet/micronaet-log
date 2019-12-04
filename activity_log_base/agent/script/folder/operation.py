@@ -93,12 +93,11 @@ os.system(mount_command)
 # -----------------------------------------------------------------------------
 print '[INFO] 2. Check root folder: %s' % folder
 
-import pdb; pdb.set_trace()
 current = set()
 for root, folders, files in os.walk(folder):
     for filename in files:
         extension = filename.split('.')[-1].lower()
-        if extensions and estension not in extensions:
+        if extensions and extension not in extensions:
             print 'Extension not used: %s' % filename
             continue
 
@@ -108,6 +107,7 @@ for root, folders, files in os.walk(folder):
         print 'Check only root folder: %s' % root
         break
 
+import pdb; pdb.set_trace()
 # -----------------------------------------------------------------------------
 #                                   Check operation:    
 # -----------------------------------------------------------------------------
