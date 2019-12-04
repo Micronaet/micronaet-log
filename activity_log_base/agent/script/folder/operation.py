@@ -150,7 +150,7 @@ if os.path.isfile(pickle_file):
 # Write pickle with current (of first time):
 print '[INFO] 4. Save pickle file: %s' % pickle_file
 pickle_f = open(pickle_file, 'wb') 
-pickle_f.dump(current_files, pickle_f)
+pickle_f.dump(current, pickle_f)
 pickle_f.close() 
 
 # -----------------------------------------------------------------------------
