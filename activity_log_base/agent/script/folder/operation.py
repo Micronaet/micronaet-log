@@ -101,7 +101,7 @@ for root, folders, files in os.walk(folder):
             print 'Extension not used: %s' % filename
             continue
 
-        current.add(os.path(root, filename))
+        current.add(os.path.join(root, filename))
         
     if not with_subfolder:
         print 'Check only root folder: %s' % root
