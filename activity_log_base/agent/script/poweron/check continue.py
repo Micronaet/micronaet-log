@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# ODOO (ex OpenERP) 
+# ODOO (ex OpenERP)
 # Open Source Management Solution
 # Copyright (C) 2001-2015 Micronaet S.r.l. (<https://micronaet.com>)
 # Developer: Nicola Riolini @thebrush (<https://it.linkedin.com/in/thebrush>)
@@ -13,7 +13,7 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 # See the GNU Affero General Public License for more details.
 #
 # You should have received a copy of the GNU Affero General Public License
@@ -38,37 +38,37 @@ max_check = 5 #24 * 60 / sleep # Total run daily
 log_filename = './ping.log'
 exit = False
 counter = 0
-while not exit:  
+while not exit:
     counter += 1
-        
+
     # -------------------------------------------------------------------------
     # Run process for collect data:
     # -------------------------------------------------------------------------
-    print '\nStart logging on: %s [counter %s max %s]' % (
-        log_filename, counter, max_check)
-    
+    print('\nStart logging on: %s [counter %s max %s]' % (
+        log_filename, counter, max_check))
+
     # Open log file:
     log_file = open(log_filename, 'w')
-    
+
     # Generate subprocess on log file:
-    print 'Open subprocess'    
+    print('Open subprocess')
     ret_val = subprocess.Popen(
-        command, 
-        stdout=log_file, 
-        stderr=subprocess.PIPE, 
+        command,
+        stdout=log_file,
+        stderr=subprocess.PIPE,
         shell=True)
-            
-    # Polling data to file: 
+
+    # Polling data to file:
     refresh_file = False
     while not ret_val.poll() and not refresh_file:
         # ---------------------------------------------------------------------
         # Poll data:
         # ---------------------------------------------------------------------
-        print 'Start collect data: %s' % ret_val
-        log_file.flush()        
-        print 'Flush data and sleep %s sec.' % sleep
+        print('Start collect data: %s' % ret_val)
+        log_file.flush()
+        print('Flush data and sleep %s sec.' % sleep)
         time.sleep(sleep) # sec.
-        
+
         # ---------------------------------------------------------------------
         # Read data recorded:
         # ---------------------------------------------------------------------
@@ -95,14 +95,14 @@ while not exit:
             if not last_ok and correct < ping_ok:
                 fail = True
                 status = 'KO Server min reply not reached: %s/%s (%s sec.)' % (
-                    correct, 
+                    correct,
                     ping_ok,
                     sleep,
                     )
             else:
                 fail = False # override if count restart
                 status = 'OK Server [Reply %s in %s sec.]%s' % (
-                    correct, 
+                    correct,
                     sleep,
                     '<<< GAP' if correct < ping_ok else '',
                     )
@@ -110,10 +110,10 @@ while not exit:
             fail = True # no file = no reply
             status = 'KO Server never reply in this block %s sec' % sleep
 
-        print status        
+        print status
         if fail:
             print 'DO Fail action!' # TODO
-        
+
         print 'Remove %s' % log_filename
         os.remove(log_filename)
         refresh_file = True

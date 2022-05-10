@@ -83,21 +83,21 @@ log_f = {}
 for mode in log:
     try:
         log_f[mode] = open(log[mode], 'w')
-        print '[INFO] File log reset: %s' % log[mode]
+        print('[INFO] File log reset: %s' % log[mode])
     except:
-        print '[WARNING] File log not found: %s' % log[mode]
+        print('[WARNING] File log not found: %s' % log[mode])
 
 # -----------------------------------------------------------------------------
 #                                Access Ilo
 # -----------------------------------------------------------------------------
 ilo = hpilo.Ilo(
-    hostname=ilo_hostname, 
-    login=ilo_username, 
+    hostname=ilo_hostname,
+    login=ilo_username,
     password=ilo_password,
     timeout=ilo_timeout,
     port=ilo_port,
     #protocol=None,
-    #delayed=False, 
+    #delayed=False,
     #ssl_version=None
     )
 
@@ -107,10 +107,10 @@ status = temperature['01-Inlet Ambient']['status']
 degree = temperature['01-Inlet Ambient']['currentreading'][0]
 
 # Check temperature range for error:
-if degree >= error: 
+if degree >= error:
     log_f['error'].write('<br/>ERRORE Rilevato %sC >= %sC\n' % (
             degree, error))
-elif degree >= warning: 
+elif degree >= warning:
     log_f['warning'].write('<br/>WARNING Rilevato %sC >= %sC\n' % (
             degree, warning))
 else:
@@ -124,7 +124,7 @@ else:
 #bot = telepot.Bot(telegram_token)
 #bot.getMe()
 #bot.sendMessage(telegram_group, status_text)
-    
+
 # CLosing operations:
 closing_operations(log_f)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

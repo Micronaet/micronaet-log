@@ -35,9 +35,9 @@ def closing_operations(log_f):
         try:
             log_f[mode].close()
         except:
-            print '[ERR] closing log file (not managed)'
+            print('[ERR] closing log file (not managed)')
             continue
-        
+
     # Exit
     sys.exit()
 
@@ -56,7 +56,7 @@ config = ConfigParser.ConfigParser()
 config.read([fullname])
 
 # Read from config file:
-path = config.get('operation', 'path') 
+path = config.get('operation', 'path')
 os.system('mkdir -p %s' % path) # Create mount poing if not exist
 mount_command = config.get('operation', 'mount')
 umount_command = 'umount %s' % path
@@ -83,31 +83,31 @@ log_f = {}
 for mode in log:
     try:
         log_f[mode] = open(log[mode], 'w')
-        print '[INFO] File log reset: %s' % log[mode]
+        print('[INFO] File log reset: %s' % log[mode])
     except:
-        print '[WARNING] File log not found: %s' % log[mode]
+        print('[WARNING] File log not found: %s' % log[mode])
 
 # -----------------------------------------------------------------------------
 # Check mount procedure:
 # -----------------------------------------------------------------------------
 # 2. Mount operation:
 try:
-    print '[INFO] A. Mount server folder: %s' % mount_command
+    print('[INFO] A. Mount server folder: %s' % mount_command)
     os.system(mount_command)
 except:
     log_f['error'].write('Mount error: %s\n' % mount_command)
     closing_operations(log_f)
-    
+
 # 3. Check file for get mount information:
-print '[INFO] B. Check file reveal the mount: %s' % check_file
+print('[INFO] B. Check file reveal the mount: %s' % check_file)
 if os.path.exists(check_file):
     log_f['info'].write('Correttamente montato\n')
-else:    
+else:
     log_f['error'].write('%s\n' % error)
-    
+
 # 4. Umount operation:
 try:
-    print '[INFO] C. Umount server folder: %s' % umount_command
+    print('[INFO] C. Umount server folder: %s' % umount_command)
     os.system(umount_command)
 except:
     log_f['warning'].write('Unmount problems: %s\n' % path)

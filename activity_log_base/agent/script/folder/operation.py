@@ -78,53 +78,53 @@ log_f = {}
 for mode in log:
     try:
         log_f[mode] = open(log[mode], 'w')
-        print '[INFO] File log reset: %s' % log[mode]
+        print('[INFO] File log reset: %s' % log[mode])
     except:
-        print '[WARNING] File log not found: %s' % log[mode]
+        print('[WARNING] File log not found: %s' % log[mode])
 
 # -----------------------------------------------------------------------------
 # Operation scripts:
 # -----------------------------------------------------------------------------
-print '[INFO] 1. Mount linked resource: %s' % mount_command
+print('[INFO] 1. Mount linked resource: %s' % mount_command)
 os.system(mount_command)
 
 # -----------------------------------------------------------------------------
 #                              Read folder content:
 # -----------------------------------------------------------------------------
-print '[INFO] 2. Check root folder: %s' % folder
+print('[INFO] 2. Check root folder: %s' % folder)
 
 current = set()
 for root, folders, files in os.walk(folder):
     for filename in files:
         extension = filename.split('.')[-1].lower()
         if extensions and extension not in extensions:
-            print 'Extension not used: %s' % filename
+            print('Extension not used: %s' % filename)
             continue
 
         current.add(os.path.join(root, filename))
-        
+
     if not with_subfolder:
-        print 'Check only root folder: %s' % root
+        print('Check only root folder: %s' % root)
         break
 
 # -----------------------------------------------------------------------------
-#                                   Check operation:    
+#                                   Check operation:
 # -----------------------------------------------------------------------------
 if os.path.isfile(pickle_file):
-    print '[INFO] 3. Compare with pickle file: %s' % pickle_file
+    print('[INFO] 3. Compare with pickle file: %s' % pickle_file)
 
-    pickle_f = open(pickle_file, 'rb')      
+    pickle_f = open(pickle_file, 'rb')
     previous = pickle.load(pickle_f)
     pickle_f.close()
-    
+
     removed = previous - current
     created = current - previous
-    
+
     total_removed = len(removed)
     total_created = len(created)
-    
+
     # -------------------------------------------------------------------------
-    # Info log:    
+    # Info log:
     # -------------------------------------------------------------------------
     log_f['info'].write('New files: %s, Removed files: %s' % (
         total_created,
@@ -136,28 +136,27 @@ if os.path.isfile(pickle_file):
     # -------------------------------------------------------------------------
     if removed and 'remove' in log_events:
         log_f['error'].write('Removed files present! #%s' % total_removed)
-        
+
     if not removed and 'no_remove' in log_events:
         log_f['error'].write('No remove file error!')
-        
+
     if created and 'create' in log_events:
         log_f['error'].write('New files present! #%s' % total_created)
-    
+
     if not created and 'no_create' in log_events:
         log_f['error'].write('No new file error!')
 
 # Write pickle with current (of first time):
-print '[INFO] 4. Save pickle file: %s' % pickle_file
-pickle_f = open(pickle_file, 'wb') 
+print('[INFO] 4. Save pickle file: %s' % pickle_file)
+pickle_f = open(pickle_file, 'wb')
 pickle.dump(current, pickle_f)
-pickle_f.close() 
+pickle_f.close()
 
 # -----------------------------------------------------------------------------
 # Server data umount:
 # -----------------------------------------------------------------------------
-print '[INFO] 5. Umount linked resource: %s' % umount_command
+print('[INFO] 5. Umount linked resource: %s' % umount_command)
 os.system(umount_command)
-    
+
 # Closing operations:
 closing_operations(log_f)
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

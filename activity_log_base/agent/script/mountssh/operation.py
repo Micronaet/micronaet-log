@@ -76,9 +76,9 @@ log_f = {}
 for mode in log:
     try:
         log_f[mode] = open(log[mode], 'w')
-        print '[INFO] File log reset: %s' % log[mode]
+        print('[INFO] File log reset: %s' % log[mode])
     except:
-        print '[WARNING] File log not found: %s' % log[mode]
+        print('[WARNING] File log not found: %s' % log[mode])
 
 # -----------------------------------------------------------------------------
 # Check mount procedure:
@@ -86,9 +86,9 @@ for mode in log:
 res = os.popen(check_command).read()
 if res.startswith(esit):
     log_f['info'].write('Correttamente montato\n')
-else:    
+else:
     log_f['error'].write('Non montato\n')
-    
+
 # CLosing operations:
 closing_operations(log_f)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -29,10 +29,10 @@ from datetime import datetime
 def clean_result_file(result):
     try:
         os.remove(result)
-        print '[INFO] Remove proxmox result file'
+        print('[INFO] Remove proxmox result file')
     except:
-        print '[ERROR] Cannot remove proxmox result file'
-        
+        print('[ERROR] Cannot remove proxmox result file')
+
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
@@ -47,7 +47,7 @@ config = ConfigParser.ConfigParser()
 config.read([fullname])
 
 # Read from config file:
-script = config.get('operation', 'backup') 
+script = config.get('operation', 'backup')
 result = config.get('operation', 'result')
 
 # Clean previous file:
@@ -67,22 +67,22 @@ log_f = {}
 for mode in log:
     try:
         log_f[mode] = open(log[mode], 'w')
-        print '[INFO] File log reset: %s' % log[mode]
+        print('[INFO] File log reset: %s' % log[mode])
     except:
-        print '[WARNING] File log not found: %s' % log[mode]
+        print('[WARNING] File log not found: %s' % log[mode])
 
 # -----------------------------------------------------------------------------
 # Launch script:
 # -----------------------------------------------------------------------------
-print '[INFO] Start backup script: %s' % script
+print('[INFO] Start backup script: %s' % script)
 os.system(script)
-print '[INFO] End backup script: %s' % script
+print('[INFO] End backup script: %s' % script)
 
 # -----------------------------------------------------------------------------
 #                              PARSE 3 LOG FILE:
 # -----------------------------------------------------------------------------
 task_ok = False
-print '[INFO] Parse proxmox result file: %s' % result
+print('[INFO] Parse proxmox result file: %s' % result)
 try:
     result_f = open(result, 'r')
     for row in result_f:
@@ -93,21 +93,21 @@ try:
         if 'finished backup' in row:
             # Finish backup VM:
             log_f['info'].write('%s\n' % row)
-        elif ' transferred ' in row:     
+        elif ' transferred ' in row:
             # Transfer performance:
             log_f['info'].write('%s\n' % row)
-        elif 'creating archive' in row:     
+        elif 'creating archive' in row:
             # Archive info
             log_f['info'].write('%s\n' % row)
-            
+
         # ---------------------------------------------------------------------
         # Warning:
         # ---------------------------------------------------------------------
-        
+
         # ---------------------------------------------------------------------
-        # Error: 
+        # Error:
         # ---------------------------------------------------------------------
-        elif 'error' in row:     
+        elif 'error' in row:
             # Archive info
             log_f['error'].write('%s\n' % row)
 
@@ -115,20 +115,20 @@ try:
         # Check elements:
         # ---------------------------------------------------------------------
         elif 'finished successfully' in row:
-            task_ok = True    
+            task_ok = True
     result_f.close()
 except:
-    print '[ERROR] No proxmox result file: %s' % result
+    print('[ERROR] No proxmox result file: %s' % result)
     log_f['error'].write('Error reading result file\n')
-print '[INFO] End parse proxmox result file: %s' % result
-    
+print('[INFO] End parse proxmox result file: %s' % result)
+
 if not task_ok:
-    print '[ERROR] Task esit is KO'
+    print('[ERROR] Task esit is KO')
     log_f['error'].write('Task KO\n')
 
 # Close log file:
 for mode in log_f:
-    log_f[mode].close()    
+    log_f[mode].close()
 
 # -----------------------------------------------------------------------------
 # Remove proxmox result file:

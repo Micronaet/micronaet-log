@@ -64,13 +64,13 @@ telegram_group = config.get('telegram', 'group')
 #                                Access Ilo
 # -----------------------------------------------------------------------------
 ilo = hpilo.Ilo(
-    hostname=hostname, 
-    login=username, 
-    password=password, 
-    timeout=timeout, 
+    hostname=hostname,
+    login=username,
+    password=password,
+    timeout=timeout,
     port=port,
     #protocol=None,
-    #delayed=False, 
+    #delayed=False,
     #ssl_version=None
     )
 
@@ -84,20 +84,20 @@ status = temperature['01-Inlet Ambient']['status']
 degree = temperature['01-Inlet Ambient']['currentreading'][0]
 
 error_status = 0
-if degree >= error: 
+if degree >= error:
     status_text = \
         '[ERROR] Rilevato %s°C, passato il range massimo: %s°C' % (
             degree, error)
-    error_status = 2        
-elif degree >= warning: 
+    error_status = 2
+elif degree >= warning:
     status_text = \
         '[WARNING] Rilevato %s°C, passato il range di allerta: %s°C' % (
             degree, warning)
-    error_status = 1         
+    error_status = 1
 else:
     status_text = '[INFO]: Rilevato %s°C, nel range corretto < %s°C' % (
         degree, warning)
-print status_text        
+print(status_text)
 
 # -----------------------------------------------------------------------------
 #                      Get comunication info (historty)
@@ -105,28 +105,28 @@ print status_text
 now = datetime.now()
 
 # Read previous notification:
-try: 
+try:
     pickle_f = open(pickle_file, 'rb')
     history = pickle.load(pickle_f) or {}
-except: 
+except:
     history = {} # no file empty dict
-    
+
 last = history.get('last', False)
 notification = False
 gap = now - last
 gap_seconds = gap.days * 24 * 60 * 60 + gap.seconds
 if not last or gap_seconds  > notification_info:
-    notification = True    
+    notification = True
     history = {
         'last': now,
         }
-        
-    # Write history file:    
+
+    # Write history file:
     try:
         pickle_f = open(pickle_file, 'wb')
         pickle.dump(history, pickle_f)
     except:
-        print '[ERROR] Pickle file inaccessibile: %s' % pickle_file
+        print('[ERROR] Pickle file inaccessibile: %s' % pickle_file)
 
 # -----------------------------------------------------------------------------
 #                              Comunicate Telegram
@@ -137,5 +137,4 @@ if notification or error_status > 0:
     bot.getMe()
     bot.sendMessage(telegram_group, status_text)
 else:
-    print '[INFO] No comunication in telegram'
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+    print('[INFO] No comunication in telegram')

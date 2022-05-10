@@ -72,24 +72,24 @@ log_f = {}
 for mode in log:
     try:
         log_f[mode] = open(log[mode], 'w')
-        print '[INFO] File log reset: %s' % log[mode]
+        print('[INFO] File log reset: %s' % log[mode])
     except:
-        print '[WARNING] File log not found: %s' % log[mode]
+        print('[WARNING] File log not found: %s' % log[mode])
 
 # -----------------------------------------------------------------------------
 # Check mount procedure:
 # -----------------------------------------------------------------------------
 # 2. Mount operation:
 try:
-    print '[INFO] A. Call get IP page: %s' % get_ip
-    web_page = requests.get(get_ip).text    
+    print('[INFO] A. Call get IP page: %s' % get_ip)
+    web_page = requests.get(get_ip).text
     # requests.get(get_ip).text
 except:
     log_f['error'].write('Error calling get IP page: %s\n' % get_ip)
     closing_operations(log_f)
-    
+
 # 3. Check file for get mount information:
-print '[INFO] B. Parse results: %s' % get_ip
+print('[INFO] B. Parse results: %s' % get_ip)
 
 ip = web_page.split(
     'Your IP address')[-1].split('</b>')[0].split('<b>')[-1].strip()
@@ -98,7 +98,7 @@ if not ip:
     log_f['error'].write(
         'Error searching tags in returned page: %s\n' % get_ip)
     closing_operations(log_f)
-#ip = web_page.split(from_tag)[-1].split(to_tag)[0]    
+#ip = web_page.split(from_tag)[-1].split(to_tag)[0]
 log_f['info'].write('Public IP: %s<br/>\n' % ip)
 
 # CLosing operations:
