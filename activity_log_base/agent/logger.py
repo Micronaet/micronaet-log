@@ -215,7 +215,7 @@ if code_activity.upper() == 'PICKLE':
     # -------------------------------------------------------------------------
     # Try to re-update:
     remove_item = []
-    update_db = erp_error.get('update', {}).iteritems()
+    update_db = erp_error.get('update', {})
     for update_id in update_db:
         data = update_db[update_id]
         try:
