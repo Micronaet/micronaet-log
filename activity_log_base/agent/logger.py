@@ -23,9 +23,13 @@ import os
 import sys
 import pickle
 import subprocess
-import ConfigParser
 import erppeek
 from datetime import datetime
+
+try:
+    import ConfigParser
+except:  # Pytohn 3 compatibility:
+    import configparser as ConfigParser
 
 # Constant:
 DEFAULT_SERVER_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
@@ -39,63 +43,70 @@ pickle_path = os.path.join(path, 'pickle')
 os.system('mkdir -p %s' % pickle_path)
 pickle_file = os.path.join(pickle_path, 'remain.pickle')
 
+
 def get_pickle_data():
-    ''' Save in folder dump the remain data not publisched
-    '''
+    """ Save in folder dump the remain data not publisched
+    """
     try:
         f = open(pickle_file, 'rb')
         res = pickle.load(f)
-        f.close()        
+        f.close()
     except:
-        res = {}   
-    return res    
- 
+        res = {}
+    return res
+
+
 def set_pickle_data(data=None):
-    ''' Set data for next write
-    '''
+    """ Set data for next write
+    """
     # Update
     if data is None:
         data = {}
-    
-    # Save updated record:    
+
+    # Save updated record:
     f = open(pickle_file, 'wb')
     pickle.dump(data, f)
     f.close()
     return True
 
+
 def clean_pickle():
-    ''' Reset pickle file
-    '''    
+    """ Reset pickle file
+    """
     return set_pickle_data({})
 
 # STANDARD FUNCTION:
+
 def get_result_command(command):
-    ''' Get info procedure for:
+    """ Get info procedure for:
         cron: cron status of the server
         config: config file status
-    '''
+    """
     return os.popen(command).read()
-    #subprocess.Popen(command, stdout=subprocess.PIPE).communicate()[0]
-    
+    # subprocess.Popen(command, stdout=subprocess.PIPE).communicate()[0]
+
+
 def get_erp(URL, database, username, password):
-    ''' Connect to log table in ODOO
-    '''
+    """ Connect to log table in ODOO
+    """
     return erppeek.Client(
         URL,
         db=database,
         user=username,
         password=password,
-        )   
+        )
+
 
 def get_erp_pool(URL, database, username, password):
-    ''' Connect to log table in ODOO (normal log object)
-    '''
+    """ Connect to log table in ODOO (normal log object)
+    """
     erp = get_erp(URL, database, username, password)
-    return erp.LogActivityEvent   
+    return erp.LogActivityEvent
+
 
 def save_server_history(URL, database, username, password, event_record, data):
-    ''' Connect to log table in ODOO (normal log object)
-    '''
+    """ Connect to log table in ODOO (normal log object)
+    """
     activity_id = event_record.get('activity_id')
     if not activity_id:
         # Write nothing
@@ -105,9 +116,10 @@ def save_server_history(URL, database, username, password, event_record, data):
     activity_pool.write(activity_id, data)
     return True
 
+
 def log_event(log_f, event, mode='info'):
-    ''' Log event on file
-    '''    
+    """ Log event on file
+    """
     event = '[%s] %s - %s\n' % (
         mode.upper(),
         datetime.now(),
@@ -116,13 +128,15 @@ def log_event(log_f, event, mode='info'):
     log_f.write(event)
     return True
 
+
 def change_datetime_gmt(timestamp):
-    ''' Change datetime removing gap from now and GMT 0
+    """ Change datetime removing gap from now and GMT 0
         passed a datetime object
-    '''
+    """
     extra_gmt = datetime.now() - datetime.utcnow()
-    #ts = datetime.strptime(timestamp, DEFAULT_SERVER_DATETIME_FORMAT) 
+    # ts = datetime.strptime(timestamp, DEFAULT_SERVER_DATETIME_FORMAT)
     return (timestamp - extra_gmt).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+
 
 # -----------------------------------------------------------------------------
 #                                PARAMETERS:
@@ -137,7 +151,7 @@ master_config.read([fullname])
 # MASTER PARAMETER:
 # -----------------------------------------------------------------------------
 # Master configuration file:
-hostname = master_config.get('XMLRPC', 'host') 
+hostname = master_config.get('XMLRPC', 'host')
 port = eval(master_config.get('XMLRPC', 'port'))
 database = master_config.get('XMLRPC', 'database')
 username = master_config.get('XMLRPC', 'username')
@@ -149,14 +163,14 @@ log_activity = master_config.get('log', 'activity')
 try:
     git_folder = master_config.get('git', 'folder')
 except:
-    git_folder = '/backup/git/micronaet-log'    
+    git_folder = '/backup/git/micronaet-log'
 
-#try:
+# try:
 #    git_refresh = master_config.get('git', 'refresh')
-#except:
+# except:
 #    git_refresh = True # default
 
-# Open log file:    
+# Open log file:
 log_f = open(log_activity, 'a')
 
 # Link to activity data:
@@ -172,18 +186,18 @@ if code_activity.endswith('/'):
 
 
 # Update GIT module data before all operations (next exection will be updated)
-#if git_refresh:
+# if git_refresh:
 log_update_git = 'Update Git module folder: %s' % git_folder
 log_event(log_f, log_update_git)
 os.system('cd %s; git pull' % git_folder)
-#else:    
+# else:
 #    log_update_git = 'Git not update, folder: %s' % git_folder
 
 # -----------------------------------------------------------------------------
 # ERPPEEK Client connection:
 # -----------------------------------------------------------------------------
 log_event(log_f, 'Start launcher, log file: %s' % log_activity)
-URL = 'http://%s:%s' % (hostname, port) 
+URL = 'http://%s:%s' % (hostname, port)
 erp_pool = get_erp_pool(URL, database, username, password)
 log_event(log_f, 'Access to URL: %s' % URL)
 
@@ -195,11 +209,11 @@ if code_activity.upper() == 'PICKLE':
 
     # Connect to database:
     erp_error = get_pickle_data()
-    
+
     # -------------------------------------------------------------------------
     # Write update record:
     # -------------------------------------------------------------------------
-    # Try to reupdate:
+    # Try to re-update:
     remove_item = []
     for update_id, data in erp_error.get('update', {}).iteritems():
         try:
@@ -208,7 +222,7 @@ if code_activity.upper() == 'PICKLE':
             remove_item.append(update_id)
         except:
             log_event(log_f, 'Pickle update NOT DONE: %s ' % update_id)
-            
+
     # Remove updated
     for item_id in remove_item:
         del(erp_error['update'][item_id])
@@ -225,15 +239,15 @@ if code_activity.upper() == 'PICKLE':
         except:
             log_event(log_f, 'Pickle create NOT DONE: %s ' % data)
             remain_item.append(data)
-            
-    # Remove updated    
+
+    # Remove updated
     erp_error['create'] = remain_item
-    
-    # Update pickle file with modifications            
+
+    # Update pickle file with modifications
     set_pickle_data(erp_error)
-    
+
     # End operation here!
-    sys.exit()    
+    sys.exit()
 
 # -----------------------------------------------------------------------------
 # OPERATION PARAMETER:
@@ -279,21 +293,22 @@ data = {
     }
 
 if log_start:
-    #connection_fail = True
+    # connection_fail = True
     # TODO manage also here error on event?
     update_id, event_record = erp_pool.log_event(data) # Create start event
     log_event(
         log_f, 'Log the start of operation: event ID: %s %s' % (
             update_id,
-            data, 
+            data,
             ))
     log_event(log_f, 'Log cron and config file if necessary')
     save_server_history(
         URL, database, username, password, event_record, activity_data)
 
+
 log_event(log_f, 'Closing ERP connection')
-del(erp_pool) # For close connection
-    
+del(erp_pool)  # For close connection
+
 # -----------------------------------------------------------------------------
 # Launch script:
 # -----------------------------------------------------------------------------
@@ -301,7 +316,7 @@ if script:
     log_event(log_f, 'Launch script: %s' % script)
     os.system(script)
     log_event(log_f, 'End script: %s' % script)
-else:    
+else:
     log_event(log_f, 'Script not present, not launched')
     sys.exit()
 
@@ -319,7 +334,7 @@ for mode in log:
         data[mode] += row
     f.close()
     log_event(log_f, 'Get log result mode: %s' % mode)
-    
+
 # -----------------------------------------------------------------------------
 # Log activity:
 # -----------------------------------------------------------------------------
@@ -330,12 +345,12 @@ connection_fail = True
 erp_error = get_pickle_data() # read pickle file
 
 if log_start: # Update event:
-    for i in range(1, 5): # For timout problems:
+    for i in range(1, 5): # For timeout problems:
         try:
             erp_pool.log_event(data, update_id)
             log_event(log_f, 'Update started event: %s' % update_id)
-            connection_fail = False            
-            break 
+            connection_fail = False
+            break
         except:
             log_event(log_f, 'Timeout try: %s ' % i)
             continue
@@ -346,8 +361,8 @@ if log_start: # Update event:
             erp_error['update'] = {}
         log_event(log_f, 'Pickle update remain')
         erp_error['update'][update_id] = data
-            
-else: # Normal creation of start stop event:
+
+else:  # Normal creation of start stop event:
     for i in range(1, 5): # For timout problems:
         try:
             create_id, event_record = erp_pool.log_event(data)
@@ -356,7 +371,7 @@ else: # Normal creation of start stop event:
                 URL, database, username, password, event_record, activity_data)
             log_event(log_f, 'Create start / stop event: %s' % (data, ))
             connection_fail = False
-            break 
+            break
         except:
             log_event(log_f, 'Timeout try: %s ' % i)
             continue
@@ -367,8 +382,7 @@ else: # Normal creation of start stop event:
             erp_error['create'] = []
         log_event(log_f, 'Pickle create remain')
         erp_error['create'].append(data)
-        
-#Update pickle file:
+
+# Update pickle file:
 set_pickle_data(erp_error)
 sys.exit()
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
