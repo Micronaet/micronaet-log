@@ -22,7 +22,10 @@ import os
 import sys
 import pickle
 import requests
-import ConfigParser
+try:
+    import ConfigParser
+except:  # Python 3 compatibility:
+    import configparser as ConfigParser
 from datetime import datetime
 
 # -----------------------------------------------------------------------------

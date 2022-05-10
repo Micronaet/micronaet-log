@@ -21,7 +21,12 @@
 import os
 import sys
 #import shutil
-import ConfigParser
+
+try:
+    import ConfigParser
+except:  # Pytohn 3 compatibility:
+    import configparser as ConfigParser
+
 import pickle
 #import erppeek
 

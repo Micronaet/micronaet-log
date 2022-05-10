@@ -21,7 +21,11 @@ import os
 import sys
 import csv
 import erppeek
-import ConfigParser
+
+try:
+    import ConfigParser
+except:  # Pytohn 3 compatibility:
+    import configparser as ConfigParser
 
 # ----------------
 # Read parameters:

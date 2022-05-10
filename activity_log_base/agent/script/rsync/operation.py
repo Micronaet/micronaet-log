@@ -20,7 +20,10 @@
 ###############################################################################
 import os
 import sys
-import ConfigParser
+try:
+    import ConfigParser
+except:  # Pytohn 3 compatibility:
+    import configparser as ConfigParser
 from datetime import datetime
 
 # -----------------------------------------------------------------------------
