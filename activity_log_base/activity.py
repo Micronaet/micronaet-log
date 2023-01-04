@@ -18,6 +18,7 @@
 #
 ###############################################################################
 import os
+import pdb
 import sys
 import odoo
 import logging
@@ -227,6 +228,7 @@ class LogActivity(models.Model):
                 col = col_pos.get(day, False)
                 dow = dow_header[col]  # read DOW from header
                 if col in all_xls_day:
+                    pdb.set_trace()
                     all_xls_day.remove(col)
 
                 total_today = daily_backup[dow]
