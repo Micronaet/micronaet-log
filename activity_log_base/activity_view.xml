@@ -26,37 +26,37 @@
             <field name="model">res.partner</field>
             <field name="priority" eval="40" />
             <field name="arch" type="xml">
-                <form string="String" version="7.0">        
+                <form string="String" version="7.0">
                     <sheet>
                         <field name="image" widget="image" class="oe_left oe_avatar" options="{'preview_image': 'image_medium', 'size': [90, 90]}"/>
 		                <div class="oe_title oe_left">
 			                <div class="oe_edit_only">
 				                <label for="name"/>
-				                (                                            
+				                (
 				                <field name="is_company" on_change="onchange_type(is_company)" class="oe_inline"/>
 				                <label for="is_company" string="Is company?"/>
-				                )                                        
+				                )
 			                </div>
 			                <h1>
    				                <field name="name" default_focus="1" placeholder="Nome" required="1" />
 			                </h1>
 		                </div>
-                        <group col="4" colspan="4">                        
+                        <group col="4" colspan="4">
                             <field name="log_code" />
                             <notebook colspan="4">
                                 <page string="Activity">
-                                    <group col="4" colspan="4">                        
+                                    <group col="4" colspan="4">
                                         <field name="log_activity_ids" nolabel="1" colspan="4" context="{'embedded_partner': True}"/>
-                                    </group>    
+                                    </group>
                                 </page>
                                 <page string="User">
-                                    <group col="4" colspan="4">                        
+                                    <group col="4" colspan="4">
                                         <field name="log_users_ids" nolabel="1" colspan="4" />
-                                    </group>    
+                                    </group>
                                 </page>
-                            </notebook>                                 
+                            </notebook>
                         </group>
-                    </sheet>        
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -77,7 +77,7 @@
             <field name="arch" type="xml">
                 <search string="History">
                     <field name="mode" />
-                    
+
                     <field name="activity_id" filter_domain="[('activity_id','=',self)]"/>
 
                     <filter name="mode_cron" string="Cron mode" domain="[('mode','=','cron')]"/>
@@ -86,7 +86,7 @@
                     <group expand="0" string="Group By...">
                         <filter name="group_activity" string="Activity" context="{'group_by': 'activity_id'}"/>
                         <filter string="Mode" context="{'group_by': 'mode'}" />
-                    </group>                
+                    </group>
                 </search>
             </field>
         </record>
@@ -115,8 +115,8 @@
                             <field name="create_date" readonly="1" />
                             <separator string="Old content" colspan="4"/>
                             <field name="old" nolabel="1" colspan="4" readonly="1"/>
-                        </group>    
-                    </sheet>    
+                        </group>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -127,7 +127,7 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_log_activity_history_tree_list"/>
         </record>
-                
+
         <!--log.category-->
         <record model="ir.ui.view" id="view_log_category_form">
             <field name="name">log.category.form</field>
@@ -144,17 +144,17 @@
                                     <group col="4" colspan="4">
                                         <separator string="Activity" colspan="4"/>
                                         <field name="activity_ids" nolabel="1" colspan="4" context="{'embedded': True}"/>
-                                    </group>    
+                                    </group>
                                 </page>
                                 <page string="Note">
                                     <group col="4" colspan="4">
                                         <separator string="Note" colspan="4"/>
                                         <field name="note" nolabel="1" colspan="4" />
-                                    </group>    
+                                    </group>
                                 </page>
                             </notebook>
                         </group>
-                    </sheet>        
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -162,7 +162,7 @@
             <field name="name">log.category.tree</field>
             <field name="model">log.category</field>
             <field name="arch" type="xml">
-                <tree string="Category" decoration-muted="is_active==False">        
+                <tree string="Category" decoration-muted="is_active==False">
                     <field name="is_active" />
                     <field name="code" />
                     <field name="name" />
@@ -196,14 +196,14 @@
 
                     <filter name="end_date_7" string="End date 7" domain="[('last_event_days','&gt;=',0),('last_event_days','&lt;=',7)]"/>
                     <filter name="end_date_over" string="End date over" domain="['&amp;','|',('to_date','=',False),('to_date','&gt;',context_today().strftime('%%Y-%%m-%%d')),'|',('last_event_days','=',-1),('last_event_days','&gt;=',7)]"/>
-                    
+
                     <group expand="0" string="Group By...">
                         <filter name="group_partner" string="Partner" context="{'group_by': 'partner_id'}"/>
                         <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
                         <filter name="group_from_date" string="From date" context="{'group_by': 'from_date'}"/>
                         <filter name="group_to_date" string="To date" context="{'group_by': 'to_date'}"/>
                         <filter string="Status" context="{'group_by': 'state'}" />
-                    </group>                
+                    </group>
                 </search>
             </field>
         </record>
@@ -211,8 +211,8 @@
             <field name="name">log.activity.tree</field>
             <field name="model">log.activity</field>
             <field name="arch" type="xml">
-                <tree string="Activity" decoration-info="log_mode=='check'" decoration-danger="last_event==False">  
-                    <field name="is_active" invisible="1"/>      
+                <tree string="Activity" decoration-info="log_mode=='check'" decoration-danger="last_event==False">
+                    <field name="is_active" invisible="1"/>
                     <field name="monitor" invisible="1"/>
                     <field name="email_alert" />
                     <field name="code" />
@@ -228,7 +228,7 @@
                     <button name="extract_xlsx_scheduled_status" string="Get schedule activity" type="object" icon="fa-print" />
                 </tree>
             </field>
-        </record>        
+        </record>
         <record model="ir.ui.view" id="view_log_activity_form">
             <field name="name">log.activity.form</field>
             <field name="model">log.activity</field>
@@ -259,7 +259,7 @@
 
                                         <field name="duration_warning_range" attrs="{'invisible': [('check_duration','=',False)]}"/>
                                         <field name="duration_error_range" attrs="{'invisible': [('check_duration','=',False)]}"/>
-                                    </group>                    
+                                    </group>
                                 </page>
                                 <page string="Log mode">
                                     <group col="4" colspan="4">
@@ -269,7 +269,7 @@
                                         <field name="log_check_count" attrs="{'invisible': [('log_mode','!=','check')]}"/>
                                         <separator string="Unwrited event:" colspan="4" attrs="{'invisible': [('log_mode','!=','check')]}"/>
                                         <field name="log_check_unwrited_html" attrs="{'invisible': [('log_mode','!=','check')]}" nolabel="1" colspan="4" readonly="1" widget="html"/>
-                                    </group>                    
+                                    </group>
                                 </page>
                                 <page string="Notification" name="notification-page">
                                     <group col="4" colspan="4">
@@ -277,7 +277,7 @@
                                         <newline/>
                                         <field name="email_error" attrs="{'invisible': [('email_alert','=',False)]}"/>
                                         <field name="email_warning" attrs="{'invisible': [('email_alert','=',False)]}" />-->
-                                    </group>                    
+                                    </group>
                                 </page>
                                 <page string="Detail">
                                     <group col="4" colspan="4">
@@ -285,7 +285,7 @@
                                         <field name="script" nolabel="1" colspan="4"/>
                                         <separator string="Origin" colspan="4"/>
                                         <field name="origin" nolabel="1" colspan="4" />
-                                    </group>                    
+                                    </group>
                                 </page>
                                 <page string="Status">
                                     <group col="4" colspan="4">
@@ -296,11 +296,11 @@
                                         <separator string="Server Uptime:" colspan="4"/>
                                         <field name="uptime" nolabel="1"/>
                                         <newline/>
-                                        
+
                                         <separator string="Config file:" colspan="3"/>
                                         <button name="open_history_config" string="Config history value" type="object" colspan="1"/>
                                         <field name="config" nolabel="1" colspan="4" />
-                                        
+
                                         <separator string="Cron tab:" colspan="3"/>
                                         <button name="open_history_cron" string="Cron history value" type="object" colspan="1"/>
                                         <field name="cron" nolabel="1" colspan="4" />
@@ -311,20 +311,20 @@
                                     <group col="4" colspan="4">
                                         <separator string="Daily program" colspan="4"/>
                                         <field name="cron_daily_exec" nolabel="1" colspan="4" widget="html"/>
-                                    </group>    
+                                    </group>
                                 </page>
                                 <page string="Note">
                                     <group col="4" colspan="4">
                                         <separator string="Note" colspan="4"/>
                                         <field name="note" nolabel="1" colspan="4" />
-                                    </group>                    
+                                    </group>
                                 </page>
                             </notebook>
                         </group>
-                    </sheet>        
+                    </sheet>
                 </form>
             </field>
-        </record>        
+        </record>
         <record model="ir.actions.act_window" id="action_log_activity">
             <field name="name">Activity</field>
             <field name="res_model">log.activity</field>
@@ -342,8 +342,8 @@
             <field name="view_id" ref="view_log_activity_tree"/>
             <field name="context">{'search_default_end_date_over': True}</field>
             <field name="domain">[]</field>
-        </record>        
-        
+        </record>
+
         <!--log.activity.event-->
         <record model="ir.ui.view" id="view_log_activity_event_search">
             <field name="name">log.activity.event.search</field>
@@ -359,8 +359,8 @@
                     <filter name="state_warning" string="Warning" domain="[('state','=','warning')]"/>
                     <filter name="state_error" string="Error" domain="[('state','=','error')]"/>
 
-                    <filter name="state_error" string="Check list" 
-                        domain="[('mark_ok','=',False),('state','in',('missed','warning','error'))]"/>                        
+                    <filter name="state_error" string="Check list"
+                        domain="[('mark_ok','=',False),('state','in',('missed','warning','error'))]"/>
 
                     <group expand="0" string="Group By...">
                         <filter name="group_datetime" string="Log period" context="{'group_by': 'datetime'}"/>
@@ -369,7 +369,7 @@
                         <filter name="group_partner" string="Partner" context="{'group_by': 'partner_id'}"/>
                         <filter name="group_activity" string="Activity" context="{'group_by': 'activity_id'}"/>
                         <filter name="group_state" string="Status" context="{'group_by': 'state'}" />
-                    </group>                
+                    </group>
                 </search>
             </field>
         </record>
@@ -391,20 +391,20 @@
                             <field name="duration" widget="float_time"/>
                             <field name="error_comment" />
                             <field name="mark_ok" />
-                            <button name="mark_ok_button" string="Mark as OK" type="object" icon="fa-exclamation" attrs="{'invisible': [('mark_ok','=',True)]}"/>
-                            
+                            <button name="mark_ok_button" string="Mark as OK" type="object" icon="fa-exclamation fa-x2" attrs="{'invisible': [('mark_ok','=',True)]}"/>
+
                             <notebook colspan="4">
                                 <page string="Log">
                                     <group col="6" colspan="4">
                                         <separator string="Info" colspan="2"/>
                                         <separator string="Warning" colspan="2"/>
                                         <separator string="Error" colspan="2"/>
-                                        
+
                                         <field name="log_info" nolabel="1" colspan="2" />
                                         <field name="log_warning" nolabel="1" colspan="2" />
                                         <field name="log_error" nolabel="1" colspan="2" />
 
-                                        <separator string="Mask as OK comment" colspan="6"/>                                        
+                                        <separator string="Mask as OK comment" colspan="6"/>
                                         <field name="mark_ok_comment" nolabel="1" colspan="6" />
                                     </group>
                                 </page>
@@ -416,10 +416,10 @@
                                 </page>
                             </notebook>
                         </group>
-                    </sheet>        
+                    </sheet>
                 </form>
             </field>
-        </record>        
+        </record>
         <record model="ir.ui.view" id="view_log_activity_event_tree">
             <field name="name">log.activity.event.tree</field>
             <field name="model">log.activity.event</field>
@@ -434,7 +434,7 @@
                     <field name="mark_ok" invisible="1"/>
                     <field name="error_comment" />
                     <field name="state" />
-                    <button name="mark_ok_button" string="Mark as OK" type="object" icon="fa-exclamation" attrs="{'invisible': [('mark_ok','=',True)]}"/>
+                    <button name="mark_ok_button" string="Mark as OK" type="object" icon= fa-x2" attrs="{'invisible': [('mark_ok','=',True)]}"/>
                </tree>
             </field>
         </record>
@@ -468,7 +468,7 @@
             <field name="context">{}</field>
             <field name="domain">[('state', '=', 'missed'),('mark_ok','=',False)]</field>
         </record>
-        
+
         <!--res.users-->
         <record model="ir.ui.view" id="view_res_users_form">
             <field name="name">res.users.partner.ref.form</field>
@@ -490,74 +490,74 @@
                 </field>
             </field>
         </record>
-        
-        <menuitem 
-            id="menu_log_root" 
-            name="Log" 
-            sequence="10" 
+
+        <menuitem
+            id="menu_log_root"
+            name="Log"
+            sequence="10"
             />
-            <menuitem 
-                parent="menu_log_root" 
-                id="menu_log_activity" 
-                sequence="10" 
+            <menuitem
+                parent="menu_log_root"
+                id="menu_log_activity"
+                sequence="10"
                 name="Logs"
-                />                
-                <menuitem 
-                    parent="menu_log_activity" 
-                    id="menu_activity_log" 
+                />
+                <menuitem
+                    parent="menu_log_activity"
+                    id="menu_activity_log"
                     action="action_log_activity"
                     sequence="10"
                     />
-                    
-                    <menuitem 
-                        parent="menu_activity_log" 
-                        id="menu_action_log_activity_history_tree" 
+
+                    <menuitem
+                        parent="menu_activity_log"
+                        id="menu_action_log_activity_history_tree"
                         action="action_log_activity_history_tree"/>
-                <menuitem 
-                    parent="menu_log_activity" 
-                    id="menu_activity_log_over7" 
+                <menuitem
+                    parent="menu_log_activity"
+                    id="menu_activity_log_over7"
                     action="action_log_activity_over7"
                     sequence="10"
                     />
-                    
-                <menuitem 
-                    parent="menu_log_activity" 
-                    id="menu_activity_event_log" 
+
+                <menuitem
+                    parent="menu_log_activity"
+                    id="menu_activity_event_log"
                     action="action_log_activity_event"
                     sequence="20"
                     />
-                    <menuitem 
-                        parent="menu_activity_event_log" 
-                        id="menu_activity_event_log_error" 
+                    <menuitem
+                        parent="menu_activity_event_log"
+                        id="menu_activity_event_log_error"
                         action="action_log_activity_event_error"
                         sequence="10"
                         />
-                    <menuitem 
-                        parent="menu_activity_event_log" 
-                        id="menu_activity_event_log_missed" 
+                    <menuitem
+                        parent="menu_activity_event_log"
+                        id="menu_activity_event_log_missed"
                         action="action_log_activity_event_missed"
                         sequence="20"
                         />
-                        
-            <menuitem 
-                parent="menu_log_root" 
-                id="menu_log_configuration_root"  
+
+            <menuitem
+                parent="menu_log_root"
+                id="menu_log_configuration_root"
                 name="Configuration"
-                sequence="90" 
+                sequence="90"
                 />
-                <menuitem 
-                    parent="menu_log_configuration_root" 
-                    id="menu_open_configuration_log_partner" 
+                <menuitem
+                    parent="menu_log_configuration_root"
+                    id="menu_open_configuration_log_partner"
                     action="action_res_partner_log"
                     sequence="10"
                     />
-                <menuitem 
-                    parent="menu_log_configuration_root" 
-                    id="menu_open_configuration_log_category" 
+                <menuitem
+                    parent="menu_log_configuration_root"
+                    id="menu_open_configuration_log_category"
                     action="action_open_log_category"
                     sequence="20"
                     />
-                    
+
     </data>
 </openerp>
 

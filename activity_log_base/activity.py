@@ -115,6 +115,8 @@ class LogActivity(models.Model):
             Usually generate report from check_from parameter to now,
             if from_date and to_date context is present select this period
         """
+        # todo rivedere la stampa!
+
         # Pool used:
         event_pool = self.env['log.activity.event']
         excel_pool = self.env['excel.writer']
