@@ -223,12 +223,11 @@ class LogActivity(models.Model):
             excel_pool.write_xls_data(
                 ws_name, row, 1, activity.partner_id.name)
 
-            all_xls_day = range(2, len(header))  # check missed days
+            all_xls_day = list(range(2, len(header)))  # check missed days
             for day in res[activity]:
                 col = col_pos.get(day, False)
                 dow = dow_header[col]  # read DOW from header
                 if col in all_xls_day:
-                    pdb.set_trace()
                     all_xls_day.remove(col)
 
                 total_today = daily_backup[dow]
