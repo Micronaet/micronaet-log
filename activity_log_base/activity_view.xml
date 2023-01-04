@@ -391,7 +391,7 @@
                             <field name="duration" widget="float_time"/>
                             <field name="error_comment" />
                             <field name="mark_ok" />
-                            <button name="mark_ok_button" string="Mark as OK" type="object" icon="fa-exclamation fa-x2" attrs="{'invisible': [('mark_ok','=',True)]}"/>
+                            <button name="mark_ok_button" string="Mark as OK" type="object" icon="fa-exclamation fa-2x" attrs="{'invisible': [('mark_ok','=',True)]}"/>
 
                             <notebook colspan="4">
                                 <page string="Log">
@@ -434,7 +434,7 @@
                     <field name="mark_ok" invisible="1"/>
                     <field name="error_comment" />
                     <field name="state" />
-                    <button name="mark_ok_button" string="Mark as OK" type="object" icon="fa-exclamation fa-x2" attrs="{'invisible': [('mark_ok','=',True)]}"/>
+                    <button name="mark_ok_button" string="Mark as OK" type="object" icon="fa-exclamation fa-2x" attrs="{'invisible': [('mark_ok','=',True)]}"/>
                </tree>
             </field>
         </record>
