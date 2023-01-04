@@ -230,7 +230,10 @@ class LogActivity(models.Model):
                 if col in all_xls_day:
                     all_xls_day.remove(col)
 
-                total_today = daily_backup[dow]
+                try:
+                    total_today = daily_backup[dow]
+                except:
+                    total_today = 0
                 total_ok, total_warn, total_ko = res[activity][day]
 
                 # Check OK status:
