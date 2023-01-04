@@ -434,7 +434,7 @@
                     <field name="mark_ok" invisible="1"/>
                     <field name="error_comment" />
                     <field name="state" />
-                    <button name="mark_ok_button" string="Mark as OK" type="object" icon= fa-x2" attrs="{'invisible': [('mark_ok','=',True)]}"/>
+                    <button name="mark_ok_button" string="Mark as OK" type="object" icon="fa-exclamation fa-x2" attrs="{'invisible': [('mark_ok','=',True)]}"/>
                </tree>
             </field>
         </record>
