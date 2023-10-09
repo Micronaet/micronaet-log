@@ -80,6 +80,7 @@ def send_mail(to, subject, text, odoo=odoo):
 
     receiver_email = 'info@micronaet.it'
 
+    pdb.set_trace()
     with smtplib.SMTP_SSL(
             odoo_mailer.smtp_host, odoo_mailer.smtp_port) as server:
         server.login(
