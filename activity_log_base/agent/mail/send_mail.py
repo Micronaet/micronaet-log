@@ -33,7 +33,7 @@ from email import Encoders
 # -----------------------------------------------------------------------------
 # Read configuration parameter:
 # -----------------------------------------------------------------------------
-cfg_file = os.path.expanduser('../logger.cfg')
+cfg_file = os.path.expanduser('./logger.cfg')
 now = str(datetime.now())[:19]
 
 config = ConfigParser.ConfigParser()
@@ -41,12 +41,12 @@ config.read([cfg_file])
 
 # ERP Connection:
 odoo = {
-    'database': config.get('dbaccess', 'database'),
-    'user': config.get('dbaccess', 'user'),
-    'password': config.get('dbaccess', 'pwd'),
-    'server': config.get('dbaccess', 'server'),
-    'port': config.get('dbaccess', 'port'),
-    }
+    'database': config.get('odoo', 'database'),
+    'user': config.get('odoo', 'user'),
+    'password': config.get('odoo', 'pwd'),
+    'server': config.get('odoo', 'server'),
+    'port': config.get('odoo', 'port'),
+}
 
 
 def send_mail(to, subject, text, odoo=odoo):
