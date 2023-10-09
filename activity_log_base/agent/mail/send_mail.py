@@ -68,7 +68,8 @@ def send_mail(to, subject, text, odoo=odoo):
     mailer_ids = mailer.search([])
     if not mailer_ids:
         return '[ERR] No mail server configured in ODOO'
-    odoo_mailer = sorted(mailer.browse(mailer_ids), lambda x: x.sequence)[0]
+    odoo_mailer = sorted(mailer.browse(mailer_ids),
+                         key=lambda x: x.sequence)[0]
 
     # Open connection:
     print('[INFO] Sending using "%s" connection [%s:%s]' % (
