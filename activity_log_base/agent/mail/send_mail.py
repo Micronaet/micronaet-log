@@ -20,6 +20,7 @@
 #
 ###############################################################################
 import os
+import pdb
 import sys
 import erppeek
 import ConfigParser
@@ -33,6 +34,7 @@ from email import Encoders
 # -----------------------------------------------------------------------------
 # Read configuration parameter:
 # -----------------------------------------------------------------------------
+pdb.set_trace()
 cfg_file = os.path.expanduser('./logger.cfg')
 now = str(datetime.now())[:19]
 
@@ -45,8 +47,8 @@ odoo = {
     'user': config.get('odoo', 'user'),
     'password': config.get('odoo', 'pwd'),
     'server': config.get('odoo', 'server'),
-    'port': config.get('odoo', 'port'),
-}
+    'port': 465, # config.get('odoo', 'port'),
+    }
 
 
 def send_mail(to, subject, text, odoo=odoo):
