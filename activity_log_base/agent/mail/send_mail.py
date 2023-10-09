@@ -103,10 +103,10 @@ def send_mail(to, subject, text, odoo=odoo):
 
 pdb.set_trace()
 if __name__ == '__main__':
-    if len(sys.argv) == 3:
-        to = sys.argv[0]
-        subject = sys.argv[1]
-        text = sys.argv[2]
+    if len(sys.argv) == 4:
+        to = sys.argv[1]
+        subject = sys.argv[2]
+        text = sys.argv[3]
         send_mail(to, subject, text)
     else:
         print('Wrong call send mail')
