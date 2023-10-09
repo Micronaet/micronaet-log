@@ -68,8 +68,7 @@ def send_mail(to, subject, text, odoo=odoo):
     mailer_ids = mailer.search([])
     if not mailer_ids:
         return '[ERR] No mail server configured in ODOO'
-
-    odoo_mailer = mailer.browse(mailer_ids)[0]
+    odoo_mailer = sorted(mailer.browse(mailer_ids), lambda x: x.sequence)[0]
 
     # Open connection:
     print('[INFO] Sending using "%s" connection [%s:%s]' % (
@@ -77,22 +76,6 @@ def send_mail(to, subject, text, odoo=odoo):
         odoo_mailer.smtp_host,
         odoo_mailer.smtp_port,
         ))
-
-    receiver_email = 'info@micronaet.it'
-
-    pdb.set_trace()
-    with smtplib.SMTP(  #_SSL
-            odoo_mailer.smtp_host, odoo_mailer.smtp_port) as server:
-        server.login(
-            odoo_mailer.smtp_user,
-            odoo_mailer.smtp_password)
-        server.sendmail(
-            odoo_mailer.smtp_user,
-            receiver_email,
-            'Prova',
-        )
-        server.quit()
-    return True
 
     if odoo_mailer.smtp_encryption in ('ssl', 'starttls'):
         smtp_server = smtplib.SMTP_SSL(
