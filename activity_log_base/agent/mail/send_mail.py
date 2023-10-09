@@ -86,17 +86,18 @@ def send_mail(to, subject, text, odoo=odoo):
         return '[ERR] Connect only SMTP SSL server!'
 
     smtp_server.login(odoo_mailer.smtp_user, odoo_mailer.smtp_pass)
-    for address in to.replace(' ', '').split(','):
-        print('Sending mail to: %s ...' % to)
-        msg = MIMEMultipart()
-        msg['Subject'] = subject
-        msg['From'] = odoo_mailer.smtp_user
-        msg['To'] = address
-        text = text.replace('\n', '<br/>')
-        msg.attach(MIMEText(text, 'html'))
+    # for address in to.replace(' ', '').split(','):
+    address = to.replace(' ', '')
+    print('Sending mail to: %s ...' % to)
+    msg = MIMEMultipart()
+    msg['Subject'] = subject
+    msg['From'] = odoo_mailer.smtp_user
+    msg['To'] = address
+    text = text.replace('\n', '<br/>')
+    msg.attach(MIMEText(text, 'html'))
 
-        # Send mail:
-        smtp_server.sendmail(odoo_mailer.smtp_user, to, msg.as_string())
+    # Send mail:
+    smtp_server.sendmail(odoo_mailer.smtp_user, to, msg.as_string())
 
     smtp_server.quit()
     return ''  # No error
