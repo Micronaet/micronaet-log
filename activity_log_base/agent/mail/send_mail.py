@@ -47,7 +47,7 @@ odoo = {
     'user': config.get('odoo', 'user'),
     'password': config.get('odoo', 'pwd'),
     'server': config.get('odoo', 'server'),
-    'port': 465, # config.get('odoo', 'port'),
+    'port': config.get('odoo', 'port'),
     }
 
 
