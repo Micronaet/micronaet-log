@@ -21,6 +21,8 @@
 ###############################################################################
 import os
 import pdb
+import sys
+
 import erppeek
 import ConfigParser
 import smtplib
@@ -99,3 +101,15 @@ def send_mail(to, subject, text, odoo=odoo):
 
     smtp_server.quit()
     return ''  # No error
+
+
+if __name__ == '__main__':
+    args = sys.argv
+    if len(args) == 3:
+        to = sys.argv[0]
+        subject = sys.argv[1]
+        text = sys.argv[2]
+        send_mail(to, subject, text)
+    else:
+        print('Wrong call send mail')
+
