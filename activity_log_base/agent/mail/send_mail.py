@@ -33,7 +33,6 @@ from email.mime.text import MIMEText
 # -----------------------------------------------------------------------------
 # Read configuration parameter:
 # -----------------------------------------------------------------------------
-pdb.set_trace()
 cfg_file = os.path.expanduser('./logger.cfg')
 now = str(datetime.now())[:19]
 
