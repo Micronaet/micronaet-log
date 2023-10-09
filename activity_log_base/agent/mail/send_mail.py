@@ -101,7 +101,7 @@ def send_mail(to, subject, text, odoo=odoo):
     smtp_server.quit()
     return ''  # No error
 
-
+pdb.set_trace()
 if __name__ == '__main__':
     args = sys.argv
     if len(args) == 3:
