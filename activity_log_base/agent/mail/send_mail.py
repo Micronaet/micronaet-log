@@ -21,15 +21,12 @@
 ###############################################################################
 import os
 import pdb
-import sys
 import erppeek
 import ConfigParser
 import smtplib
 from datetime import datetime
 from email.MIMEMultipart import MIMEMultipart
-from email.MIMEBase import MIMEBase
 from email.mime.text import MIMEText
-from email import Encoders
 
 # -----------------------------------------------------------------------------
 # Read configuration parameter:
@@ -80,6 +77,21 @@ def send_mail(to, subject, text, odoo=odoo):
         odoo_mailer.smtp_host,
         odoo_mailer.smtp_port,
         ))
+
+    receiver_email = 'info@micronaet.it'
+
+    with smtplib.SMTP_SSL(
+            odoo_mailer.smtp_host, odoo_mailer.smtp_port) as server:
+        server.login(
+            odoo_mailer.smtp_user,
+            odoo_mailer.smtp_password)
+        server.sendmail(
+            odoo_mailer.smtp_user,
+            receiver_email,
+            'Prova',
+        )
+        server.quit()
+    return True
 
     if odoo_mailer.smtp_encryption in ('ssl', 'starttls'):
         smtp_server = smtplib.SMTP_SSL(
