@@ -103,8 +103,7 @@ def send_mail(to, subject, text, odoo=odoo):
 
 pdb.set_trace()
 if __name__ == '__main__':
-    args = sys.argv
-    if len(args) == 3:
+    if len(sys.argv) == 3:
         to = sys.argv[0]
         subject = sys.argv[1]
         text = sys.argv[2]
