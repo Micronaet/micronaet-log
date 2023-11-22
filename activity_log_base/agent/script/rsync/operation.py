@@ -193,21 +193,26 @@ if not os.path.isfile(check_file):
 # Remove folder:
 # TODO use subprocess for get result of operation
 command = 'rm -r %s' % os.path.join(path, str(history)) # Last folder
-print('[INFO] 3. Remove command: %s' % command)
-os.system(command)
 
-# Move folder number:
-print('[INFO] 4. History operations, # folder: [1 - %s]' % history)
-for h_folder in range(history, 1, -1):
-    command = 'mv %s %s' % (
-        os.path.join(path, str(h_folder - 1)),
-        os.path.join(path, str(h_folder)),
-        )
-    print('[INFO] 4a. Move history command: %s' % command)
+if not history:
+    command = '%s/' % command   # only in folder    
+    print '[INFO] 3a. Remove folder content: %s' % command
     os.system(command)
+else:
+    print('[INFO] 3b. Remove command: %s' % command)
+    os.system(command)
+    
+    # Move folder number:
+    print('[INFO] 4. History operations, # folder: [1 - %s]' % history)
+    for h_folder in range(history, 1, -1):
+        command = 'mv %s %s' % (
+            os.path.join(path, str(h_folder - 1)),
+            os.path.join(path, str(h_folder)),
+            )
+        print('[INFO] 4a. Move history command: %s' % command)
+        os.system(command)
 
-# Hard link copy:
-if history >= 1:
+    # Hard link copy:
     command = 'cp -lr %s %s' % (
         os.path.join(path, '0'),
         os.path.join(path, '1'),
