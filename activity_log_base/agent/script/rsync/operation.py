@@ -184,7 +184,6 @@ clean_result_file(result)
 # -----------------------------------------------------------------------------
 print '[INFO] 1. Mount linked resource: %s' % mount_command
 os.system(mount_command)
-import pdb; pdb.set_trace()
 
 print '[INFO] 2. Check correct mount with file: %s' % check_file
 if not os.path.isfile(check_file):
