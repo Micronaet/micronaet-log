@@ -140,7 +140,7 @@ try: # Required remote (mounted as root path folder):
                 os.system(remote_umount)
             except:
                 pass    
-            # TODO Needed?    
+            # todo Needed?    
             log_f['error'].write('Cannot umount remote NAS (was yet mount)\n')
             closing_operations(log_f, result) # END HERE
     else:
