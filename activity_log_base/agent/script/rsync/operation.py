@@ -192,16 +192,15 @@ if not os.path.isfile(check_file):
 
 # Remove folder:
 # TODO use subprocess for get result of operation
-command = 'rm -r %s' % os.path.join(path, str(history)) # Last folder
+last_folder = os.path.join(path, str(history))
+command = 'rm -r %s' % last_folder  # Last folder
 
-if not history:
-    command = '%s/' % command   # only in folder    
-    print '[INFO] 3a. Remove folder content: %s' % command
-    os.system(command)
-else:
-    print('[INFO] 3b. Remove command: %s' % command)
-    os.system(command)
-    
+print('[INFO] 3b. Remove command: %s' % command)
+os.system(command)
+
+if not history:        
+    os.system('mkdir %s' % last_folder)  # Folder 0 needed!
+else:    
     # Move folder number:
     print('[INFO] 4. History operations, # folder: [1 - %s]' % history)
     for h_folder in range(history, 1, -1):
