@@ -184,6 +184,7 @@ clean_result_file(result)
 # -----------------------------------------------------------------------------
 print '[INFO] 1. Mount linked resource: %s' % mount_command
 os.system(mount_command)
+import pdb; pdb.set_trace()
 
 print '[INFO] 2. Check correct mount with file: %s' % check_file
 if not os.path.isfile(check_file):
@@ -194,9 +195,9 @@ if not os.path.isfile(check_file):
 # TODO use subprocess for get result of operation
 folder = os.path.join(path, str(history)) # Last folder
 command = 'rm -r %s' % folder
-import pdb; pdb.set_trace()
+
 if not history:
-    command += '/'  # only in folder    
+    command = '%s/' % command   # only in folder    
     print '[INFO] 3a. Remove folder content: %s' % command
     os.system(command)
 else:
