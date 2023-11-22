@@ -154,7 +154,7 @@ try: # Required remote (mounted as root path folder):
         closing_operations(log_f, result) # END HERE
         
 except: 
-    remote_folder = False # no remote folder
+    remote_folder = False  # no remote folder
 
 # -----------------------------------------------------------------------------
 # Mount parameters:
