@@ -201,20 +201,18 @@ os.system(command)
 if not history:
     print '[INFO] 3a. Recreate 0 folder'
     os.system('mkdir %s' % folder)
+else:
+    # Move folder number:
+    print '[INFO] 4. History operations, # folder: [1 - %s]' % history
+    for h_folder in range(history, 1, -1):
+        command = 'mv %s %s' % (
+            os.path.join(path, str(h_folder - 1)),
+            os.path.join(path, str(h_folder)),
+            )
+        print '[INFO] 4a. Move history command: %s' % command
+        os.system(command)
 
-
-# Move folder number:
-print '[INFO] 4. History operations, # folder: [1 - %s]' % history
-for h_folder in range(history, 1, -1):
-    command = 'mv %s %s' % (
-        os.path.join(path, str(h_folder - 1)),
-        os.path.join(path, str(h_folder)),
-        )
-    print '[INFO] 4a. Move history command: %s' % command
-    os.system(command)
-
-# Hard link copy:    
-if history >= 1:
+    # Hard link copy:    
     command = 'cp -lr %s %s' % (
         os.path.join(path, '0'),
         os.path.join(path, '1'),
