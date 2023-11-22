@@ -191,16 +191,18 @@ if not os.path.isfile(check_file):
     closing_operations(log_f, result) # END HERE
 
 # Remove folder:
-# TODO use subprocess for get result of operation
+# todo use subprocess for get result of operation
 last_folder = os.path.join(path, str(history))
-command = 'rm -r %s' % last_folder  # Last folder
-
-print('[INFO] 3b. Remove command: %s' % command)
-os.system(command)
 
 if not history:        
-    os.system('mkdir %s' % last_folder)  # Folder 0 needed!
+    print('[INFO] 3a. Folder not removed: %s' % folder)
+    # os.system('mkdir %s' % last_folder)  # Folder 0 needed!
+    
 else:    
+    print('[INFO] 3b. Remove command: %s' % command)
+    command = 'rm -r %s' % last_folder  # Last folder
+    os.system(command)
+    
     # Move folder number:
     print('[INFO] 4. History operations, # folder: [1 - %s]' % history)
     for h_folder in range(history, 1, -1):
