@@ -195,13 +195,13 @@ if not os.path.isfile(check_file):
 last_folder = os.path.join(path, str(history))
 
 if not history:        
-    print('[INFO] 3a. Folder not removed: %s' % folder)
+    print('[INFO] 3a. Folder not removed: %s' % last_folder)
     # os.system('mkdir %s' % last_folder)  # Folder 0 needed!
     
 else:    
-    print('[INFO] 3b. Remove command: %s' % command)
     command = 'rm -r %s' % last_folder  # Last folder
     os.system(command)
+    print('[INFO] 3b. Remove command: %s' % command)
     
     # Move folder number:
     print('[INFO] 4. History operations, # folder: [1 - %s]' % history)
