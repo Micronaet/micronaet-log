@@ -194,7 +194,6 @@ if not os.path.isfile(check_file):
 # TODO use subprocess for get result of operation
 folder = os.path.join(path, str(history)) # Last folder
 command = 'rm -r %s' % folder
-import pdb; pdb.set_trace()
 if not history:
     command += '/'  # only in folder    
     print '[INFO] 3a. Remove folder content: %s' % command
