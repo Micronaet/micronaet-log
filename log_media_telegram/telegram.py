@@ -29,22 +29,23 @@ from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
+
 class TelegramBot(models.Model):
     """ Model name: TelegramBot
     """
-    
+
     _name = 'telegram.bot'
     _description = 'Telegram BOT'
     _rec_name = 'name'
     _order = 'name'
-    
+
     # -------------------------------------------------------------------------
     # Button events:
     # -------------------------------------------------------------------------
     @api.multi
     def get_message_url(self):
-        ''' Open URL for API message list
-        '''        
+        """ Open URL for API message list
+        """
         url = 'https://api.telegram.org/bot%s/getUpdates'
         current = self[0]
         url = url % current.token
@@ -55,53 +56,57 @@ class TelegramBot(models.Model):
             'target': 'current',
             'url': url
             }
-                
+
     # -------------------------------------------------------------------------
     # Columns:
     # -------------------------------------------------------------------------
     name = fields.Char('Description', size=80, required=True)
     bot = fields.Char('BOT Name', size=64, required=True)
-    token = fields.Char('Token', size=64, required=True, 
+    token = fields.Char('Token', size=64, required=True,
         help='Format like: 495865748:ABFPw_3D1NpLo5xPWdv1vpTZZ8j1pQYo3Xk')
+
 
 class TelegramGroup(models.Model):
     """ Model name: TelegramGroup
     """
-    
+
     _name = 'telegram.group'
     _description = 'Telegram Group'
     _rec_name = 'name'
     _order = 'name'
-    
+
     # -------------------------------------------------------------------------
     # Columns:
     # -------------------------------------------------------------------------
     name = fields.Char('Description', size=80, required=True)
-    code = fields.Char('Group ID', size=24, required=True, 
+    code = fields.Char(
+        'Group ID', size=24, required=True,
         help='Group ID, line: -123431251')
+
 
 class TelegramBot(models.Model):
     """ Model name: TelegramBot
     """
-    
+
     _inherit = 'telegram.bot'
 
     # -------------------------------------------------------------------------
     # Columns:
     # -------------------------------------------------------------------------
     group_ids = fields.Many2many(
-        comodel_name='telegram.group', 
-        relation='telegram_bot_group_rel', 
+        comodel_name='telegram.group',
+        relation='telegram_bot_group_rel',
         column1='bot_id', column2='group_id', string='Groups')
+
 
 class TelegramBotLog(models.Model):
     """ Model name: TelegramBotLog
     """
-    
+
     _name = 'telegram.bot.log'
     _description = 'Telegram BOT log'
     _rec_name = 'telegram_id'
-    
+
     # -------------------------------------------------------------------------
     # Columns:
     # -------------------------------------------------------------------------
@@ -111,13 +116,15 @@ class TelegramBotLog(models.Model):
     log_info = fields.Boolean('Log info')
     log_warning = fields.Boolean('Log warning')
     log_error = fields.Boolean('Log error', default=True)
-    message = fields.Char('Message', size=80, 
+    message = fields.Char(
+        'Message', size=80,
         help='Extra message used append to Event')
+
 
 class LogActivity(models.Model):
     """ Model name: Log event
     """
-    
+
     _inherit = 'log.activity'
 
     # -------------------------------------------------------------------------
@@ -126,16 +133,16 @@ class LogActivity(models.Model):
     @api.model
     # TODO check original method
     def raise_extra_media_comunication(self, activity_id, event_id):
-        ''' Override procedure for raise extra event like: 
+        """ Override procedure for raise extra event like:
             Mail, SMS, Telegram Message, Whatsapp message etc.
             All override procedure will be introduced by a new module
-        '''
-        # ---------------------------------------------------------------------    
+        """
+        # ---------------------------------------------------------------------
         # Utility:
-        # ---------------------------------------------------------------------    
+        # ---------------------------------------------------------------------
         def log_event(telegram, event_text):
-            ''' Utility for log event on telegram using bot and group ID
-            '''
+            """ Utility for log event on telegram using bot and group ID
+            """
             # -----------------------------------------------------------------
             # Telegram setup:
             # -----------------------------------------------------------------
@@ -150,16 +157,16 @@ class LogActivity(models.Model):
             try:
                 bot.sendMessage(telegram_group, event_text)
             except:
-                _logger.error('Error generating telegram Message!')    
+                _logger.error('Error generating telegram Message!')
             return True
 
-        # ---------------------------------------------------------------------    
+        # ---------------------------------------------------------------------
         # Raise overrided list of event:
-        # ---------------------------------------------------------------------    
+        # ---------------------------------------------------------------------
         res = super(LogActivity, self).raise_extra_media_comunication(
             activity_id, event_id)
-        
-        # ---------------------------------------------------------------------    
+
+        # ---------------------------------------------------------------------
         # Launch Telegram event if needed:
         # ---------------------------------------------------------------------
         activity = self.browse(activity_id)
@@ -172,7 +179,7 @@ class LogActivity(models.Model):
                 event_state = event.state
             else:
                 event_state = 'info'
-                    
+
             event_mask = _(
                 '%s\n%s\n%s\n%%s\nActivity %s: [%s] %s (%s)\n\n'
                 'Start: %s\nEnd: %s\n'
@@ -184,10 +191,10 @@ class LogActivity(models.Model):
                     activity.code,
                     activity.name,
                     activity.partner_id.name,
-                    
+
                     event.start,
                     event.end,
-                    
+
                     (event.log_info or '').strip(),
                     (event.log_warning or '').strip(),
                     (event.log_error or '').strip(),
@@ -207,7 +214,7 @@ class LogActivity(models.Model):
                     activity.partner_id.name,
                     bar_list,
                     )
-            
+
         for telegram in activity.telegram_ids:
             event_text = event_mask % (telegram.message or '')
             if event_state == 'info' and telegram.log_info:
@@ -220,10 +227,9 @@ class LogActivity(models.Model):
                 # Error log:
                 log_event(telegram, event_text)
         return res
-    
+
     # -------------------------------------------------------------------------
     # Columns:
     # -------------------------------------------------------------------------
     telegram_ids = fields.One2many(
             'telegram.bot.log', 'activity_id', 'Telegram log')
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
