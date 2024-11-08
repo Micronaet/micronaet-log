@@ -101,7 +101,6 @@ def get_odoo_pool(server, port, database, username, password):
     """ Connect to log table in ODOO (normal log object)
     """
     odoo = get_odoo(server, port, database, username, password)
-    pdb.set_trace()
     return odoo.model('log.activity.event')
 
 
