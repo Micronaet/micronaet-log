@@ -20,11 +20,9 @@
 ###############################################################################
 import os
 import sys
-try:
-    import ConfigParser
-except:  # Pytohn 3 compatibility:
-    import configparser as ConfigParser
+import configparser as ConfigParser
 from datetime import datetime
+
 
 # -----------------------------------------------------------------------------
 #                                Utility:
@@ -38,6 +36,7 @@ def clean_result_file(result):
     except:
         print('[ERROR] Cannot remove rsync result file: %s' % result)
 
+
 def closing_operations(log_f, result):
     """ Operation that will be done at the end of the script
     """
@@ -50,6 +49,7 @@ def closing_operations(log_f, result):
 
     # Exit
     sys.exit()
+
 
 # -----------------------------------------------------------------------------
 #                                PARAMETERS:
@@ -92,7 +92,7 @@ for mode in log:
         print('[WARNING] File log not found: %s' % log[mode])
 
 # Command:
-# TODO log better
+# todo log better
 try:
     pre_command = config.get('command', 'pre')
     os.system(pre_command)
@@ -194,15 +194,15 @@ if not os.path.isfile(check_file):
 # todo use subprocess for get result of operation
 last_folder = os.path.join(path, str(history))
 
-if not history:        
+if not history:
     print('[INFO] 3a. Folder not removed: %s' % last_folder)
     # os.system('mkdir %s' % last_folder)  # Folder 0 needed!
-    
-else:    
+
+else:
     command = 'rm -r %s' % last_folder  # Last folder
     os.system(command)
     print('[INFO] 3b. Remove command: %s' % command)
-    
+
     # Move folder number:
     print('[INFO] 4. History operations, # folder: [1 - %s]' % history)
     for h_folder in range(history, 1, -1):
@@ -227,7 +227,7 @@ if folders:
         script_multi = script_mask % (
             os.path.join(from_folder, f),
             os.path.join(to_folder, f),
-            result, # always in append mode
+            result,  # always in append mode
             )
         print('[INFO] 6a. Multi rsync operations: %s' % script_multi)
         log_f['info'].write('Rsync folder: %s\n' % f)
@@ -258,7 +258,7 @@ if os.path.isfile(check_file):
 if remote_umount:
     print('[INFO] 7R. Umount remote NAS: %s' % remote_umount)
     os.system(remote_umount)
-    # TODO check if is umounted?
+    # todo check if is unmounted?
 
 # -----------------------------------------------------------------------------
 #                              PARSE LOG FILE:
@@ -283,7 +283,7 @@ for row in result_f:
         continue
 
     # Check other data:
-    #if ' received ' in row:
+    # if ' received ' in row:
     #    log_f['info'].write('%s\n' % row)
     if ' total size ' in row:
         log_f['info'].write('%s\n' % row)
@@ -303,7 +303,7 @@ for row in result_f:
     # ---------------------------------------------------------------------
     # Check elements:
     # ---------------------------------------------------------------------
-    #elif 'finished successfully' in row:
+    # elif 'finished successfully' in row:
     #    task_ok = True
 result_f.close()
 print('[INFO] 9. End parse rsync result file: %s' % result)
@@ -313,4 +313,3 @@ if not task_ok:
     log_f['error'].write('Task KO\n')
 
 closing_operations(log_f, result)
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

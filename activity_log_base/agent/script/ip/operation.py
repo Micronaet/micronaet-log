@@ -22,23 +22,22 @@ import os
 import sys
 import pickle
 import requests
-try:
-    import ConfigParser
-except:  # Python 3 compatibility:
-    import configparser as ConfigParser
+import configparser as ConfigParser
 from datetime import datetime
+
 
 # -----------------------------------------------------------------------------
 #                                UTILITY:
 # -----------------------------------------------------------------------------
 def closing_operations(log_f):
-    ''' Operation that will be done at the end of the script
-    '''
+    """ Operation that will be done at the end of the script
+    """
     # Close log file:
     for mode in log_f:
         log_f[mode].close()
     # Exit
     sys.exit()
+
 
 # -----------------------------------------------------------------------------
 #                                Parameters
@@ -49,7 +48,7 @@ fullname = os.path.join(path, 'operation.cfg')
 
 # Get IP parameters:
 get_ip = 'https://whatismyip.network/'
-#get_ip = 'http://www.micronaet.it/ip'
+# get_ip = 'http://www.micronaet.it/ip'
 from_tag = '<b>'
 to_tag = '</b>'
 
@@ -96,14 +95,13 @@ print('[INFO] B. Parse results: %s' % get_ip)
 
 ip = web_page.split(
     'Your IP address')[-1].split('</b>')[0].split('<b>')[-1].strip()
-#if from_tag not in web_page or to_tag not in web_page:
+# if from_tag not in web_page or to_tag not in web_page:
 if not ip:
     log_f['error'].write(
         'Error searching tags in returned page: %s\n' % get_ip)
     closing_operations(log_f)
-#ip = web_page.split(from_tag)[-1].split(to_tag)[0]
+# ip = web_page.split(from_tag)[-1].split(to_tag)[0]
 log_f['info'].write('Public IP: %s<br/>\n' % ip)
 
 # CLosing operations:
 closing_operations(log_f)
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

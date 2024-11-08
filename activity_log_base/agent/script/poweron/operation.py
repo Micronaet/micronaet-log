@@ -36,16 +36,18 @@ def clean_result_file(result):
     except:
         print('[ERROR] Cannot remove proxmox result file')
 
+
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
 # Extract config file name from current name
 path, name = os.path.split(os.path.abspath(__file__))
 fullname = os.path.join(path, 'operation.cfg')
-log_folder = os.path.join(path, 'log') # log folder path (always in this folder)
+log_folder = os.path.join(path, 'log')
+# log folder path (always in this folder)
 os.system('mkdir -p %s' % log_folder)
 
-# TODO syslog file? (now no log)
+# todo syslog file? (now no log)
 config = ConfigParser.ConfigParser()
 config.read([fullname])
 
@@ -137,4 +139,3 @@ for mode in log_f:
 # Remove proxmox result file:
 # -----------------------------------------------------------------------------
 clean_result_file(result)
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

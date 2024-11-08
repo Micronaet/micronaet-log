@@ -31,9 +31,9 @@ command = 'ping %s' % ip
 check_ok = 'from %s' % ip
 check_ko = 'Host Unreachable'
 
-sleep = 20.0 # total second to check
-ping_ok = 15 # minimum level of right ping
-max_check = 5 #24 * 60 / sleep # Total run daily
+sleep = 20.0  # total second to check
+ping_ok = 15  # minimum level of right ping
+max_check = 5  #24 * 60 / sleep # Total run daily
 
 log_filename = './ping.log'
 exit = False
@@ -72,7 +72,7 @@ while not exit:
         # ---------------------------------------------------------------------
         # Read data recorded:
         # ---------------------------------------------------------------------
-        print '\nCheck collected data...'
+        print('\nCheck collected data...')
         log_file.close()
         statinfo = os.stat(log_filename)
         dimension = statinfo.st_size
@@ -110,17 +110,16 @@ while not exit:
             fail = True # no file = no reply
             status = 'KO Server never reply in this block %s sec' % sleep
 
-        print status
+        print(status)
         if fail:
-            print 'DO Fail action!' # TODO
+            print('DO Fail action!') # TODO
 
-        print 'Remove %s' % log_filename
+        print('Remove %s' % log_filename)
         os.remove(log_filename)
         refresh_file = True
-        print 'Cleaning file...'
+        print('Cleaning file...')
 
     if counter >= max_check:
         exit = True
 
-print 'Total check raised: counter %s / %s' % (counter, max_check)
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+print('Total check raised: counter %s / %s' % (counter, max_check))

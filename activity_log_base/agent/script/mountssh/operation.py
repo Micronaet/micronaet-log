@@ -21,23 +21,22 @@
 import os
 import sys
 import pickle
-try:
-    import ConfigParser
-except:  # Pytohn 3 compatibility:
-    import configparser as ConfigParser
+import configparser as ConfigParser
 from datetime import datetime
+
 
 # -----------------------------------------------------------------------------
 #                                UTILITY:
 # -----------------------------------------------------------------------------
 def closing_operations(log_f):
-    ''' Operation that will be done at the end of the script
-    '''
+    """ Operation that will be done at the end of the script
+    """
     # Close log file:
     for mode in log_f:
         log_f[mode].close()
     # Exit
     sys.exit()
+
 
 # -----------------------------------------------------------------------------
 #                                Parameters
@@ -94,4 +93,3 @@ else:
 
 # CLosing operations:
 closing_operations(log_f)
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

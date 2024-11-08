@@ -22,21 +22,19 @@ import os
 import sys
 import pickle
 
-try:
-    import ConfigParser
-except:  # Pytohn 3 compatibility:
-    import configparser as ConfigParser
+import configparser as ConfigParser
 
 from datetime import datetime
 import hpilo
 #import telepot
 
+
 # -----------------------------------------------------------------------------
 #                                UTILITY:
 # -----------------------------------------------------------------------------
 def closing_operations(log_f):
-    ''' Operation that will be done at the end of the script
-    '''
+    """ Operation that will be done at the end of the script
+    """
     for mode in log_f:
         log_f[mode].close()
     sys.exit()

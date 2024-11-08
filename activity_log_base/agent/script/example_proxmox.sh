@@ -21,5 +21,3 @@ echo Sleep for 6 seconds...
 sleep 6
 cd /home/thebrush/lp8/git/micronaet-log/activity_log_base/agent/script/proxmox
 python ./dump_vm.py
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-

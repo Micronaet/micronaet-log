@@ -21,18 +21,16 @@
 import os
 import sys
 import pickle
-try:
-    import ConfigParser
-except:  # Pytohn 3 compatibility:
-    import configparser as ConfigParser
+import configparser as ConfigParser
 from datetime import datetime
+
 
 # -----------------------------------------------------------------------------
 #                                UTILITY:
 # -----------------------------------------------------------------------------
 def closing_operations(log_f):
-    ''' Operation that will be done at the end of the script
-    '''
+    """ Operation that will be done at the end of the script
+    """
     # Close log file:
     for mode in log_f:
         try:
@@ -43,6 +41,7 @@ def closing_operations(log_f):
 
     # Exit
     sys.exit()
+
 
 # -----------------------------------------------------------------------------
 #                                Parameters
@@ -60,7 +59,7 @@ config.read([fullname])
 
 # Read from config file:
 path = config.get('operation', 'path')
-os.system('mkdir -p %s' % path) # Create mount poing if not exist
+os.system('mkdir -p %s' % path)  # Create mount point if not exist
 mount_command = config.get('operation', 'mount')
 umount_command = 'umount %s' % path
 error = config.get('operation', 'error')
@@ -118,4 +117,3 @@ except:
 
 # CLosing operations:
 closing_operations(log_f)
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
