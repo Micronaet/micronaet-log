@@ -23,10 +23,11 @@ import os
 import pdb
 import sys
 import pickle
-import odoorpc
+import erppeek
 import configparser
 from datetime import datetime
 # import subprocess
+# import odoorpc
 
 # Constant:
 DEFAULT_SERVER_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
@@ -89,8 +90,11 @@ def get_odoo(server, port, database, username, password):
     """ Connect to log table in ODOO
     """
     pdb.set_trace()
-    odoo = odoorpc.ODOO(server, port=port)
-    odoo.login(database, username, password)
+    odoo = erppeek.Client(
+        'http://{}:{}'.format(server, port),
+        db=database,
+        user=username,
+        password=password)
     return odoo
 
 
@@ -98,7 +102,7 @@ def get_odoo_pool(server, port, database, username, password):
     """ Connect to log table in ODOO (normal log object)
     """
     odoo = get_odoo(server, port, database, username, password)
-    return odoo.env['log.activity.event']
+    return odoo.model['log.activity.event']
 
 
 def save_server_history(
@@ -110,7 +114,7 @@ def save_server_history(
         # Write nothing
         return False
     odoo = get_odoo(server, port, database, username, password)
-    activity_pool = odoo.env['log.activity']
+    activity_pool = odoo.model['log.activity']
     activity_pool.write(activity_id, data)
     return True
 
