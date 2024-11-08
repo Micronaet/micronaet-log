@@ -20,6 +20,7 @@
 ###############################################################################
 # Library:
 import os
+import pdb
 import sys
 import pickle
 import odoorpc
@@ -38,7 +39,7 @@ path, name = os.path.split(os.path.abspath(__file__))
 pickle_path = os.path.join(path, 'pickle')
 os.system('mkdir -p %s' % pickle_path)
 pickle_file = os.path.join(pickle_path, 'remain.pickle')
-
+pdb.set_trace()
 
 def get_pickle_data():
     """ Save in folder dump the remain data not published

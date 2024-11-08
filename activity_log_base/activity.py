@@ -39,10 +39,11 @@ class LogCategory(models.Model):
     # -------------------------------------------------------------------------
     # Columns:
     # -------------------------------------------------------------------------
-    name =  fields.Char('Category', size=64, required=True)
+    name = fields.Char('Category', size=64, required=True)
     is_active = fields.Boolean('Is active')
     code = fields.Char('Code', size=15)
     note = fields.Text('Note')
+
 
 class LogActivityMedia(models.Model):
     """ Model name: Log media, manage all method for send log events
@@ -61,8 +62,10 @@ class LogActivityMedia(models.Model):
     is_active = fields.Boolean('Is active', default=True)
     name = fields.Char('Media', size=64, required=True)
     partner_id = fields.Many2one('res.partner', 'Partner', required=True)
-    address = fields.Char('Address', size=64,
+    address = fields.Char(
+        'Address', size=64,
         help='Sometimes is the reference of sender (mail, chat ref.)')
+
 
 class LogActivityHistory(models.Model):
     """ Model name: Log event history
@@ -84,6 +87,7 @@ class LogActivityHistory(models.Model):
     activity_id = fields.Many2one('log.activity', 'Activity')
     create_date = fields.Datetime('History data')
     old = fields.Text('Old value')
+
 
 class LogActivity(models.Model):
     """ Model name: Log event
