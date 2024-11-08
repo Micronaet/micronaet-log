@@ -22,14 +22,10 @@
 import os
 import sys
 import pickle
-import subprocess
-import erppeek
+import odoorpc
+import configparser
 from datetime import datetime
-
-try:
-    import ConfigParser
-except:  # Pytohn 3 compatibility:
-    import configparser as ConfigParser
+# import subprocess
 
 # Constant:
 DEFAULT_SERVER_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
@@ -45,12 +41,12 @@ pickle_file = os.path.join(pickle_path, 'remain.pickle')
 
 
 def get_pickle_data():
-    """ Save in folder dump the remain data not publisched
+    """ Save in folder dump the remain data not published
     """
     try:
-        f = open(pickle_file, 'rb')
+        logfile = open(pickle_file, 'rb')
         res = pickle.load(f)
-        f.close()
+        logfile.close()
     except:
         res = {}
     return res
@@ -64,9 +60,9 @@ def set_pickle_data(data=None):
         data = {}
 
     # Save updated record:
-    f = open(pickle_file, 'wb')
-    pickle.dump(data, f)
-    f.close()
+    logfile = open(pickle_file, 'wb')
+    pickle.dump(data, logfile)
+    logfile.close()
     return True
 
 
@@ -75,44 +71,44 @@ def clean_pickle():
     """
     return set_pickle_data({})
 
-# STANDARD FUNCTION:
 
+# -----------------------------------------------------------------------------
+# STANDARD FUNCTION:
+# -----------------------------------------------------------------------------
 def get_result_command(command):
     """ Get info procedure for:
         cron: cron status of the server
         config: config file status
     """
-    return os.popen(command).read()
     # subprocess.Popen(command, stdout=subprocess.PIPE).communicate()[0]
+    return os.popen(command).read()
 
 
-def get_erp(URL, database, username, password):
+def get_odoo(server, port, database, username, password):
     """ Connect to log table in ODOO
     """
-    return erppeek.Client(
-        URL,
-        db=database,
-        user=username,
-        password=password,
-        )
+    odoo = odoorpc.ODOO(server, port=port)
+    odoo.login(database, username, password)
+    return odoo
 
 
-def get_erp_pool(URL, database, username, password):
+def get_odoo_pool(server, port, database, username, password):
     """ Connect to log table in ODOO (normal log object)
     """
-    erp = get_erp(URL, database, username, password)
-    return erp.LogActivityEvent
+    odoo = get_odoo(server, port, database, username, password)
+    return odoo.env['log.activity.event']
 
 
-def save_server_history(URL, database, username, password, event_record, data):
+def save_server_history(
+        server, port, database, username, password, event_record, data):
     """ Connect to log table in ODOO (normal log object)
     """
     activity_id = event_record.get('activity_id')
     if not activity_id:
         # Write nothing
         return False
-    erp = get_erp(URL, database, username, password)
-    activity_pool = erp.LogActivity
+    odoo = get_odoo(server, port, database, username, password)
+    activity_pool = odoo.env['log.activity']
     activity_pool.write(activity_id, data)
     return True
 
@@ -134,7 +130,6 @@ def change_datetime_gmt(timestamp):
         passed a datetime object
     """
     extra_gmt = datetime.now() - datetime.utcnow()
-    # ts = datetime.strptime(timestamp, DEFAULT_SERVER_DATETIME_FORMAT)
     return (timestamp - extra_gmt).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
 
@@ -144,7 +139,7 @@ def change_datetime_gmt(timestamp):
 # Extract config file name from current name
 path, name = os.path.split(os.path.abspath(__file__))
 fullname = os.path.join(path, 'logger.cfg')
-master_config = ConfigParser.ConfigParser()
+master_config = configparser.ConfigParser()
 master_config.read([fullname])
 
 # -----------------------------------------------------------------------------
@@ -165,27 +160,22 @@ try:
 except:
     git_folder = '/backup/git/micronaet-log'
 
-# try:
-#    git_refresh = master_config.get('git', 'refresh')
-# except:
-#    git_refresh = True # default
-
 # Open log file:
 log_f = open(log_activity, 'a')
 
 # Link to activity data:
 argv = sys.argv
-if len(argv) != 2: # No parameters:
+if len(argv) != 2:  # No parameters:
     log_event(
         log_f, 'Launch logger.py PARAM (code of operation mandatory!', 'error')
 
 # Passed parameter [operation code, also folder name]:
 code_activity = argv[1]
 if code_activity.endswith('/'):
-    code_activity = code_activity[:-1] # remove trail /
+    code_activity = code_activity[:-1]  # remove trail /
 
 
-# Update GIT module data before all operations (next exection will be updated)
+# Update GIT module data before all operations (next exception will be updated)
 # if git_refresh:
 log_update_git = 'Update Git module folder: %s' % git_folder
 log_event(log_f, log_update_git)
@@ -194,12 +184,11 @@ os.system('cd %s; git pull' % git_folder)
 #    log_update_git = 'Git not update, folder: %s' % git_folder
 
 # -----------------------------------------------------------------------------
-# ERPPEEK Client connection:
+# ODOORPC Client connection:
 # -----------------------------------------------------------------------------
 log_event(log_f, 'Start launcher, log file: %s' % log_activity)
-URL = 'http://%s:%s' % (hostname, port)
-erp_pool = get_erp_pool(URL, database, username, password)
-log_event(log_f, 'Access to URL: %s' % URL)
+odoo_pool = get_odoo_pool(hostname, port, database, username, password)
+log_event(log_f, 'Access to URL: {}:{}'.format(hostname, port))
 
 # -----------------------------------------------------------------------------
 # Manage pickle activity:
@@ -219,7 +208,7 @@ if code_activity.upper() == 'PICKLE':
     for update_id in update_db:
         data = update_db[update_id]
         try:
-            erp_pool.log_event(data, update_id)
+            odoo_pool.log_event(data, update_id)
             log_event(log_f, 'Pickle update DONE: %s' % update_id)
             remove_item.append(update_id)
         except:
@@ -236,7 +225,7 @@ if code_activity.upper() == 'PICKLE':
     remain_item = []
     for data in erp_error.get('create', []):
         try:
-            erp_pool.log_event(data)
+            odoo_pool.log_event(data)
             log_event(log_f, 'Pickle create DONE: %s' % data)
         except:
             log_event(log_f, 'Pickle create NOT DONE: %s ' % data)
@@ -256,13 +245,13 @@ if code_activity.upper() == 'PICKLE':
 # -----------------------------------------------------------------------------
 fullname = os.path.join(path, code_activity, 'operation.cfg')
 scriptname = os.path.join(path, code_activity, 'operation.py')
-operation_config = ConfigParser.ConfigParser()
+operation_config = configparser.ConfigParser()
 operation_config.read([fullname])
 
 # Log server status parameter:
 activity_data = {
     'server': get_result_command(
-        'hostname; ip address | grep \'mtu\|inet\|link\''),
+        'hostname; ip address | grep \'mtu|inet|link\''),
     'cron': get_result_command('crontab -l'),
     'config': get_result_command('cat %s' % fullname),
     'uptime': get_result_command('uptime'),
@@ -271,7 +260,7 @@ activity_data = {
 log_start = eval(operation_config.get('operation', 'log_start'))
 origin = operation_config.get('operation', 'origin')
 
-script = 'python %s' % scriptname # always this command to launch
+script = 'python %s' % scriptname  # always this command to launch
 
 # Log data:
 log = {
@@ -296,8 +285,8 @@ data = {
 
 if log_start:
     # connection_fail = True
-    # TODO manage also here error on event?
-    update_id, event_record = erp_pool.log_event(data) # Create start event
+    # todo manage also here error on event?
+    update_id, event_record = odoo_pool.log_event(data)  # Create start event
     log_event(
         log_f, 'Log the start of operation: event ID: %s %s' % (
             update_id,
@@ -305,11 +294,12 @@ if log_start:
             ))
     log_event(log_f, 'Log cron and config file if necessary')
     save_server_history(
-        URL, database, username, password, event_record, activity_data)
+        hostname, port, database, username, password, event_record,
+        activity_data)
 
 
 log_event(log_f, 'Closing ERP connection')
-del(erp_pool)  # For close connection
+del odoo_pool  # For close connection
 
 # -----------------------------------------------------------------------------
 # Launch script:
@@ -341,7 +331,7 @@ for mode in log:
 # Log activity:
 # -----------------------------------------------------------------------------
 # Reconnect for timeout problem:
-erp_pool = get_erp_pool(URL, database, username, password)
+erp_pool = get_odoo_pool(hostname, port, database, username, password)
 log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
 connection_fail = True
 erp_error = get_pickle_data() # read pickle file
@@ -370,7 +360,8 @@ else:  # Normal creation of start stop event:
             create_id, event_record = erp_pool.log_event(data)
             log_event(log_f, 'Log cron and config file if necessary')
             save_server_history(
-                URL, database, username, password, event_record, activity_data)
+                hostname, port, database, username, password, event_record,
+                activity_data)
             log_event(log_f, 'Create start / stop event: %s' % (data, ))
             connection_fail = False
             break
