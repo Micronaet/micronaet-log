@@ -102,7 +102,7 @@ def get_odoo_pool(server, port, database, username, password):
     """ Connect to log table in ODOO (normal log object)
     """
     odoo = get_odoo(server, port, database, username, password)
-    return odoo.model['log.activity.event']
+    return odoo.model('log.activity.event')
 
 
 def save_server_history(
@@ -114,7 +114,7 @@ def save_server_history(
         # Write nothing
         return False
     odoo = get_odoo(server, port, database, username, password)
-    activity_pool = odoo.model['log.activity']
+    activity_pool = odoo.model('log.activity')
     activity_pool.write(activity_id, data)
     return True
 
