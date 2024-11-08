@@ -39,7 +39,7 @@ path, name = os.path.split(os.path.abspath(__file__))
 pickle_path = os.path.join(path, 'pickle')
 os.system('mkdir -p %s' % pickle_path)
 pickle_file = os.path.join(pickle_path, 'remain.pickle')
-pdb.set_trace()
+
 
 def get_pickle_data():
     """ Save in folder dump the remain data not published
@@ -88,6 +88,7 @@ def get_result_command(command):
 def get_odoo(server, port, database, username, password):
     """ Connect to log table in ODOO
     """
+    pdb.set_trace()
     odoo = odoorpc.ODOO(server, port=port)
     odoo.login(database, username, password)
     return odoo
