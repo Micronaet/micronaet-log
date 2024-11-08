@@ -333,7 +333,7 @@ for mode in log:
 erp_pool = get_odoo_pool(hostname, port, database, username, password)
 log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
 connection_fail = True
-erp_error = get_pickle_data() # read pickle file
+erp_error = get_pickle_data()  # read pickle file
 
 if log_start:  # Update event:
     for i in range(1, 5):  # For timeout problems:
