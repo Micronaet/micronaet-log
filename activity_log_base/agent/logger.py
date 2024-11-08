@@ -89,7 +89,6 @@ def get_result_command(command):
 def get_odoo(server, port, database, username, password):
     """ Connect to log table in ODOO
     """
-    pdb.set_trace()
     odoo = erppeek.Client(
         'http://{}:{}'.format(server, port),
         db=database,
@@ -102,6 +101,7 @@ def get_odoo_pool(server, port, database, username, password):
     """ Connect to log table in ODOO (normal log object)
     """
     odoo = get_odoo(server, port, database, username, password)
+    pdb.set_trace()
     return odoo.model('log.activity.event')
 
 
