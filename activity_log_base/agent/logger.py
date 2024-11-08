@@ -221,7 +221,7 @@ if code_activity.upper() == 'PICKLE':
     # -------------------------------------------------------------------------
     # Write create record:
     # -------------------------------------------------------------------------
-    # Try to reupdate:
+    # Try to update again:
     remain_item = []
     for data in erp_error.get('create', []):
         try:
@@ -297,7 +297,6 @@ if log_start:
         hostname, port, database, username, password, event_record,
         activity_data)
 
-
 log_event(log_f, 'Closing ERP connection')
 del odoo_pool  # For close connection
 
@@ -336,8 +335,8 @@ log_event(log_f, 'Reconnect ERP: %s' % erp_pool)
 connection_fail = True
 erp_error = get_pickle_data() # read pickle file
 
-if log_start: # Update event:
-    for i in range(1, 5): # For timeout problems:
+if log_start:  # Update event:
+    for i in range(1, 5):  # For timeout problems:
         try:
             erp_pool.log_event(data, update_id)
             log_event(log_f, 'Update started event: %s' % update_id)
@@ -355,7 +354,7 @@ if log_start: # Update event:
         erp_error['update'][update_id] = data
 
 else:  # Normal creation of start stop event:
-    for i in range(1, 5): # For timout problems:
+    for i in range(1, 5):  # For time out problems:
         try:
             create_id, event_record = erp_pool.log_event(data)
             log_event(log_f, 'Log cron and config file if necessary')
