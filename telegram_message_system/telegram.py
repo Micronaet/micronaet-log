@@ -138,7 +138,7 @@ class TelegramBotChannel(orm.Model):
             bot = telepot.Bot(str(telegram_token))
             bot.getMe()
         except:
-            error = 'Error opening Telegram BOT'
+            error = 'BOT Error: Error opening Telegram BOT'
             _logger.error(error)
             if raise_error:
                 pass # raise
