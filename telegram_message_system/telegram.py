@@ -110,7 +110,6 @@ class TelegramBotChannel(orm.Model):
     def send_message_test(self, cr, uid, ids, context=None):
         """ Send test message
         """
-        pdb.set_trace()
         channel = self.browse(cr, uid, ids, context=context)[0]
         return self.send_message(channel, message='Test message')
 
@@ -136,7 +135,7 @@ class TelegramBotChannel(orm.Model):
         # Send Telegram message:
         # -----------------------------------------------------------------
         try:
-            bot = telepot.Bot(telegram_token)
+            bot = telepot.Bot(str(telegram_token))
             bot.getMe()
         except:
             error = 'Error opening Telegram BOT'
