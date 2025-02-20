@@ -35,6 +35,7 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
     DEFAULT_SERVER_DATETIME_FORMAT, 
     DATETIME_FORMATS_MAP, 
     float_compare)
+import time
 
 
 _logger = logging.getLogger(__name__)
@@ -95,26 +96,79 @@ class TelegramBotChannel(orm.Model):
     # ---------------------------------------------------------------------
     # Utility:
     # ---------------------------------------------------------------------
-    def log_event(telegram, event_text, mode='html'):
+    def get_channel_with_code(self, cr, uid, code, context=None):
+        """ Search BOT with code and send message with for it
+        """
+        channel_ids = self.search(cr, uid, [
+            ('code', '=', code),
+        ], context=context)
+        if len(channel_ids) > 1:
+            raise
+        return self.browse(cr, uid, channel_ids, context=context)[0]
+
+    def send_message_test(self, cr, uid, ids, context=None):
+        """ Send test message
+        """
+        channel = self.browse(cr, uid, ids, context=context)[0]
+        return self.send_message(channel, message='Test message')
+
+    def send_message(self, channel, message):
         """ Utility for log event on telegram using bot and group ID
         """
+        # Parameters:
+        raise_error = False
+        max_loop = channel.max_loop
+        wait = channel.wait  # sec.
+
         # -----------------------------------------------------------------
         # Telegram setup:
         # -----------------------------------------------------------------
-        telegram_token = telegram.telegram_id.token
-        telegram_group = telegram.group_id.code
+        telegram = channel.telegram_id
+        group = channel.group_id
+        telegram_token = telegram.token
+        telegram_group = group.code
 
         # -----------------------------------------------------------------
         # Send Telegram message:
         # -----------------------------------------------------------------
-        bot = telepot.Bot(telegram_token)
-        bot.getMe()
-        bot.sendMessage(telegram_group, event_text)
-        return True
+        try:
+            bot = telepot.Bot(telegram_token)
+            bot.getMe()
+        except:
+            error = 'Error opening Telegram BOT'
+            _logger.error(error)
+            if raise_error:
+                pass # raise
+
+        while max_loop > 0:
+            try:
+                bot.sendMessage(
+                    telegram_group,
+                    message,
+                    parse_mode='Markdown'
+                )
+                return True
+            except:
+                _logger.error('Error sending message, wait and retry')
+                max_loop -= 1
+                time.sleep(wait)
+        _logger.error('Error sending message after {} catch'.format(
+            max_loop
+        ))
+        return False
 
     _columns = {
         'code': fields.char('Codice', required=True, size=15),
         'name': fields.char('Nome', required=True, size=50),
+
+        'max_loop': fields.integer(
+            'Tentativi', required=True,
+            help='Per limiti di telegram in caso di errore di spedizione '
+                 'la procedura proverà il numero di tentativi indicati.'),
+        'wait': fields.integer(
+            'Attesa', required=True,
+            help='Attesa tra un tentativo e l\'altro'),
+
         'telegram_id': fields.many2one('telegram.bot', 'BOT', required=True),
         'group_id': fields.many2one('telegram.group', 'Group', required=True),
         'odoo_mask': fields.char(
@@ -123,6 +177,10 @@ class TelegramBotChannel(orm.Model):
                  'placeholder dell''ID risorsa {item_id}, es: '
                  'https://erp.micronaet.it/web/resource?ID={item_id}'),
         }
+    _defaults = {
+        'max_loop': lambda *x: 50,
+        'wait': lambda *x: 3,
+    }
 
 
 class TelegramBotInherit(orm.Model):

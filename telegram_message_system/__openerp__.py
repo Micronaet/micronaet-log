@@ -18,7 +18,7 @@
 ###############################################################################
 
 {
-    'name': 'Activity log media: Telegram',
+    'name': 'Telegram Message System',
     'version': '0.1',
     'category': 'Log',
     'description': '''        
@@ -29,7 +29,6 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
-        'activity_log_base',
         ],
     'init_xml': [],
     'demo': [],
