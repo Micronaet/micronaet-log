@@ -113,7 +113,7 @@ class TelegramBotChannel(orm.Model):
         return self.send_message(channel, message='Test message')
 
     def send_message(
-            self, channel, message, item_id=18965, reference='OCXXX'):
+            self, channel, message, item_id=0, reference=''):
         """ Utility for log event on telegram using bot and group ID
         """
         # Parameters:
