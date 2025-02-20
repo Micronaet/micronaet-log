@@ -110,10 +110,10 @@ class LogActivity(orm.Model):
     # -------------------------------------------------------------------------
     def raise_extra_media_comunication(self, cr, uid, activity_id, event_id, 
             context=None):
-        ''' Override procedure for raise extra event like: 
+        """ Override procedure for raise extra event like:
             Mail, SMS, Telegram Message, Whatsapp message etc.
             All override procedure will be introduced by a new module
-        '''
+        """
         # Do Nothing
         _logger.warning('Log media event comunication')
         return True
@@ -121,10 +121,10 @@ class LogActivity(orm.Model):
     # REPORT XLSX:
     # -------------------------------------------------------------------------
     def extract_xlsx_scheduled_status(self, cr, uid, ids, context=None):
-        ''' Generate report for current activity, scheduled from date to check
-            Usually generate report from check_from parameter to now, 
+        """ Generate report for current activity, scheduled from date to check
+            Usually generate report from check_from parameter to now,
             if from_date and to_date context is present select this period
-        '''
+        """
         # Pool used:
         event_pool = self.pool.get('log.activity.event') 
         excel_pool = self.pool.get('excel.writer')
@@ -278,11 +278,11 @@ class LogActivity(orm.Model):
     # Utility:
     # -------------------------------------------------------------------------
     def get_cron_info(self, cr, uid, ids, context=None):
-        ''' Try to get cron info about activity code scheduled for get 
+        """ Try to get cron info about activity code scheduled for get
             information about running period
             Used as information but also for check daily backup operations
             parameter: browse_keys for setup key of returned dict
-        '''
+        """
         if context is None:
             context = {}
         browse_keys = context.get('browse_keys', False)        
@@ -339,17 +339,17 @@ class LogActivity(orm.Model):
     # Scheduled events:
     # -------------------------------------------------------------------------
     def check_event_not_started(self, cr, uid, context=None):
-        ''' Check scheduled started from today - period and yestertay
+        """ Check scheduled started from today - period and yestertay
             Check 7 day for defaults
-        '''
+        """
         # ---------------------------------------------------------------------
         # Utility:
         # ---------------------------------------------------------------------
         def get_cron_dow(dow):
-            ''' Convert datetime dow number in cron dow number
-                Cron: su = 0 (or 7) 
+            """ Convert datetime dow number in cron dow number
+                Cron: su = 0 (or 7)
                 Datetime: mo = 0
-            '''
+            """
             if dow == 6:
                 return 0
             else:
@@ -357,8 +357,8 @@ class LogActivity(orm.Model):
             
         def create_missed_event(self, cr, uid, start, activity, 
                 context=context):
-            ''' Create a standard event for missed operation:
-            '''    
+            """ Create a standard event for missed operation:
+            """
             event_pool = self.pool.get('log.activity.event')
             return event_pool.create(cr, uid, {
                 'start': start,
@@ -457,23 +457,23 @@ class LogActivity(orm.Model):
     # Button:
     # -------------------------------------------------------------------------    
     def open_history_cron(self, cr, uid, ids, mode, context=None):
-        ''' Open cron history
-        '''    
+        """ Open cron history
+        """
         return self.open_history(cr, uid, ids, mode='cron', context=context)
     
     def open_history_config(self, cr, uid, ids, mode, context=None):
-        ''' Open config history
-        '''    
+        """ Open config history
+        """
         return self.open_history(cr, uid, ids, mode='config', context=context)
 
     def open_history_server(self, cr, uid, ids, mode, context=None):
-        ''' Open server history
-        '''    
+        """ Open server history
+        """
         return self.open_history(cr, uid, ids, mode='server', context=context)
            
     def open_history(self, cr, uid, ids, mode, context=None):
-        ''' Search config elements for mode type
-        '''
+        """ Search config elements for mode type
+        """
         return {
             'type': 'ir.actions.act_window',
             'name': _('Activity story %s' % mode),
@@ -493,8 +493,8 @@ class LogActivity(orm.Model):
             }
             
     def save_history_mode(self, cr, uid, ids, vals, context=None):
-        ''' History before insert data value in particular fields
-        '''
+        """ History before insert data value in particular fields
+        """
         history_pool = self.pool.get('log.activity.history')
         
         fields = ['cron', 'config', 'server']
@@ -540,8 +540,8 @@ class LogActivity(orm.Model):
     # -------------------------------------------------------------------------
     def _get_cron_daily_execution(self, cr, uid, ids, fields, args, 
             context=None):
-        ''' Fields function for calculate 
-        '''
+        """ Fields function for calculate
+        """
         res = {}
 
         daily = self.get_cron_info(cr, uid, ids, context=context)  
@@ -582,8 +582,8 @@ class LogActivity(orm.Model):
         return res
         
     def _log_in_html_format(self, cr, uid, ids, fields, args, context=None):
-        ''' Fields function for calculate 
-        '''
+        """ Fields function for calculate
+        """
         res = {}
         for item in self.browse(cr, uid, ids, context=context):
             res[item.id] = '<p>'
@@ -601,8 +601,8 @@ class LogActivity(orm.Model):
         return res        
                           
     def _last_event_date(self, cr, uid, ids, fields, args, context=None):
-        ''' Get last activity event:
-        '''
+        """ Get last activity event:
+        """
         res = {}
         for item in ids:
             res[item] = {
@@ -635,8 +635,8 @@ class LogActivity(orm.Model):
         return res
         
     def schedule_update_all(self, cr, uid, context=None):
-        ''' Update event scheduling update of field store
-        '''
+        """ Update event scheduling update of field store
+        """
         activity_ids = self.search(cr, uid, [], context=context)
         _logger.warning('Update %s activity event last' % len(activity_ids))
         
@@ -649,8 +649,8 @@ class LogActivity(orm.Model):
             }, context=context)
 
     def _get_fiels_update_this(self, cr, iud, ids, context=None):
-        ''' Store function update passed ID
-        '''
+        """ Store function update passed ID
+        """
         _logger.warning('Update %s date event' % len(ids))        
         return ids
     
@@ -762,20 +762,20 @@ class LogActivityEvent(orm.Model):
     _order = 'datetime desc'
     
     def dummy_nothing(self, cr, uid, ids, context=None):
-        ''' Dummy button do nothing
-        '''
+        """ Dummy button do nothing
+        """
         return True
 
     def mark_ok_button(self, cr, uid, ids, context=None):
-        ''' Mark as OK
-        '''
+        """ Mark as OK
+        """
         return self.write(cr, uid, ids, {
             'mark_ok': True,
             }, context=context)
 
     def get_duration_hour(self, start, end):
-        ''' Diference from 2 date in hours
-        '''
+        """ Diference from 2 date in hours
+        """
         if not start or not end:
             return 0.0
             
@@ -791,10 +791,10 @@ class LogActivityEvent(orm.Model):
     # -------------------------------------------------------------------------
     def scheduled_log_activity_check_activity_duration(
             self, cr, uid, context=None):
-        ''' Check activity for mark and validate:
+        """ Check activity for mark and validate:
             1. check if started are in duration range (if needed)
             2. check if closed are in duration range else mark as OK
-        '''
+        """
         # Read started / closed (check duration activity)
         _logger.info('Start check activity duration')
         event_ids = self.search(cr, uid, [
@@ -865,7 +865,7 @@ class LogActivityEvent(orm.Model):
     # XMLRPC Procedure:
     # -------------------------------------------------------------------------
     def log_event(self, cr, uid, data, update_id=False, context=None):
-        ''' ERPEEK procedure called for create event from remote scripts
+        """ ERPEEK procedure called for create event from remote scripts
             data dict contain:
                 code_partner: Key field for reach partner, inserad use copmany
                 code_activity: Key field for reach activity, instead create ERR
@@ -875,7 +875,7 @@ class LogActivityEvent(orm.Model):
                 log: log text
                 log_warning: warning text
                 log_error: error text
-        '''
+        """
         _logger.info('Register data event: [ID %s] %s' % (
             update_id,
             data, 

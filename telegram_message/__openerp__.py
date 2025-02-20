@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    Copyright (C) 2001-2014 Micronaet SRL (<http://www.micronaet.it>).
@@ -17,4 +16,28 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-from . import telegram
+
+{
+    'name': 'Activity log media: Telegram',
+    'version': '0.1',
+    'category': 'Log',
+    'description': '''        
+        Add telegram as media for comunicate operations
+        ''',
+    'author': 'Micronaet S.r.l. - Nicola Riolini',
+    'website': 'http://www.micronaet.it',
+    'license': 'AGPL-3',
+    'depends': [
+        'base',
+        'activity_log_base',
+        ],
+    'init_xml': [],
+    'demo': [],
+    'data': [
+        'security/ir.model.access.csv',
+        'telegram_view.xml',
+        ],
+    'active': False,
+    'installable': True,
+    'auto_install': False,
+    }

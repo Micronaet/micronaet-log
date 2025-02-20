@@ -50,8 +50,8 @@ class TelegramBot(orm.Model):
     _order = 'name'
     
     def get_message_url(self, cr, uid, ids, context=None):
-        ''' Open URL for API message list
-        '''
+        """ Open URL for API message list
+        """
         url = 'https://api.telegram.org/bot%s/getUpdates'
         current_proxy = self.browse(cr, uid, ids, context=context)[0]
         url = url % current_proxy.token
@@ -85,6 +85,7 @@ class TelegramGroup(orm.Model):
             help='Group ID, line: -123431251'),
         }
 
+
 class TelegramBot(orm.Model):
     """ Model name: TelegramBot
     """
@@ -96,6 +97,7 @@ class TelegramBot(orm.Model):
             'telegram.group', 'telegram_bot_group_rel', 
             'bot_id', 'group_id', 'Groups'),
         }
+
 
 class TelegramBotLog(orm.Model):
     """ Model name: TelegramBotLog
@@ -120,6 +122,7 @@ class TelegramBotLog(orm.Model):
         'log_error': lambda *x: True,
         }
 
+
 class LogActivity(orm.Model):
     """ Model name: Log event
     """
@@ -131,16 +134,16 @@ class LogActivity(orm.Model):
     # -------------------------------------------------------------------------
     def raise_extra_media_comunication(self, cr, uid, activity_id, event_id, 
             context=None):
-        ''' Override procedure for raise extra event like: 
+        """ Override procedure for raise extra event like:
             Mail, SMS, Telegram Message, Whatsapp message etc.
             All override procedure will be introduced by a new module
-        '''
+        """
         # ---------------------------------------------------------------------    
         # Utility:
         # ---------------------------------------------------------------------    
         def log_event(telegram, event_text):
-            ''' Utility for log event on telegram using bot and group ID
-            '''
+            """ Utility for log event on telegram using bot and group ID
+            """
             # -----------------------------------------------------------------
             # Telegram setup:
             # -----------------------------------------------------------------
@@ -156,7 +159,7 @@ class LogActivity(orm.Model):
             return True
 
         # ---------------------------------------------------------------------    
-        # Raise overrided list of event:
+        # Raise overriden list of event:
         # ---------------------------------------------------------------------    
         res = super(LogActivity, self).raise_extra_media_comunication(
             cr, uid, activity_id, event_id, context==context)
@@ -228,4 +231,3 @@ class LogActivity(orm.Model):
         'telegram_ids': fields.one2many(
             'telegram.bot.log', 'activity_id', 'Telegram log'),
         }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

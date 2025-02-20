@@ -18,11 +18,11 @@
 ###############################################################################
 
 {
-    'name': 'Activity log media: Telegram',
+    'name': 'Telegram Message Support',
     'version': '0.1',
     'category': 'Log',
-    'description': '''        
-        Add telegram as media for comunicate operations
+    'description': '''
+        Add telegram management Log System
         ''',
     'author': 'Micronaet S.r.l. - Nicola Riolini',
     'website': 'http://www.micronaet.it',
@@ -34,7 +34,7 @@
     'init_xml': [],
     'demo': [],
     'data': [
-        'security/ir.model.access.csv',    
+        'security/ir.model.access.csv',
         'telegram_view.xml',
         ],
     'active': False,

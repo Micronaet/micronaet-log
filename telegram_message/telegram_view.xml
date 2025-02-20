@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!--telegram.bot-->
+        <record model="ir.ui.view" id="view_telegram_bot_tree">
+            <field name="name">telegram.bot.tree</field>
+            <field name="model">telegram.bot</field>
+            <field name="arch" type="xml">
+                <tree string="Telegram BOT" editable="bottom">        
+                    <field name="name" />
+                    <field name="bot" />
+                    <field name="token" />
+                    <field name="group_ids" widget="many2many_tags" />
+                    <button name="get_message_url" string="Get message" type="object" icon="STOCK_JUSTIFY_FILL" />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_telegram_bot_form">
+            <field name="name">telegram.bot.tree</field>
+            <field name="model">telegram.bot</field>
+            <field name="arch" type="xml">
+                <form string="Telegram BOT" version="7.0">
+                    <sheet>
+                        <field name="name" />
+                        <field name="bot" />
+                        <field name="token" />
+                        <separator string="Canali" colspan="4" />
+                        <field name="channel_ids" colspan="4" nolabel="1">
+                            <tree string="Canali" editable="bottom">
+                                <field name="code"/>
+                                <field name="name"/>
+                                <field name="group_id"/>
+                                <field name="odoo_mask"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_telegram_bot">
+            <field name="name">Telegram BOT</field>
+            <field name="res_model">telegram.bot</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_telegram_bot_tree"/>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+        </record>
+        
+        <!--telegram.group-->
+        <record model="ir.ui.view" id="view_telegram_group_tree">
+            <field name="name">telegram.group.tree</field>
+            <field name="model">telegram.group</field>
+            <field name="arch" type="xml">
+                <tree string="Telegram group" editable="bottom">        
+                    <field name="code" />
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_telegram_group_form">
+            <field name="name">telegram.group.tree</field>
+            <field name="model">telegram.group</field>
+            <field name="arch" type="xml">
+                <form string="Telegram group" version="7.0">
+                    <sheet>
+                        <field name="code" />
+                        <field name="name" />
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_telegram_group">
+            <field name="name">Telegram group</field>
+            <field name="res_model">telegram.group</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_telegram_group_tree"/>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+        </record>
+
+        <menuitem 
+            parent="activity_log_base.menu_log_configuration_root" 
+            id="menu_telegram_root" 
+            name="Telegram"
+            sequence="5"
+            />
+            <menuitem 
+                parent="menu_telegram_root" 
+                id="menu_telegram_bot" 
+                action="action_telegram_bot"
+                sequence="10"
+                />
+            <menuitem 
+                parent="menu_telegram_root" 
+                id="menu_telegram_group" 
+                action="action_telegram_group"
+                sequence="20"
+                />
+
+    </data>
+</openerp>
+
