@@ -146,7 +146,8 @@ class TelegramBotChannel(orm.Model):
                 if item_id and message_mask:
                     # Add link:
                     message += '<br/>'
-                    message += message_mask.format(item_id)
+                    message += message_mask.format(
+                        item_id=item_id)
                 bot.sendMessage(
                     telegram_group,
                     message,
