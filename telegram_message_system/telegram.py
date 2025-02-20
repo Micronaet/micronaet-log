@@ -18,6 +18,7 @@
 #
 ###############################################################################
 import os
+import pdb
 import sys
 import logging
 import openerp
@@ -109,6 +110,7 @@ class TelegramBotChannel(orm.Model):
     def send_message_test(self, cr, uid, ids, context=None):
         """ Send test message
         """
+        pdb.set_trace()
         channel = self.browse(cr, uid, ids, context=context)[0]
         return self.send_message(channel, message='Test message')
 
