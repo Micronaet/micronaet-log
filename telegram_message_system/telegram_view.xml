@@ -10,7 +10,8 @@
                     <field name="name" />
                     <field name="bot" />
                     <field name="token" />
-                    <button name="get_message_url" string="Get message" type="object" icon="STOCK_JUSTIFY_FILL" />
+                    <button name="get_message_url" string="Leggi messaggi" type="object" icon="STOCK_JUSTIFY_FILL" />
+                    <button name="send_message_test" string="Messaggio di prova" type="object" icon="gtk-refresh" />
                 </tree>
             </field>
         </record>
@@ -19,6 +20,10 @@
             <field name="model">telegram.bot</field>
             <field name="arch" type="xml">
                 <form string="Telegram BOT" version="7.0">
+                    <header>
+                        <button name="get_message_url" string="Leggi messaggi" type="object" icon="STOCK_JUSTIFY_FILL" />
+                        <button name="send_message_test" string="Messaggio di prova" type="object" icon="gtk-refresh" />
+                    </header>
                     <sheet>
                         <group colspan="4" col="4">
                             <field name="name" />
