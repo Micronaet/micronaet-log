@@ -6,7 +6,7 @@
             <field name="name">telegram.bot.tree</field>
             <field name="model">telegram.bot</field>
             <field name="arch" type="xml">
-                <tree string="Telegram BOT" editable="bottom">        
+                <tree string="Telegram BOT">
                     <field name="name" />
                     <field name="bot" />
                     <field name="token" />
