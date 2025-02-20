@@ -144,10 +144,8 @@ class TelegramBotChannel(orm.Model):
             try:
                 if item_id:
                     # Add link:
-                    message = '{}<br/>{}'.format(
-                        message,
-                        telegram.odoo_mask.format(item_id)
-                    )
+                    message += '<br/>'
+                    message += telegram.odoo_mask.format(item_id)
                 bot.sendMessage(
                     telegram_group,
                     message,
