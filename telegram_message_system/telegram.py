@@ -127,6 +127,7 @@ class TelegramBotChannel(orm.Model):
         group = channel.group_id
         telegram_token = telegram.token
         telegram_group = group.code
+        message_mask = channel.odoo_mask
 
         # -----------------------------------------------------------------
         # Send Telegram message:
@@ -142,10 +143,10 @@ class TelegramBotChannel(orm.Model):
 
         while max_loop > 0:
             try:
-                if item_id:
+                if item_id and message_mask:
                     # Add link:
                     message += '<br/>'
-                    message += telegram.odoo_mask.format(item_id)
+                    message += message_mask.format(item_id)
                 bot.sendMessage(
                     telegram_group,
                     message,
