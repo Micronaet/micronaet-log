@@ -153,8 +153,9 @@ class TelegramBotChannel(orm.Model):
                 )
                 return True
             except:
-                _logger.error('Error sending message, wait and retry\n'
-                              '{}'.format(sys.exc_info()))
+                _logger.error(
+                    'Error sending message, wait and retry\n{}'.format(
+                        sys.exc_info(),))
                 max_loop -= 1
                 time.sleep(wait)
         _logger.error('Error sending message after {} catch'.format(
