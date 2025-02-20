@@ -113,7 +113,7 @@ class TelegramBotChannel(orm.Model):
         return self.send_message(channel, message='Test message')
 
     def send_message(
-            self, channel, message, item_id=18965, item_name='OCXXX'):
+            self, channel, message, item_id=18965, reference='OCXXX'):
         """ Utility for log event on telegram using bot and group ID
         """
         # Parameters:
@@ -146,11 +146,9 @@ class TelegramBotChannel(orm.Model):
             try:
                 if item_id and message_mask:
                     # Add link:
+                    link = message_mask.format(item_id=item_id)
                     message += '<br/>'
-                    message += message_mask.format(
-                        item_id=item_id,
-                        item_name=item_name,
-                    )
+                    message += '[%s](%s)' % (link, reference)
                 bot.sendMessage(
                     telegram_group,
                     message,
