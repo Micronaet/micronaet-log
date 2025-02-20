@@ -112,7 +112,7 @@ class TelegramBotChannel(orm.Model):
         channel = self.browse(cr, uid, ids, context=context)[0]
         return self.send_message(channel, message='Test message')
 
-    def send_message(self, channel, message):
+    def send_message(self, channel, message, item_id=18965):
         """ Utility for log event on telegram using bot and group ID
         """
         # Parameters:
@@ -142,6 +142,12 @@ class TelegramBotChannel(orm.Model):
 
         while max_loop > 0:
             try:
+                if item_id:
+                    # Add link:
+                    message = '{}<br/>{}'.format(
+                        message,
+                        telegram.odoo_mask.format(item_id)
+                    )
                 bot.sendMessage(
                     telegram_group,
                     message,
